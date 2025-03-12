@@ -1,0 +1,14 @@
+.home-screen {
+  padding: 20px;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 24px;
+  color: #6a0dad;
+}
+
+.home-text {
+  font-size: 16px;
+  color: #555;
+}
