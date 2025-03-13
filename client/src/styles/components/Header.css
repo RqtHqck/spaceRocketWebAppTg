@@ -8,7 +8,7 @@
   -webkit-backdrop-filter: blur(10px); /* Для старых браузеров */
   height: 66px; /* Фиксированная высота */
   border-radius: 16px; /* Скругленные углы */
-  margin: 10px 12px; /* Отступы сверху и по бокам */
+  /* margin: 4px 4px;  */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
   position: fixed; /* Фиксируем хедер */
   top: 10px; /* Отступ сверху */
