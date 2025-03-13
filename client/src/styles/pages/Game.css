@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: space-between; /* Центрируем контент */
   height: 100%; /* Растягиваем контейнер на всю высоту */
-  padding-bottom: 30px; /* Отступ для BottomNav */
 }
 
 .planet {
@@ -18,3 +17,34 @@
   transition: transform 0.1s ease-in-out;
 }
 
+.score-bar {
+  position: absolute;
+  top: 50%;
+  right: 20px; /* Отступ от правого края */
+  transform: translateY(-50%);
+  width: 8px; /* Ширина полоски */
+  height: 46%; /* Высота полоски */
+  background-color: white; /* Цвет */
+  border-radius: 10px; /* Скругление краёв */
+  opacity: 0.8; /* Полупрозрачность */
+}
+
+/* Частицы */
+.particle {
+  position: absolute;
+  width: 20px;
+  opacity: 0;
+  animation: particle-fly 1s forwards;
+}
+
+/* Анимация разлёта частиц */
+@keyframes particle-fly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.5);
+  }
+}
