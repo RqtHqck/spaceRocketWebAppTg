@@ -1,8 +1,6 @@
 const app = require('./app')
-const port = process.env.LOCAL_PORT 
 const logger = require('./utils/logger')
 
-
-app.listen(port, () => {
-  logger.info(`Server started on http://localhost:${port}`)
+app.listen(process.env.DOCKER_PORT, () => {
+  logger.info(`Server started on docker port http://localhost:${process.env.DOCKER_PORT}. \nIt's available from http://localhost:${process.env.LOCAL_PORT}`)
 })

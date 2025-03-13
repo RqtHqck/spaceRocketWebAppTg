@@ -20,4 +20,6 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => logger.info('MongoDB connected'))
   .catch(error => console.error(error))
 
+require('./bot/bot');
+
 module.exports = app
