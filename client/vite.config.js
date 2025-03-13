@@ -13,7 +13,7 @@ export default defineConfig({
     host: true,
     strictPort: false,
     cors: true,
-    allowedHosts: ["edition-motor-e-climbing.trycloudflare.com"] // Разрешаем LocalTunnel
+    allowedHosts: ["rg-supervisor-malaysia-quarters.trycloudflare.com"] // Разрешаем LocalTunnel
   }
 });
 
