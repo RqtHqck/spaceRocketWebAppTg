@@ -7,8 +7,6 @@ const tgStar = "/icons/tgStar.png"; // Картинка из public/
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
 
   const handleClick = (event) => {
     setScale(1.1);
@@ -66,6 +64,7 @@ const Game = () => {
   return (
     <div className="game-container">
       <div className="score-bar"></div>
+      <div className="planet-sun"></div>
       <img src={planetImg} alt="Планета" className="planet no-interaction" />
 
       {particles.map((particle) => (
@@ -85,21 +84,17 @@ const Game = () => {
           }}
         />
       ))}
-
-     {/* Солнце (изначально скрытое) */}
-     <div className={`rocket-sun ${isImageLoaded ? 'show' : ''}`}></div>
-
-    {/* Картинка ракеты */}
-    <img
-      src={rocketImg}
-      alt="Ракета"
-      className="rocket no-interaction"
-      onClick={handleClick}
-      onLoad={() => setIsImageLoaded(true)} // Показываем солнце только после загрузки ракеты
-      style={{
-        transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
-      }}
-    />
+      
+      <div class="rocket-sun"></div>
+      <img
+        src={rocketImg}
+        alt="Ракета"
+        className="rocket no-interaction"
+        onClick={handleClick}
+        style={{
+          transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
+        }}
+      />
     </div>
   );
 };
