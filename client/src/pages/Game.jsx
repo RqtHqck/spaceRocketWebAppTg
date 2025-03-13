@@ -11,29 +11,32 @@ const Game = () => {
   const handleClick = (event) => {
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
-
-    // Координаты ракеты
+  
+    // Получаем позицию контейнера игры
+    const gameContainer = event.currentTarget.closest('.game-container');
+    const containerRect = gameContainer.getBoundingClientRect();
+  
+    // Координаты ракеты относительно контейнера
     const rocketRect = event.target.getBoundingClientRect();
-    const rocketX = rocketRect.left + rocketRect.width / 2;
-    const rocketY = rocketRect.top + rocketRect.height / 3;
-
-    // Генерация случайных направлений для частиц
+    const rocketX = rocketRect.left - containerRect.left + rocketRect.width / 2;
+    const rocketY = rocketRect.top - containerRect.top + rocketRect.height / 3;
+  
     const getRandom = (min, max) => Math.random() * (max - min) + min;
-
+  
     const newParticles = Array.from({ length: 3 }).map(() => ({
       id: Math.random(),
       img: tgStar,
       x: rocketX,
       y: rocketY,
-      dx: getRandom(-2, 2), // Разлёт влево-вправо
-      dy: getRandom(-2, 2), // Разлёт вверх-вниз
-      rotate: getRandom(-30, 30), // Вращение
-      size: getRandom(10, 36), // Случайный размер
+      dx: getRandom(-2, 2),
+      dy: getRandom(-2, 2),
+      rotate: getRandom(-30, 30),
+      size: getRandom(10, 50),
       opacity: 1,
-      angle: getRandom(0, 180), // Угол для вращения
-      speed: getRandom(1, 2) // Скорость для частиц
+      angle: getRandom(0, 180),
+      speed: getRandom(1, 2)
     }));
-
+  
     setParticles((prev) => [...prev, ...newParticles]);
   };
 

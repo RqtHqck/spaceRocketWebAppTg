@@ -1,19 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// import fs from 'fs';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-  //   https: {
-  //     key: fs.readFileSync('./private-key.pem'),
-  //     cert: fs.readFileSync('./certificate.pem'),
-  //   }
     host: true,
     strictPort: false,
     cors: true,
-    allowedHosts: ["edition-motor-e-climbing.trycloudflare.com"] // Разрешаем LocalTunnel
+    allowedHosts: ["cefa61047cd9453ec5c0968dc81968bf.serveo.net"] // Разрешаем LocalTunnel
   }
 });
 
