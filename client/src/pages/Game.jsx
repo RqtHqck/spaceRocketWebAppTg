@@ -31,7 +31,7 @@ const Game = () => {
       dx: getRandom(-2, 2),
       dy: getRandom(-2, 2),
       rotate: getRandom(-30, 30),
-      size: getRandom(10, 36),
+      size: getRandom(10, 50),
       opacity: 1,
       angle: getRandom(0, 180),
       speed: getRandom(1, 2)

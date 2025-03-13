@@ -20,8 +20,8 @@ bot.on('message', async (msg) => {
                 ],
             }
         };
-        responseText = "🔗 Приветствую в моём приложении 🚀SpaceRocket! Нажмите кнопку, чтобы открыть приложение:"
-        logger.info(`Message sent to user with chatId:${chatId} with text:${responseText}`);
+        responseText = "🔗 Приветствую в 🚀SpaceRocket! Нажмите кнопку, чтобы открыть приложение:"
+        logger.info(`Message sent to user with chatId:${chatId} with text:${text}`);
 
         bot.sendMessage(
           chatId,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 import Game from "./pages/Game";
@@ -15,6 +15,15 @@ import BottomNav from "./components/BottomNav";
 
 
 const App = () => {
+  useEffect(() => {
+    const telegramId = localStorage.getItem('telegramId'); // Получаем Telegram ID (если был сохранён)
+
+    if (!telegramId) {
+      window.location.href = "http" // Переход на страницу, которая говорит зайти с теелфона
+      window.location.href = 'https://t.me/space_rocket_project_bot'; // Перенаправляем на Telegram-бота
+    }
+  }, []);
+  
   return (
     <Router>
     <div className="app-container">

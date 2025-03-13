@@ -22,9 +22,9 @@ app.use(router)
 
 
 // MONGO
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => logger.info('MongoDB connected'))
-  .catch(err => logger.error(err))
+// mongoose.connect(process.env.MONGODB_URI)
+//   .then(() => logger.info('MongoDB connected'))
+//   .catch(err => logger.error(err))
 
 // BOT
 try {
