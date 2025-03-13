@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  position: relative; /* Чтобы все дочерние элементы с абсолютным позиционированием были относительно этого контейнера */
+  position: relative;
 }
 
 .planet {
@@ -20,18 +20,20 @@
   top: 64%;
   left: 12%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* Чтобы ракета была выше свечения */
+  z-index: 1; 
+  box-shadow: rgb(255,255,255,0);
+  animation: glow 1.5s infinite alternate;
 }
 
 .score-bar {
   position: absolute;
   top: 90px;
-  transform: translateY(-50%) rotate(90deg); /* Вращаем полоску на 90 градусов */
-  width: 6px; /* Ширина полоски */
-  height: 40%; /* Высота полоски */
-  background-color: white; /* Цвет */
-  border-radius: 10px; /* Скругление краёв */
-  opacity: 0.8; /* Полупрозрачность */
+  transform: translateY(-50%) rotate(90deg); 
+  width: 6px; 
+  height: 40%; 
+  background-color: white; 
+  border-radius: 10px; 
+  opacity: 0.8; 
 }
 
 /* Частицы */
@@ -52,4 +54,16 @@
     opacity: 0;
     transform: translate(var(--x), var(--y)) scale(0.5);
   }
+}
+
+.rocket-sun {
+  position: absolute;
+  top: 72%;
+  left: 45%;
+  width: 0px;
+  height: 0px;
+  transform: translateY(-50%) rotate(35deg); 
+  background-color: rgb(205, 0, 72);
+  border-radius: 50%; 
+  box-shadow: 0 0 120px 40px rgba(203, 135, 235, 0.8); 
 }
