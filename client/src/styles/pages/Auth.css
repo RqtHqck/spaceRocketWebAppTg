@@ -1,0 +1,101 @@
+/* Общие стили для страниц логина и регистрации */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Минимальная высота на весь экран */
+  padding: 20px; /* Уменьшенный отступ */
+  color: white;
+}
+
+.auth-title {
+  font-size: 24px; /* Уменьшенный размер шрифта */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px; /* Уменьшенный отступ */
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Занимает всю ширину */
+  max-width: 400px; /* Максимальная ширина формы */
+}
+
+.auth-input {
+  width: 100%; /* Занимает всю ширину формы */
+  padding: 10px; /* Уменьшенный отступ */
+  margin-bottom: 15px; /* Уменьшенный отступ */
+  border: 1px solid #ccc;
+  border-radius: 25px; /* Слегка уменьшенный радиус */
+  font-size: 14px; /* Уменьшенный размер шрифта */
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.auth-switch {
+  margin-top: 15px; /* Уменьшенный отступ */
+  font-size: 16px; /* Уменьшенный размер шрифта */
+  text-align: center;
+}
+
+.auth-link {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  color: #0056b3;
+}
+
+.auth-button {
+  width: 100%; /* Занимает всю ширину формы */
+  padding: 10px; /* Уменьшенный отступ */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 25px; /* Слегка уменьшенный радиус */
+  color: white;
+  font-size: 16px; /* Уменьшенный размер шрифта */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s ease;
+}
+
+.auth-button:hover {
+  background-color: rgba(0, 123, 255, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Медиазапросы для адаптации на очень маленьких экранах */
+@media (max-width: 480px) {
+  .auth-title {
+    font-size: 20px; /* Еще меньше на очень маленьких экранах */
+  }
+
+  .auth-input {
+    font-size: 12px; /* Еще меньше на очень маленьких экранах */
+    padding: 8px; /* Еще меньше на очень маленьких экранах */
+  }
+
+  .auth-button {
+    font-size: 14px; /* Еще меньше на очень маленьких экранах */
+    padding: 8px; /* Еще меньше на очень маленьких экранах */
+  }
+
+  .auth-switch {
+    font-size: 14px; /* Еще меньше на очень маленьких экранах */
+  }
+}

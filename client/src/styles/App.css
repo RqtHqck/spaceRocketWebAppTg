@@ -42,6 +42,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 170px); /* Используем calc для вычитания высоты Header + BottomNav */
+  height: 100vh /* Используем calc для вычитания высоты Header + BottomNav */
 }
 
