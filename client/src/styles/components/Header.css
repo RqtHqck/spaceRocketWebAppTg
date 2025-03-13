@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(90, 24, 154, 0.3); /* Полупрозрачный фон */
+  backdrop-filter: blur(10px); /* Эффект размытия */
+  -webkit-backdrop-filter: blur(10px); /* Для старых браузеров */
+  height: 66px; /* Фиксированная высота */
+  border-radius: 16px; /* Скругленные углы */
+  margin: 10px 12px; /* Отступы сверху и по бокам */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
+  position: fixed; /* Фиксируем хедер */
+  top: 10px; /* Отступ сверху */
+  left: 12px; /* Отступ слева */
+  right: 12px; /* Отступ справа */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 10; /* Устанавливаем слой для хедера */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.coin-image {
+  width: 40px;
+  height: 40px;
+}

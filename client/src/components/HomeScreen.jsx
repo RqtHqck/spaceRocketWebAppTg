@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/HomeScreen.css";
+import "../styles/components/HomeScreen.css";
 // import { motion } from "framer-motion";
 
 const HomeScreen = () => (

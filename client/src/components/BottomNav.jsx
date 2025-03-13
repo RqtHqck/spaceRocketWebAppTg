@@ -1,16 +1,22 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-// import { Home, User, Settings } from "lucide-react";
-
-import "../styles/BottomNav.css";
+import "../styles/components/BottomNav.css";
 
 const BottomNav = () => (
-  <nav>
-  <NavLink to="/" >🏠</NavLink>
-  <NavLink to="/profile" >👤</NavLink>
-  <NavLink to="/settings" >⚙️</NavLink>
-  <NavLink to="/about" >ℹ️</NavLink>
-</nav>
-);  
+  <nav className="bottom-nav">
+    <NavLink to="/" className="nav-link no-interaction">
+      <img src="/icons/game.png" alt="Game" />
+    </NavLink>
+    <NavLink to="/map" className="nav-link no-interaction">
+      <img src="/icons/map.png" alt="Map" />
+    </NavLink>
+    <NavLink to="/leaders" className="nav-link no-interaction">
+      <img src="/icons/leaders.png" alt="Leaders" />
+    </NavLink>
+    <NavLink to="/settings" className="nav-link no-interaction">
+      <img src="/icons/settings.png" alt="Settings" />
+    </NavLink>
+  </nav>
+);
 
 export default BottomNav;

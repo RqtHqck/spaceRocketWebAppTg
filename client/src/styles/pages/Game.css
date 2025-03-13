@@ -1,0 +1,20 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Центрируем контент */
+  height: 100%; /* Растягиваем контейнер на всю высоту */
+  padding-bottom: 30px; /* Отступ для BottomNav */
+}
+
+.planet {
+  width: 320px;
+  margin-top: 20px;
+}
+
+.rocket {
+  width: 160px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+

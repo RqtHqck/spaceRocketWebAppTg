@@ -13,7 +13,7 @@ export default defineConfig({
     host: true,
     strictPort: false,
     cors: true,
-    allowedHosts: ["grace-ec-instructions-suited.trycloudflare.com"] // Разрешаем LocalTunnel
+    allowedHosts: ["edition-motor-e-climbing.trycloudflare.com"] // Разрешаем LocalTunnel
   }
 });
 
