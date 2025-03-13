@@ -12,16 +12,22 @@
 }
 
 .rocket {
-  width: 160px;
+  width: 200px;
   cursor: pointer;
   transition: transform 0.1s ease-in-out;
+  position: absolute; /* Позиционируем картинку относительно родителя */
+  top: 64%; /* Сдвигаем по вертикали */
+  left: 18%; /* Сдвигаем по горизонтали */
+  transform: translate(-50%, -50%); /* Центрируем изображение относительно заданных координат */
 }
+
 
 .score-bar {
   position: absolute;
   top: 50%;
   right: 20px; /* Отступ от правого края */
   transform: translateY(-50%);
+  transform: rotate(180);
   width: 8px; /* Ширина полоски */
   height: 46%; /* Высота полоски */
   background-color: white; /* Цвет */
