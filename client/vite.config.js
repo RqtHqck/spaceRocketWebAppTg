@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     strictPort: false,
     cors: true,
-    allowedHosts: ["cefa61047cd9453ec5c0968dc81968bf.serveo.net"] // Разрешаем LocalTunnel
+    allowedHosts: ["0f72956bdb9fe987a4db7e19441bb30c.serveo.net"] // Разрешаем LocalTunnel
   }
 });
 

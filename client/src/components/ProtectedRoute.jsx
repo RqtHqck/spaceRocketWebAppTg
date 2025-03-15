@@ -1,11 +1,14 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const ProtectedRoute = ({ children }) => {
-  
-  const user = JSON.parse(localStorage.getItem("user"));
+  const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-  return user ? children : <Navigate to="/login" />;
+  if (!isMobile || !tgId) {
+    return <Navigate to="/mobile-only" replace />;
+  }
+  return children;
 };
 
 export default ProtectedRoute;

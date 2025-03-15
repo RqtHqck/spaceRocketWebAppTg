@@ -3,6 +3,9 @@ import "../styles/pages/Game.css";
 import rocketImg from "../assets/rocket.png";
 import planetImg from "../assets/mars.png";
 const tgStar = "/icons/tgStar.png"; // Картинка из public/
+import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
+
 
 const Game = () => {
   const [scale, setScale] = useState(1);
@@ -65,40 +68,46 @@ const Game = () => {
   }, [particles]);
 
   return (
-    <div className="game-container">
-      <div className="score-bar"></div>
-      <div className="planet-sun"></div>
-      <img src={planetImg} alt="Планета" className="planet no-interaction" />
+    <>
+      <Header />
+      <div className="main-content">
+        <div className="game-container">
+          <div className="score-bar"></div>
+          <div className="planet-sun"></div>
+          <img src={planetImg} alt="Планета" className="planet no-interaction" />
 
-      {particles.map((particle) => (
-        <img
-          key={particle.id}
-          src={particle.img}
-          alt="Частица"
-          className="particle"
-          style={{
-            position: "absolute", // Обеспечиваем абсолютное позиционирование частиц
-            left: `${particle.x}px`,
-            top: `${particle.y}px`,
-            width: `${particle.size}px`, // Устанавливаем случайный размер
-            height: `${particle.size}px`,
-            transform: `rotate(${particle.angle}deg)`,
-            opacity: particle.opacity
-          }}
-        />
-      ))}
-      
-      <div class="rocket-sun"></div>
-      <img
-        src={rocketImg}
-        alt="Ракета"
-        className="rocket no-interaction"
-        onClick={handleClick}
-        style={{
-          transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
-        }}
-      />
-    </div>
+          {particles.map((particle) => (
+            <img
+              key={particle.id}
+              src={particle.img}
+              alt="Частица"
+              className="particle"
+              style={{
+                position: "absolute", // Обеспечиваем абсолютное позиционирование частиц
+                left: `${particle.x}px`,
+                top: `${particle.y}px`,
+                width: `${particle.size}px`, // Устанавливаем случайный размер
+                height: `${particle.size}px`,
+                transform: `rotate(${particle.angle}deg)`,
+                opacity: particle.opacity
+              }}
+            />
+          ))}
+          
+          <div className="rocket-sun"></div>
+          <img
+            src={rocketImg}
+            alt="Ракета"
+            className="rocket no-interaction"
+            onClick={handleClick}
+            style={{
+              transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
+            }}
+          />
+        </div>
+      </div>
+      <BottomNav />
+    </>
   );
 };
 
