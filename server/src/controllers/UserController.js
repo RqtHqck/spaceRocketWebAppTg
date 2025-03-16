@@ -57,6 +57,20 @@ class UserController {
       next(err)
     }
   }
+
+  static async getCoins(req, res, next) {
+    try {
+      logger.info('UserController::getCoins')
+      const tgId = req.query.tgId;
+      logger.info(`Query param: { tgId:${tgId} }`)
+      const coins = await UserService.getCoins(tgId);
+      res
+        .status(200)
+        .json(coins);
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 module.exports = UserController;
