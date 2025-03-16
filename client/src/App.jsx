@@ -1,7 +1,6 @@
 // App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import { isMobile } from 'react-device-detect';
 import GamePage from './pages/GamePage';
 import MobileOnlyPage from './pages/MobileOnlyPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -15,9 +14,9 @@ const App = () => {
           <Route
             path="/game"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <GamePage />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route path="/mobile-only" element={<MobileOnlyPage />} />

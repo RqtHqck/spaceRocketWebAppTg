@@ -1,6 +1,10 @@
-require('../config/dotenv.js');
-const logger = require('../utils/logger')
+require('@config/dotenv.js');
+const logger = require('@utils/logger');
 const TelegramBot = require('node-telegram-bot-api');
+const keyboard = require('./keyboards/inline/greeting');
+const UserService = require('../services/UserService');
+const ApiError = require('@errors/ApiError');
+
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
@@ -10,18 +14,20 @@ logger.info('Bot was created and started.')
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
-    logger.info(`Message got from user with chatId:${chatId} with text:${text}`);
+    logger.info(`Message got from user with {chatId: ${chatId}} with text: ${text}`);
 
     if (text === '/start') {
-        const keyboard = {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "🚀 Открыть приложение", web_app: { url: process.env.WEB_APP_URL } }]
-                ],
+        try {
+            const user = await UserService.findById(chatId);
+            if (!user) {
+                await UserService.create({tgId: chatId})
             }
-        };
+        } catch (err) {
+            throw ApiError.internalError('Error during register user', err);
+        }
+
         responseText = "🔗 Приветствую в 🚀SpaceRocket! Нажмите кнопку, чтобы открыть приложение:"
-        logger.info(`Message sent to user with chatId:${chatId} with text:${text}`);
+        logger.info(`Message sent to user with {chatId: ${chatId}} with text: ${text}`);
 
         bot.sendMessage(
           chatId,

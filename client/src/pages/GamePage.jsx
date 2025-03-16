@@ -10,7 +10,9 @@ import BottomNav from "../components/BottomNav";
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
+  const [coins, setCoins] = useState(100);
 
+  
   const handleClick = (event) => {
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
@@ -69,7 +71,7 @@ const Game = () => {
 
   return (
     <>
-      <Header />
+      <Header coins={coins} />
       <div className="main-content">
         <div className="game-container">
           <div className="score-bar"></div>
@@ -95,15 +97,16 @@ const Game = () => {
           ))}
           
           <div className="rocket-sun"></div>
-          <img
-            src={rocketImg}
-            alt="Ракета"
-            className="rocket no-interaction"
-            onClick={handleClick}
-            style={{
-              transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
-            }}
-          />
+          <button className="rocket-button no-interaction" onClick={handleClick}>
+            <img
+              src={rocketImg}
+              alt="Ракета"
+              className="rocket"
+              style={{
+                transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
+              }}
+            />
+          </button>
         </div>
       </div>
       <BottomNav />

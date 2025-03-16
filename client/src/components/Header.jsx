@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../styles/components/Header.css";
 
-const Header = () => {
+const Header = ({ coins }) => {
   const [avatar, setAvatar] = useState(null);
-  // const [coins, setCoins] = useState(100); 
 
   useEffect(() => {
     console.log('DAta' + window.Telegram?.WebApp?.initDataUnsafe)
@@ -22,12 +21,12 @@ const Header = () => {
         />
       </div>
       <div className="header-right">
-        <span>Coins</span>
         <img
-            src="../../public/icons/tgStar.png"
-            alt="Avatar"
-            className="coin-image no-interaction"
-          />
+          src="../../public/icons/tgStar.png"
+          alt="Coins"
+          className="coin-image no-interaction"
+        />
+        <span className="coin-count">{coins}</span> {/* Отображаем переданные coins */}
       </div>
     </header>
   );
