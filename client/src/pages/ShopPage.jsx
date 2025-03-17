@@ -1,0 +1,80 @@
+import React, { useState, useEffect } from "react";
+import "../styles/pages/Shop.css";
+import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
+import axios from "axios";
+
+const Shop = () => {
+  const [items, setItems] = useState([]);
+  const [coins, setCoins] = useState(0);
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+          const response = await axios.get("http://localhost:3001/api/shop/items");
+        setItems(response.data);
+      } catch (error) {
+        console.error("Ошибка загрузки предметов:", error);
+      }
+    };
+
+    const fetchCoins = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/user/coins", {
+          params: { tgId: "1378564412" },
+        });
+        setCoins(response.data.coins);
+      } catch (error) {
+        console.error("Ошибка загрузки монет:", error);
+      }
+    };
+
+    fetchItems();
+    fetchCoins();
+  }, []);
+
+  const handleBuy = async (itemId) => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/shop/buy", {
+        tgId: "1378564412",
+        itemId,
+      });
+      setCoins(response.data.coins);
+    } catch (error) {
+      console.error("Ошибка при покупке предмета:", error);
+    }
+  };
+
+  return (
+    <>
+      <Header coins={coins} />
+      <div className="main-content shop-container">
+        {items.map((item) => (
+          <div key={item._id} className="shop-item">
+            <img src={item.imageUrl} alt={item.name} className="item-image" />
+            <div className="item-info">
+              <h3>{item.name}</h3>
+              <button
+                className="info-button"
+                onMouseEnter={() => setHoveredItem(item._id)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                ?
+              </button>
+              {hoveredItem === item._id && (
+                <div className="tooltip">{item.description}</div>
+              )}
+            </div>
+            <button className="buy-button" onClick={() => handleBuy(item._id)}>
+              Купить за {item.price} монет
+            </button>
+          </div>
+        ))}
+      </div>
+      <BottomNav />
+    </>
+  );
+};
+
+export default Shop;

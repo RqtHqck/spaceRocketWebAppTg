@@ -15,19 +15,19 @@ class ItemController {
   }
 
 
-  // static async findById(req, res, next) {
-  //   try {
-  //     logger.info('ItemController::findById')
-  //     const tgId = req.query.tgId;
-  //     logger.info(`Query param: { tgId:${tgId} }`)
-  //     const user = await ItemService.findById(tgId);
-  //     res
-  //       .status(200)
-  //       .json(user);
-  //   } catch (err) {
-  //     next(err)
-  //   }
-  // }
+  static async findById(req, res, next) {
+    try {
+      logger.info('ItemController::findById')
+      const userTgId = req.query.tgId;
+      logger.info(`Query param: { tgId:${userTgId} }`)
+      const userItems = await ItemService.findById(userTgId);
+      res
+        .status(200)
+        .json(userItems);
+    } catch (err) {
+      next(err)
+    }
+  }
 
 
   static async create(req, res, next) {

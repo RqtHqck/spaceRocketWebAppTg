@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import GamePage from './pages/GamePage';
 import MobileOnlyPage from './pages/MobileOnlyPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import ShopPage from './pages/ShopPage.jsx';
 
 const App = () => {
   return (
@@ -16,6 +17,14 @@ const App = () => {
             element={
               // <ProtectedRoute>
                 <GamePage />
+              // </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shop"
+            element={
+              // <ProtectedRoute>
+              <ShopPage />
               // </ProtectedRoute>
             }
           />

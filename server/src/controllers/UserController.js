@@ -58,12 +58,43 @@ class UserController {
     }
   }
 
+
   static async getCoins(req, res, next) {
     try {
       logger.info('UserController::getCoins')
       const tgId = req.query.tgId;
       logger.info(`Query param: { tgId:${tgId} }`)
       const coins = await UserService.getCoins(tgId);
+      res
+        .status(200)
+        .json(coins);
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
+  static async getUserItems(req, res, next) {
+    try {
+      logger.info('UserController::getUserUpdatesInventory')
+      const tgId = req.query.tgId;
+      logger.info(`Query param: { tgId:${tgId} }`)
+      const coins = await UserService.getUserItems(tgId);
+      res
+        .status(200)
+        .json(coins);
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
+  static async addItem(req, res, next) {
+    try {
+      logger.info('UserController::addItemToUser')
+      const { tgId, itemId } = req.body;
+      logger.info(`Query param: { tgId:${tgId}, itemId:${itemId}`)
+      const coins = await UserService.addItem({ tgId, itemId } );
       res
         .status(200)
         .json(coins);

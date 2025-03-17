@@ -1,5 +1,6 @@
-const UserModel = require('../models/UserModel')
-const ApiError = require('@errors/ApiError')
+const UserModel = require('../models/UserModel');
+const ItemService = require('../services/ItemService');
+const ApiError = require('@errors/ApiError');
 const logger = require('../utils/logger');
 
 
@@ -18,7 +19,7 @@ class UserService {
   static async findById(tgId) {
     try {
       logger.info("UserService::findById")
-      return await UserModel.findOne({tgId});
+      return await UserModel.findOne({tgId}).populate("updatesInventory.itemId");;
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователя", err);
     }
@@ -48,6 +49,7 @@ class UserService {
     }
   }
 
+
   static async getCoins(tgId) {
     try {
       logger.info("UserService::getCoins")
@@ -55,6 +57,33 @@ class UserService {
 
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователя", err);
+    }
+  }
+
+
+  static async getUserItems(tgId) {
+    try {
+      logger.info("UserService::getUserItems")
+      return await UserModel.findOne({ tgId }, { items: 1 }).populate("items.itemId");
+    } catch (err) {
+      throw ApiError.internalError("Ошибка при получении инвентаря пользователя", err);
+    }
+  }
+
+
+  static async addItem({ tgId, itemId, level = 1, price = 1}) {
+    try {
+      logger.info("UserService::addItem")
+      const user = await UserModel.findOne({ tgId })
+      const items = await ItemService.findAll();
+
+      if (user.items.itemId !== itemId) {
+        user.items.push({ itemId, level, price });
+        return user;
+      }
+
+    } catch (err) {
+      throw ApiError.internalError("Ошибка при добавлении предмета в инвентарь пользователя", err);
     }
   }
 
