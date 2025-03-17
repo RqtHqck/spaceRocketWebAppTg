@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+
+const ItemSchema = mongoose.Schema({
+  name: {type: String, required: true},
+  basePrice: {type: Number, required: true},
+  price: {type: Number, required: true},
+  priceMultiplier: {type: Number, required: true},
+  earnMultiplier: {type: Number, required: true},
+})
+
+module.exports = mongoose.model("item", ItemSchema);

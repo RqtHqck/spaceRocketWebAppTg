@@ -8,6 +8,7 @@ userRouter.post('/', UserController.create)
 userRouter.get('/', UserController.findById)
 // GET: localhost:3000/api/user/
 userRouter.get('/', UserController.findAll)
+
 // POST: localhost:3000/api/user/coins
 userRouter.post('/coins', UserController.incrementCoins)
 // GET: localhost:3000/api/user/coins

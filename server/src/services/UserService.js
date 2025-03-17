@@ -8,7 +8,7 @@ class UserService {
   static async findAll() {
     try {
       logger.info("UserService::findAll")
-      return await UserModel.find();
+      return await UserModel.find().populate("updatesInventory.itemId");
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователей", err);
     }
