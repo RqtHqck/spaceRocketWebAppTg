@@ -16,11 +16,10 @@ class ItemService {
   }
 
 
-  static async findById(userTgId) {
+  static async findById(itemId) {
     try {
       logger.info("ItemService::findById")
-      const user = (await UserService.findById(userTgId));
-      return user.items;
+      return await ItemModel.findById(itemId);
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении предмета", err);
     }

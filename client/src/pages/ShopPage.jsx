@@ -36,7 +36,7 @@ const Shop = () => {
 
   const handleBuy = async (itemId) => {
     try {
-      const response = await axios.post("http://localhost:3001/api/shop/buy", {
+      const response = await axios.post("http://localhost:3001/api/user/items", {
         tgId: "1378564412",
         itemId,
       });

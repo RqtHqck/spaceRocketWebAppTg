@@ -18,12 +18,12 @@ class ItemController {
   static async findById(req, res, next) {
     try {
       logger.info('ItemController::findById')
-      const userTgId = req.query.tgId;
-      logger.info(`Query param: { tgId:${userTgId} }`)
-      const userItems = await ItemService.findById(userTgId);
+      const itemId = req.query.itemId;
+      logger.info(`Query param: { itemId:${itemId} }`)
+      const item = await ItemService.findById(itemId);
       res
         .status(200)
-        .json(userItems);
+        .json(item);
     } catch (err) {
       next(err)
     }

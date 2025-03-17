@@ -71,17 +71,31 @@ class UserService {
   }
 
 
-  static async addItem({ tgId, itemId, level = 1, price = 1}) {
+  static async addItem({ tgId, itemId, level = 1, price = 20}) {
     try {
       logger.info("UserService::addItem")
       const user = await UserModel.findOne({ tgId })
-      const items = await ItemService.findAll();
-
-      if (user.items.itemId !== itemId) {
-        user.items.push({ itemId, level, price });
-        return user;
+      if (!user) {
+        throw new Error("Пользователь не найден");
       }
 
+      // Пытаемся найти предмет в массиве item
+      let existingItem = user.items.find(item => item.itemId.toString() === itemId.toString());
+
+      if (!existingItem) {
+        // Если нету такого предмета
+        user.items.push({ itemId, level, price });
+      } else {
+        // Если объект есть, то увеличиваем уровень и стоимость
+        const dbItem = await ItemService.findById(itemId);
+        existingItem.level += 1;
+        existingItem.price = Math.round(existingItem.price * dbItem.priceMultiplier); // Округляем цену
+        // existingItem.earn += 1;
+        existingItem.earn = Math.round(existingItem.earn * dbItem.earnMultiplier); // Округляем коины за клик
+      }
+
+      await user.save();
+      return user;
     } catch (err) {
       throw ApiError.internalError("Ошибка при добавлении предмета в инвентарь пользователя", err);
     }

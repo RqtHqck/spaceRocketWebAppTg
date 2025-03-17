@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
       itemId: { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
       level: {type: Number, default: 0, required: false},
       price: {type: Number, default: 0, required: false},
+      earn: {type: Number, default: 2, required: false},
     }
   ],
 })
