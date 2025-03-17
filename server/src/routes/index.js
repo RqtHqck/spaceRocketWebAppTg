@@ -7,6 +7,6 @@ const isTelegramMobileUser = require('../middlewares/isTelegramMobileUser');
 
 
 router.use('/api/user', userRoutes);
-router.use('/api/item', itemRoutes);
+router.use('/api/shop', itemRoutes);
 
 module.exports = router
