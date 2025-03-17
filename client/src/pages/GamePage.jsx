@@ -11,7 +11,7 @@ import axios from 'axios';
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
-  const [coins, setCoins] = useState(100);
+  const [coins, setCoins] = useState(1);
 
   
   const handleClick = async (event) => {
@@ -47,7 +47,7 @@ const Game = () => {
 
     // --- Добавляем вызов API ---
     try {
-      const response = await axios.post("http://localhost:3001/api/user/incCoins", {tgId: "1378564412", amount: 30}); // Замените на свой эндпоинт
+      const response = await axios.post("http://localhost:3001/api/user/coins", {tgId: "1378564412", amount: 30}); // Замените на свой эндпоинт
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
       }
@@ -59,8 +59,6 @@ const Game = () => {
   };
 
   useEffect(() => {
-
-    if (particles.length === 0) return;
 
     let frame;
     const updateParticles = () => {
@@ -82,6 +80,27 @@ const Game = () => {
     frame = requestAnimationFrame(updateParticles);
     return () => cancelAnimationFrame(frame);
   }, [particles]);
+
+  useEffect(() => {
+    const fetchLoadData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/user/coins", {
+          params: {
+            tgId: "1378564412", // Пример параметра
+          }
+        }); // Замените на свой эндпоинт
+        if (response.status !== 200) {
+          throw new Error("Ошибка загрузки данных");
+        }
+        const coins = await response.data.coins
+        console.log(coins)
+        setCoins(coins); // Обновляем количество монет
+      } catch (error) {
+        console.error("Ошибка при получении данных пользователя:", error);
+      }
+    }
+    fetchLoadData();
+  }, []);
 
   return (
     <>

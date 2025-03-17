@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 
 const ProtectedRoute = ({ children }) => {
-  const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const [tgId, setTgId] = useState(localStorage.getItem("tgId") || null);
 
-  if (!isMobile || !tgId) {
-    return <Navigate to="/mobile-only" replace />;
-  }
+  useEffect(() => {
+    const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!isMobile || !tgId) {
+      return <Navigate to="/mobile-only" replace/>;
+    }
+    setTgId(tgId)
+    localStorage.setItem("tgId", tgId);
+  }, []);
   return children;
 };
 

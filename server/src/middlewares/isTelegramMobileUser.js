@@ -1,8 +1,9 @@
 const logger = require('../utils/logger');
 
 module.exports = (req, res, next) => {
+
   const userAgent = req.headers['user-agent'];
-  const telegramId = req.headers['x-telegram-id']; // Telegram ID из headers
+  const telegramId = req.headers['x-tg-user']; // Telegram ID из headers
 
   // Проверка на мобильное устройство
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
