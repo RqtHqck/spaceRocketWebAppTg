@@ -5,6 +5,7 @@ import planetImg from "../assets/mars.png";
 const tgStar = "/icons/tgStar.png"; // Картинка из public/
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
+import axios from 'axios';
 
 
 const Game = () => {
@@ -13,22 +14,22 @@ const Game = () => {
   const [coins, setCoins] = useState(100);
 
   
-  const handleClick = (event) => {
+  const handleClick = async (event) => {
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
-  
+
     // Получаем позицию контейнера игры
     const gameContainer = event.currentTarget.closest('.game-container');
     const containerRect = gameContainer.getBoundingClientRect();
-  
+
     // Координаты ракеты относительно контейнера
     const rocketRect = event.target.getBoundingClientRect();
     const rocketX = rocketRect.left - containerRect.left + rocketRect.width / 2;
     const rocketY = rocketRect.top - containerRect.top + rocketRect.height / 3;
-  
+
     const getRandom = (min, max) => Math.random() * (max - min) + min;
-  
-    const newParticles = Array.from({ length: 3 }).map(() => ({
+
+    const newParticles = Array.from({length: 3}).map(() => ({
       id: Math.random(),
       img: tgStar,
       x: rocketX,
@@ -41,11 +42,24 @@ const Game = () => {
       angle: getRandom(0, 180),
       speed: getRandom(1, 2)
     }));
-  
+
     setParticles((prev) => [...prev, ...newParticles]);
+
+    // --- Добавляем вызов API ---
+    try {
+      const response = await axios.post("http://localhost:3001/api/user/incCoins", {tgId: "1378564412", amount: 30}); // Замените на свой эндпоинт
+      if (response.status !== 200) {
+        throw new Error("Ошибка загрузки данных");
+      }
+      const userData = await response.data
+      setCoins(userData.coins); // Обновляем количество монет
+    } catch (error) {
+      console.error("Ошибка при получении данных пользователя:", error);
+    }
   };
 
   useEffect(() => {
+
     if (particles.length === 0) return;
 
     let frame;
