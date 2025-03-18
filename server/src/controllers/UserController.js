@@ -15,9 +15,9 @@ class UserController {
   }
 
 
-  static async findById(req, res, next) {
+  static async findByUserId(req, res, next) {
     try {
-      logger.info('UserController::findById')
+      logger.info('UserController::findByUserId')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
       const user = await UserService.findByUserId(userId);
@@ -29,6 +29,20 @@ class UserController {
     }
   }
 
+
+  static async findByTgId(req, res, next) {
+    try {
+      logger.info('UserController::findByTgId')
+      const tgId = req.params.tgId;
+      logger.info(`Query param: { tgId:${tgId} }`)
+      const user = await UserService.findByTgId(tgId);
+      res
+        .status(200)
+        .json(user);
+    } catch (err) {
+      next(err)
+    }
+  }
 
   static async create(req, res, next) {
     try {
@@ -46,9 +60,9 @@ class UserController {
 
   static async incrementCoins(req, res, next) {
     try {
+      logger.info('UserController::incrementCoins')
       const { userId, amount } = req.body
       logger.info(`Body: { userId:${userId}, amount:${amount} }`)
-      logger.info('UserController::incrementCoins')
       const updatedUser = await UserService.incrementCoins(userId, amount);
       res
         .status(200)
@@ -76,7 +90,7 @@ class UserController {
 
   static async getUserItems(req, res, next) {
     try {
-      logger.info('UserController::getUserUpdatesInventory')
+      logger.info('UserController::getUserItems')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
       const coins = await UserService.getUserItems(userId);
@@ -91,7 +105,7 @@ class UserController {
 
   static async addItem(req, res, next) {
     try {
-      logger.info('UserController::addItemToUser')
+      logger.info('UserController::addItem')
       const { userId, itemId } = req.body;
       logger.info(`Query param: { userId:${userId}, itemId:${itemId}`)
       const coins = await UserService.addItem(userId, itemId);

@@ -6,7 +6,9 @@ const userRouter = express.Router()
 // POST: localhost:3000/api/user/
 userRouter.post('/', UserController.create)
 // GET: localhost:3000/api/user?id
-userRouter.get('/:userId', UserController.findById)
+userRouter.get('/:userId', UserController.findByUserId)
+// GET: localhost:3000/api/user?id
+userRouter.get('/:tgId', UserController.findByTgId)
 // GET: localhost:3000/api/user/
 userRouter.get('/', UserController.findAll)
 
