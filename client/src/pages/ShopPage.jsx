@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../styles/pages/Shop.css";
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
-import axios from "axios";
+import api from '../utils/api.js';
+
 
 const Shop = () => {
   const [items, setItems] = useState([]);
@@ -12,7 +13,7 @@ const Shop = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-          const response = await axios.get("http://localhost:3001/api/shop/items");
+          const response = await api.get("/shop/items");
         setItems(response.data);
       } catch (error) {
         console.error("Ошибка загрузки предметов:", error);
@@ -21,7 +22,7 @@ const Shop = () => {
 
     const fetchCoins = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/user/coins", {
+        const response = await api.get("/user/coins", {
           params: { tgId: "1378564412" },
         });
         setCoins(response.data.coins);
@@ -36,7 +37,7 @@ const Shop = () => {
 
   const handleBuy = async (itemId) => {
     try {
-      const response = await axios.post("http://localhost:3001/api/user/items", {
+      const response = await api.post("/user/items", {
         tgId: "1378564412",
         itemId,
       });

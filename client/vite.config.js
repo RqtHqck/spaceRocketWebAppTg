@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     strictPort: false,
     cors: true,
-    allowedHosts: ["eyes-hitachi-podcast-infringement.trycloudflare.com"] // Разрешаем LocalTunnel
+    allowedHosts: ["ins-result-abc-yoga.trycloudflare.com"] // Разрешаем LocalTunnel
   }
 });
 

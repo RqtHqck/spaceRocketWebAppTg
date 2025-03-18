@@ -5,7 +5,7 @@ import planetImg from "../assets/mars.png";
 const tgStar = "/icons/tgStar.png"; // Картинка из public/
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
-import axios from 'axios';
+import api from "../utils/api";
 
 
 const Game = () => {
@@ -47,7 +47,7 @@ const Game = () => {
 
     // --- Добавляем вызов API ---
     try {
-      const response = await axios.post("http://localhost:3001/api/user/coins", {tgId: "1378564412", amount: 30}); // Замените на свой эндпоинт
+      const response = await api.post("/user/coins", {tgId: "1378564412", amount: 1}); // Замените на свой эндпоинт
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
       }
@@ -84,7 +84,7 @@ const Game = () => {
   useEffect(() => {
     const fetchLoadData = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/user/coins", {
+        const response = await api.get("/user/coins", {
           params: {
             tgId: "1378564412", // Пример параметра
           }

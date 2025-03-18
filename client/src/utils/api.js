@@ -1,5 +1,4 @@
 import axios from "axios";
-import api from "../utils/api";
 
 // Создаём инстанс Axios
 const api = axios.create({
@@ -8,10 +7,10 @@ const api = axios.create({
 
 // Добавляем интерцептор для всех запросов
 api.interceptors.request.use((config) => {
-  const tgId = localStorage.getItem("tgId");
-  if (tgId) {
-    config.headers["x-tg-user"] = tgId;
-  }
+  // const tgId = localStorage.getItem("tgId");
+  // if (tgId) {
+  //   config.headers["x-tg-user"] = tgId;
+  // }
   return config;
 }, (error) => {
   return Promise.reject(error);

@@ -7,18 +7,17 @@
 }
 
 .shop-item {
-    background: #1a1a1a;
+    background: #3c096c;
     border-radius: 12px;
     padding: 15px;
     text-align: center;
     width: 180px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
     transition: transform 0.2s ease-in-out;
 }
 
-.shop-item:hover {
+/* .shop-item:hover {
     transform: scale(1.05);
-}
+} */
 
 .item-image {
     width: 100px;
@@ -34,7 +33,7 @@
 }
 
 .info-button {
-    background: #333;
+    background: #10002b;
     color: white;
     border: none;
     width: 20px;
@@ -64,7 +63,7 @@
 
 .buy-button {
     margin-top: 10px;
-    background: #ffcc00;
+    background: #e0aaff;
     border: none;
     padding: 10px;
     width: 100%;
@@ -74,5 +73,5 @@
 }
 
 .buy-button:hover {
-    background: #e6b800;
+    background: #c77dff;
 }
