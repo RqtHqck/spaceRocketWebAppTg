@@ -33,7 +33,7 @@ class UserController {
   static async findByTgId(req, res, next) {
     try {
       logger.info('UserController::findByTgId')
-      const tgId = req.params.tgId;
+      const tgId = req.params.tgId.toString();
       logger.info(`Query param: { tgId:${tgId} }`)
       const user = await UserService.findByTgId(tgId);
       res
