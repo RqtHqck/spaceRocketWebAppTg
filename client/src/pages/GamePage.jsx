@@ -11,10 +11,60 @@ import api from "../utils/api";
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
-  const [coins, setCoins] = useState(1);
+  const [coins, setCoins] = useState(0);
+  const [error, setError] = useState(null);
+  const userId = sessionStorage.getItem("userId");
 
-  
+
+  useEffect(() => {
+
+    let frame;
+    const updateParticles = () => {
+      setParticles((prev) =>
+        prev
+          .map((particle) => ({
+            ...particle,
+            x: particle.x + particle.dx * particle.speed, // Движение по горизонтали
+            y: particle.y + particle.dy * particle.speed, // Движение по вертикали
+            angle: particle.angle + Math.random() * 0.1 - 0.05, // Вращение частиц
+            opacity: particle.opacity - 0.02, // Уменьшение прозрачности
+          }))
+          .filter((particle) => particle.opacity > 0) // Убираем частицы, когда они исчезают
+      );
+
+      frame = requestAnimationFrame(updateParticles);
+    };
+
+    frame = requestAnimationFrame(updateParticles);
+    return () => cancelAnimationFrame(frame);
+  }, [particles]);
+
+
+  useEffect(() => {
+    const fetchLoadData = async () => {
+      try {
+        // Проверка наличия userId
+        if (!userId) {
+          setError("User not authenticated");
+          return;
+        }
+        const response = await api.get(`/user/${userId}/coins`); // Замените на свой эндпоинт
+        if (response.status !== 200) {
+          throw new Error("Ошибка загрузки данных");
+        }
+        const coins = await response.data.coins
+        setCoins(coins); // Обновляем количество монет
+      } catch (error) {
+        console.error("Ошибка при получении данных пользователя:", error);
+      }
+    }
+    fetchLoadData();
+  }, []);
+
+
   const handleClick = async (event) => {
+    console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
+    console.log(`Previous coins value: ${coins}`)
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
 
@@ -46,58 +96,18 @@ const Game = () => {
     setParticles((prev) => [...prev, ...newParticles]);
 
     try {
-      const userId = localStorage.getItem("userId");
       const response = await api.post("/user/coins", {userId}); // Замените на свой эндпоинт
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
       }
       const userData = await response.data
       setCoins(userData.coins); // Обновляем количество монет
+      console.log(`New coins value: ${userData.coins}`)
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
     }
   };
 
-  useEffect(() => {
-
-    let frame;
-    const updateParticles = () => {
-      setParticles((prev) =>
-        prev
-          .map((particle) => ({
-            ...particle,
-            x: particle.x + particle.dx * particle.speed, // Движение по горизонтали
-            y: particle.y + particle.dy * particle.speed, // Движение по вертикали
-            angle: particle.angle + Math.random() * 0.1 - 0.05, // Вращение частиц
-            opacity: particle.opacity - 0.02, // Уменьшение прозрачности
-          }))
-          .filter((particle) => particle.opacity > 0) // Убираем частицы, когда они исчезают
-      );
-
-      frame = requestAnimationFrame(updateParticles);
-    };
-
-    frame = requestAnimationFrame(updateParticles);
-    return () => cancelAnimationFrame(frame);
-  }, [particles]);
-
-  useEffect(() => {
-    const fetchLoadData = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        const response = await api.get(`/user/${userId}/coins`); // Замените на свой эндпоинт
-        if (response.status !== 200) {
-          throw new Error("Ошибка загрузки данных");
-        }
-        const coins = await response.data.coins
-        console.log(coins)
-        setCoins(coins); // Обновляем количество монет
-      } catch (error) {
-        console.error("Ошибка при получении данных пользователя:", error);
-      }
-    }
-    fetchLoadData();
-  }, []);
 
   return (
     <>

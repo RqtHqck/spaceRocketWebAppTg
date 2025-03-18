@@ -15,17 +15,17 @@ const App = () => {
           <Route
             path="/game"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <GamePage />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/shop"
             element={
-              // <ProtectedRoute>
-              <ShopPage />
-              // </ProtectedRoute>
+              <ProtectedRoute>
+                <ShopPage />
+              </ProtectedRoute>
             }
           />
           <Route path="/mobile-only" element={<MobileOnlyPage />} />

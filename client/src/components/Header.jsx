@@ -5,7 +5,6 @@ const Header = ({ coins }) => {
   const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    console.log('DAta' + window.Telegram?.WebApp?.initDataUnsafe)
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url) {
       setAvatar(window.Telegram.WebApp.initDataUnsafe.user.photo_url);
     }
@@ -15,7 +14,7 @@ const Header = ({ coins }) => {
     <header className="header">
       <div className="header-left">
         <img
-          src={avatar || "https://via.placeholder.com/40"} 
+          src={avatar || "/icons/profile.png"}
           alt="Avatar"
           className="avatar no-interaction"
         />

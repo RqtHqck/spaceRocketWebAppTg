@@ -9,12 +9,14 @@ const Shop = () => {
   const [items, setItems] = useState([]);
   const [coins, setCoins] = useState(0);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const userId = sessionStorage.getItem("userId")
 
   useEffect(() => {
 
     const fetchItems = async () => {
       try {
-          const response = await api.get("/shop/items");
+        console.log("fetch all items from shop")
+        const response = await api.get("/shop/items");
         setItems(response.data);
       } catch (error) {
         console.error("Ошибка загрузки предметов:", error);
@@ -23,9 +25,10 @@ const Shop = () => {
 
     const fetchCoins = async () => {
       try {
-        const userId = localStorage.getItem("userId")
         const response = await api.get(`/user/${userId}/coins`);
         setCoins(response.data.coins);
+        console.log("Coins: " + response.data.coins)
+
       } catch (error) {
         console.error("Ошибка загрузки монет:", error);
       }
@@ -37,11 +40,11 @@ const Shop = () => {
 
   const handleBuy = async (itemId) => {
     try {
-      const userId = localStorage.getItem("userId")
       const response = await api.post(`/user/items`, {
         userId: userId,
         itemId,
       });
+      console.log(`Add item ${itemId} to user ${userId}`)
       setCoins(response.data.coins);
     } catch (error) {
       console.error("Ошибка при покупке предмета:", error);
