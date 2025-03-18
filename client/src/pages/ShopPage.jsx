@@ -11,6 +11,7 @@ const Shop = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
+
     const fetchItems = async () => {
       try {
           const response = await api.get("/shop/items");
@@ -22,9 +23,8 @@ const Shop = () => {
 
     const fetchCoins = async () => {
       try {
-        const response = await api.get("/user/coins", {
-          params: { tgId: "1378564412" },
-        });
+        const userId = localStorage.getItem("userId")
+        const response = await api.get(`/user/${userId}/coins`);
         setCoins(response.data.coins);
       } catch (error) {
         console.error("Ошибка загрузки монет:", error);
@@ -37,8 +37,9 @@ const Shop = () => {
 
   const handleBuy = async (itemId) => {
     try {
-      const response = await api.post("/user/items", {
-        tgId: "1378564412",
+      const userId = localStorage.getItem("userId")
+      const response = await api.post(`/user/items`, {
+        userId: userId,
         itemId,
       });
       setCoins(response.data.coins);

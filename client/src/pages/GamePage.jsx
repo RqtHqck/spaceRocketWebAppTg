@@ -45,9 +45,9 @@ const Game = () => {
 
     setParticles((prev) => [...prev, ...newParticles]);
 
-    // --- Добавляем вызов API ---
     try {
-      const response = await api.post("/user/coins", {tgId: "1378564412", amount: 1}); // Замените на свой эндпоинт
+      const userId = localStorage.getItem("userId");
+      const response = await api.post("/user/coins", {userId}); // Замените на свой эндпоинт
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
       }
@@ -84,11 +84,8 @@ const Game = () => {
   useEffect(() => {
     const fetchLoadData = async () => {
       try {
-        const response = await api.get("/user/coins", {
-          params: {
-            tgId: "1378564412", // Пример параметра
-          }
-        }); // Замените на свой эндпоинт
+        const userId = localStorage.getItem("userId");
+        const response = await api.get(`/user/${userId}/coins`); // Замените на свой эндпоинт
         if (response.status !== 200) {
           throw new Error("Ошибка загрузки данных");
         }

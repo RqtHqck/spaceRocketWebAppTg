@@ -18,9 +18,9 @@ class UserController {
   static async findById(req, res, next) {
     try {
       logger.info('UserController::findById')
-      const tgId = req.query.tgId;
-      logger.info(`Query param: { tgId:${tgId} }`)
-      const user = await UserService.findById(tgId);
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const user = await UserService.findByUserId(userId);
       res
         .status(200)
         .json(user);
@@ -46,10 +46,10 @@ class UserController {
 
   static async incrementCoins(req, res, next) {
     try {
-      const { tgId, amount } = req.body
-      logger.info(`Body: { tgId:${tgId}, amount:${amount} }`)
+      const { userId, amount } = req.body
+      logger.info(`Body: { userId:${userId}, amount:${amount} }`)
       logger.info('UserController::incrementCoins')
-      const updatedUser = await UserService.incrementCoins({ tgId, amount });
+      const updatedUser = await UserService.incrementCoins(userId, amount);
       res
         .status(200)
         .json(updatedUser);
@@ -62,9 +62,9 @@ class UserController {
   static async getCoins(req, res, next) {
     try {
       logger.info('UserController::getCoins')
-      const tgId = req.query.tgId;
-      logger.info(`Query param: { tgId:${tgId} }`)
-      const coins = await UserService.getCoins(tgId);
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const coins = await UserService.getCoins(userId);
       res
         .status(200)
         .json(coins);
@@ -77,9 +77,9 @@ class UserController {
   static async getUserItems(req, res, next) {
     try {
       logger.info('UserController::getUserUpdatesInventory')
-      const tgId = req.query.tgId;
-      logger.info(`Query param: { tgId:${tgId} }`)
-      const coins = await UserService.getUserItems(tgId);
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const coins = await UserService.getUserItems(userId);
       res
         .status(200)
         .json(coins);
@@ -92,9 +92,9 @@ class UserController {
   static async addItem(req, res, next) {
     try {
       logger.info('UserController::addItemToUser')
-      const { tgId, itemId } = req.body;
-      logger.info(`Query param: { tgId:${tgId}, itemId:${itemId}`)
-      const coins = await UserService.addItem({ tgId, itemId } );
+      const { userId, itemId } = req.body;
+      logger.info(`Query param: { userId:${userId}, itemId:${itemId}`)
+      const coins = await UserService.addItem(userId, itemId);
       res
         .status(200)
         .json(coins);

@@ -42,6 +42,19 @@ class ItemController {
       next(err)
     }
   }
+
+  static async createMany(req, res, next) {
+    try {
+      const itemDtos = req.body
+      logger.info('ItemController::create')
+      const newItem = await ItemService.createMany(itemDtos);
+      res
+        .status(201)
+        .json(newItem);
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 module.exports = ItemController;

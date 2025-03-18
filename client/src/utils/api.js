@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Создаём инстанс Axios
 const api = axios.create({
-  baseURL: "http://localhost:3001/api", // Укажи свой API URL
+  baseURL: "http://localhost:3000/api", // Укажи свой API URL
 });
 
 // Добавляем интерцептор для всех запросов

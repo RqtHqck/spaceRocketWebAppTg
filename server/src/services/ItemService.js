@@ -1,5 +1,4 @@
 const ItemModel = require('../models/ItemModel')
-const UserService = require('../services/UserService')
 const ApiError = require('@errors/ApiError')
 const logger = require('../utils/logger');
 
@@ -30,6 +29,16 @@ class ItemService {
     try {
       logger.info("ItemService::create: " + JSON.stringify(itemDto));
       return await ItemModel.create(itemDto);
+    } catch (err) {
+      throw ApiError.internalError(`Ошибка при создании предмета`, err);
+    }
+  }
+
+
+  static async createMany(itemDtos) {
+    try {
+      logger.info("ItemService::create: " + JSON.stringify(itemDtos));
+      return await ItemModel.insertMany(itemDtos, {ordered: true});
     } catch (err) {
       throw ApiError.internalError(`Ошибка при создании предмета`, err);
     }

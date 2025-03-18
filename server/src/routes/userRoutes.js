@@ -5,8 +5,8 @@ const userRouter = express.Router()
 // ---------------------- User routes
 // POST: localhost:3000/api/user/
 userRouter.post('/', UserController.create)
-// GET: localhost:3000/api/user/
-userRouter.get('/', UserController.findById)
+// GET: localhost:3000/api/user?id
+userRouter.get('/:userId', UserController.findById)
 // GET: localhost:3000/api/user/
 userRouter.get('/', UserController.findAll)
 
@@ -14,13 +14,13 @@ userRouter.get('/', UserController.findAll)
 // POST: localhost:3000/api/user/coins
 userRouter.post('/coins', UserController.incrementCoins)
 // GET: localhost:3000/api/user/coins
-userRouter.get('/coins', UserController.getCoins)
+userRouter.get('/:userId/coins', UserController.getCoins)
 
 // ---------------------- Items routes
 // POST: localhost:3000/api/user/updatesInventory
 userRouter.post('/items', UserController.addItem)
 // GET: localhost:3000/api/user/updatesInventory
-userRouter.get('/items', UserController.getUserItems)
+userRouter.get('/:userId/items', UserController.getUserItems)
 
 
 module.exports = userRouter

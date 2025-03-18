@@ -2,29 +2,38 @@ const UserModel = require('../models/UserModel');
 const ItemService = require('../services/ItemService');
 const ApiError = require('@errors/ApiError');
 const logger = require('../utils/logger');
-
+const { Types } = require('mongoose');
 
 class UserService {
 
   static async findAll() {
     try {
       logger.info("UserService::findAll")
-      return await UserModel.find().populate("updatesInventory.itemId");
+      return await UserModel.find().populate("items.itemId");
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователей", err);
     }
   }
 
 
-  static async findById(tgId) {
+  static async findByUserId(userId) {
     try {
-      logger.info("UserService::findById")
-      return await UserModel.findOne({tgId}).populate("updatesInventory.itemId");;
+      logger.info("UserService::findByUserId")
+      return await UserModel.findById(userId).populate("items.itemId");
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователя", err);
     }
   }
 
+
+  static async findByTgId(tgId) {
+    try {
+      logger.info("UserService::findByTgId")
+      return await UserModel.findOne({tgId});
+    } catch (err) {
+      throw ApiError.internalError("Ошибка при получении пользователя", err);
+    }
+  }
 
   static async create(userDto) {
     try {
@@ -36,12 +45,12 @@ class UserService {
   }
 
 
-  static async incrementCoins({ tgId, amount }) {
+  static async incrementCoins(userId) {
     try {
       logger.info("UserService::incrementCoins")
       return await UserModel.findOneAndUpdate(
-        {tgId},
-        {$inc: {coins: amount}},
+        {_id: userId},
+        {$inc: {coins: 1}},
         {new: true, upsert: true}
       );
     } catch (err) {
@@ -50,10 +59,10 @@ class UserService {
   }
 
 
-  static async getCoins(tgId) {
+  static async getCoins(userId) {
     try {
       logger.info("UserService::getCoins")
-      return await UserModel.findOne({ tgId }, { coins: 1 })
+      return await UserModel.findOne({ _id: userId }, { coins: 1 })
 
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователя", err);
@@ -61,33 +70,32 @@ class UserService {
   }
 
 
-  static async getUserItems(tgId) {
+  static async getUserItems(userId) {
     try {
       logger.info("UserService::getUserItems")
-      return await UserModel.findOne({ tgId }, { items: 1 }).populate("items.itemId");
+      return await UserModel.findOne({ _id: userId }, { items: 1 }).populate("items.itemId");
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении инвентаря пользователя", err);
     }
   }
 
 
-  static async addItem({ tgId, itemId, level = 1, price = 20}) {
+  static async addItem(userId, itemId, level = 1) {
     try {
       logger.info("UserService::addItem")
-      const user = await UserModel.findOne({ tgId })
-      if (!user) {
-        throw new Error("Пользователь не найден");
-      }
-
-      // Пытаемся найти предмет в массиве item
-      let existingItem = user.items.find(item => item.itemId.toString() === itemId.toString());
+      const user = await this.findByUserId(userId);
+      const dbItem = await ItemService.findById(itemId);
+      console.log(itemId)
+      // Пытаемся найти предмет в массиве item пользователя
+      let existingItem = user.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
 
       if (!existingItem) {
         // Если нету такого предмета
-        user.items.push({ itemId, level, price });
+        logger.info("Items isn't exists in user items")
+        user.items.push({ itemId, level, price: dbItem.basePrice });
       } else {
         // Если объект есть, то увеличиваем уровень и стоимость
-        const dbItem = await ItemService.findById(itemId);
+        logger.info("Item exists. Update")
         existingItem.level += 1;
         existingItem.price = Math.round(existingItem.price * dbItem.priceMultiplier); // Округляем цену
         // existingItem.earn += 1;
