@@ -51,7 +51,7 @@ class UserService {
       return await UserModel.findOneAndUpdate(
         {_id: userId},
         {$inc: {coins: 1}},
-        {new: true, upsert: true}
+        {new: true}
       );
     } catch (err) {
       throw ApiError.internalError("Ошибка при получении пользователя", err);
