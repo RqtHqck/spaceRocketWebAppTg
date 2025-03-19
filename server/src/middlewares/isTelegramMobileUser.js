@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 module.exports = (req, res, next) => {
 
   const userAgent = req.headers['user-agent'];
-  const telegramId = req.headers['x-tg-user']; // Telegram ID из headers
+  const telegramId = req.headers['x-userId']; // Telegram ID из headers
 
   // Проверка на мобильное устройство
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
 
   // Проверка на запрос от Telegram
   if (!telegramId) {
-    return res.status(403).send('Доступ разрешен только через Telegram WebApp.');
+    return res.status(403).json({ message: 'Доступ разрешен только через Telegram WebApp.' });
   }
 
   next();

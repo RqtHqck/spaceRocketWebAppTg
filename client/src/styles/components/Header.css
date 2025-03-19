@@ -24,8 +24,8 @@
 
 .avatar {
   width: 50px;
-  height: 45px;
-  /*border-radius: 50%;*/
+  height: 50px;
+  border-radius: 50%;
 }
 
 .header-right {

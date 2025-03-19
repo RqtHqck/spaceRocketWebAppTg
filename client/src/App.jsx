@@ -5,6 +5,7 @@ import GamePage from './pages/GamePage';
 import MobileOnlyPage from './pages/MobileOnlyPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ShopPage from './pages/ShopPage.jsx';
+import ErrorPage from './pages/ErrorPage.jsx';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             }
           />
           <Route path="/mobile-only" element={<MobileOnlyPage />} />
+          <Route path="/error" element={<ErrorPage />} />
           <Route path="/" element={<Navigate to="/game" replace />} />
         </Routes>
         </div>

@@ -44,18 +44,19 @@ const Game = () => {
     const fetchLoadData = async () => {
       try {
         // Проверка наличия userId
-        if (!userId) {
-          setError("User not authenticated");
-          return;
-        }
         const response = await api.get(`/user/${userId}/coins`); // Замените на свой эндпоинт
         if (response.status !== 200) {
           throw new Error("Ошибка загрузки данных");
         }
         const coins = await response.data.coins
         setCoins(coins); // Обновляем количество монет
-      } catch (error) {
-        console.error("Ошибка при получении данных пользователя:", error);
+        console.log("Coins state fetched: " + coins)
+      } catch (err) {
+        setError({
+          message: "Ошибка авторизации.",
+          details: err.response?.data?.message || err.message || "Неизвестная ошибка",
+        });
+        console.error("Ошибка при получении данных пользователя:", err);
       }
     }
     fetchLoadData();

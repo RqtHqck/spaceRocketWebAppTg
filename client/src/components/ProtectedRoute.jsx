@@ -10,12 +10,12 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        console.log("Start auth check");
 
-        // const tgIdFromWebApp = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        // const tgIdFromWebApp = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+        console.log("Telegram WebApp initialized");
         const tgIdFromWebApp = "1378564412";
         const userId = sessionStorage.getItem("userId");
-        console.log("userID:::" + userId)
+
         // if (!isMobile || !tgIdFromWebApp) {
         //   // Если не с мобильного устройства или не из WebApp Telegram
         //   return <Navigate to="/mobile-only" replace/>;
@@ -23,14 +23,18 @@ const ProtectedRoute = ({ children }) => {
 
         // Если пользователь уже авторизован
         if (userId) {
+          console.log("User ID found in sessionStorage:", userId);
           setLoading(false); // Важно обновить состояние!
           return;
         }
 
         // Запрос к API
+        console.log("TGID: " + tgIdFromWebApp)
         const response = await api.get(`/user/tg/${tgIdFromWebApp}`);
-        if (!response.data?._id) {
-          throw new Error("User not found in database");
+        console.log("Response data:", response.data);
+
+        if (response.data && !response.data?._id) {
+          throw new Error(`User with tgid ${tgIdFromWebApp} not found in database. \nfound id: ${response.data?._id}`);
         }
 
         // Сохраняем ID и завершаем загрузку
@@ -42,7 +46,12 @@ const ProtectedRoute = ({ children }) => {
         console.error("Auth error:", err);
         sessionStorage.removeItem("userId");
         setLoading(false);
-        setError("ОшибкаFFFFFFFFFFFFFFFFFFFFFFFFFFFFFff");
+        // Отправляем более подробную информацию об ошибке
+        setError({
+          message: "Ошибка авторизации.",
+          details: err.response?.data?.message || err.message || "Неизвестная ошибка",
+        });
+
       }
     }
     checkAuth();
@@ -54,8 +63,9 @@ const ProtectedRoute = ({ children }) => {
 
   // Если произошла ошибка, перенаправляем пользователя
   if (error) {
-    return <Navigate to="/error" replace />;
+    return <Navigate to="/error" state={{ error: error }} replace />;
   }
+
 
   return children;
 };

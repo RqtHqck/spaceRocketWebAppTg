@@ -2,15 +2,16 @@ import axios from "axios";
 
 // Создаём инстанс Axios
 const api = axios.create({
-  baseURL: "http://localhost:3000/api", // Укажи свой API URL
+  // baseURL: "https://c192d03b1a59650ca762921b6ae80b0e.serveo.net/api",
+  baseURL: "http://localhost:3000/api",
 });
 
 // Добавляем интерцептор для всех запросов
 api.interceptors.request.use((config) => {
-  // const tgId = localStorage.getItem("tgId");
-  // if (tgId) {
-  //   config.headers["x-tg-user"] = tgId;
-  // }
+  const userId = sessionStorage.getItem("userId");
+  if (userId) {
+    config.headers["x-userId"] = userId;
+  }
   return config;
 }, (error) => {
   return Promise.reject(error);

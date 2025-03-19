@@ -7,9 +7,11 @@ export default defineConfig({
   server: {
     host: true,
     strictPort: false,
-    cors: true,
-    allowedHosts: ["ins-result-abc-yoga.trycloudflare.com"] // Разрешаем LocalTunnel
+    cors: {
+      origin: '*', // Разрешаем все источники
+      methods: ['GET', 'POST', 'PUT', 'DELETE']
+
+    },
+    // allowedHosts: ["639d01b9b45a3d973bcdfe4028389b08.serveo.net"] // Разрешаем LocalTunnel
   }
 });
-
-
