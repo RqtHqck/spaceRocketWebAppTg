@@ -20,7 +20,7 @@ userRouter.get('/:userId/coins', UserController.getCoins)
 
 // ---------------------- Items routes
 // POST: localhost:3000/api/user/updatesInventory
-userRouter.post('/items', UserController.addItem)
+userRouter.post('/items', UserController.buyItem)
 // GET: localhost:3000/api/user/updatesInventory
 userRouter.get('/:userId/items', UserController.getUserItems)
 

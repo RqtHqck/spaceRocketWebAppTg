@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
     logger.error(err);
   }
   // SERVER
-  app.listen(process.env.DOCKER_PORT, () => {
+  app.listen(process.env.LOCAL_PORT, () => {
     logger.info(`Server started on docker port http://localhost:${process.env.DOCKER_PORT}. \nIt's available from http://localhost:${process.env.LOCAL_PORT}`)
   })
 })()

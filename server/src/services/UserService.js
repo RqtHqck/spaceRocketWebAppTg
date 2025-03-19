@@ -80,19 +80,20 @@ class UserService {
   }
 
 
-  static async addItem(userId, itemId, level = 1) {
+  static async buyItem(userId, itemId, level = 1) {
     try {
       logger.info("UserService::addItem")
+
       const user = await this.findByUserId(userId);
       const dbItem = await ItemService.findById(itemId);
-      console.log(itemId)
+
       // Пытаемся найти предмет в массиве item пользователя
       let existingItem = user.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
 
       if (!existingItem) {
         // Если нету такого предмета
         logger.info("Items isn't exists in user items")
-        user.items.push({ itemId, level, price: dbItem.basePrice });
+        user.items.push({ itemId, level, price: dbItem.basePrice, earn: dbItem.baseEarn });
       } else {
         // Если объект есть, то увеличиваем уровень и стоимость
         logger.info("Item exists. Update")
