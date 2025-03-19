@@ -1,73 +1,82 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import api from "../utils/api";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-
-        // const tgIdFromWebApp = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
         console.log("Telegram WebApp initialized");
+
         const tgIdFromWebApp = "1378564412";
         const userId = sessionStorage.getItem("userId");
 
+        // Если не мобильное устройство или нет данных из WebApp
         // if (!isMobile || !tgIdFromWebApp) {
-        //   // Если не с мобильного устройства или не из WebApp Telegram
-        //   return <Navigate to="/mobile-only" replace/>;
+        //   console.log("Not mobile or no TG data");
+        //   setError({
+        //     message: "Доступ только с мобильных устройств",
+        //     details: "Попробуйте зайти с телефона",
+        //   });
+        //   setLoading(false);
+        //   return;
         // }
 
-        // Если пользователь уже авторизован
         if (userId) {
           console.log("User ID found in sessionStorage:", userId);
-          setLoading(false); // Важно обновить состояние!
+          setLoading(false);
           return;
         }
 
-        // Запрос к API
-        console.log("TGID: " + tgIdFromWebApp)
+        // Запрос на API для получения пользователя
+        console.log("TgId: " + tgIdFromWebApp);
         const response = await api.get(`/user/tg/${tgIdFromWebApp}`);
         console.log("Response data:", response.data);
 
-        if (response.data && !response.data?._id) {
-          throw new Error(`User with tgid ${tgIdFromWebApp} not found in database. \nfound id: ${response.data?._id}`);
+        if (!response.data?._id) {
+          throw new Error(`User with tgid ${tgIdFromWebApp} not found.`);
         }
 
-        // Сохраняем ID и завершаем загрузку
+        // Сохраняем ID пользователя в sessionStorage
         sessionStorage.setItem("userId", response.data._id);
         console.log("UserId set:", response.data._id);
         setLoading(false);
-
       } catch (err) {
         console.error("Auth error:", err);
         sessionStorage.removeItem("userId");
         setLoading(false);
-        // Отправляем более подробную информацию об ошибке
         setError({
           message: "Ошибка авторизации.",
           details: err.response?.data?.message || err.message || "Неизвестная ошибка",
         });
-
       }
-    }
-    checkAuth();
-  }, []);
+    };
 
+    checkAuth();
+  }, []);  // Пустой массив зависимостей, чтобы выполнить один раз при монтировании
+
+  // Логирование состояния
+  useEffect(() => {
+    console.log("Loading state: ", loading);
+    console.log("Error state: ", error);
+  }, [loading, error]);
+
+  // Пока идет загрузка, показываем индикатор
   if (loading) {
     return <div>Загрузка...</div>;
   }
 
-  // Если произошла ошибка, перенаправляем пользователя
+  // Если есть ошибка, переходим на страницу ошибки
   if (error) {
-    return <Navigate to="/error" state={{ error: error }} replace />;
+    return <Navigate to="/error" state={{ error }} replace />;
   }
 
-
-  return children;
+  // После загрузки отображаем дочерние компоненты
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

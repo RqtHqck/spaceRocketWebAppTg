@@ -53,8 +53,7 @@ const Shop = () => {
 
   return (
     <>
-      <Header coins={coins} />
-      <div className="main-content shop-container">
+      <div className="shop-container">
         {items.map((item) => (
           <div key={item._id} className="shop-item">
             <img src={item.imageUrl} alt={item.name} className="item-image" />
@@ -77,7 +76,6 @@ const Shop = () => {
           </div>
         ))}
       </div>
-      <BottomNav />
     </>
   );
 };

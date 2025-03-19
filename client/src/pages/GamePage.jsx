@@ -112,8 +112,6 @@ const Game = () => {
 
   return (
     <>
-      <Header coins={coins} />
-      <div className="main-content">
         <div className="game-container">
           <div className="score-bar"></div>
           <div className="planet-sun"></div>
@@ -149,8 +147,6 @@ const Game = () => {
             />
           </button>
         </div>
-      </div>
-      <BottomNav />
     </>
   );
 };
