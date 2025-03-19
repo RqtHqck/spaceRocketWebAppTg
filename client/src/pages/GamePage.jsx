@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
 import rocketImg from "../assets/rocket.png";
 import planetImg from "../assets/mars.png";
-const tgStar = "/icons/tgStar.png"; // Картинка из public/
-import Header from "../components/Header";
-import BottomNav from "../components/BottomNav";
+const tgStar = "/icons/tgStar.png";
+import { useDispatch } from 'react-redux';
+import { setCoins } from '../redux/coinsSlice.jsx';
 import api from "../utils/api";
 
 
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
-  const [coins, setCoins] = useState(0);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+
   const userId = sessionStorage.getItem("userId");
 
 
@@ -40,32 +40,8 @@ const Game = () => {
   }, [particles]);
 
 
-  useEffect(() => {
-    const fetchLoadData = async () => {
-      try {
-        // Проверка наличия userId
-        const response = await api.get(`/user/${userId}/coins`); // Замените на свой эндпоинт
-        if (response.status !== 200) {
-          throw new Error("Ошибка загрузки данных");
-        }
-        const coins = await response.data.coins
-        setCoins(coins); // Обновляем количество монет
-        console.log("Coins state fetched: " + coins)
-      } catch (err) {
-        setError({
-          message: "Ошибка авторизации.",
-          details: err.response?.data?.message || err.message || "Неизвестная ошибка",
-        });
-        console.error("Ошибка при получении данных пользователя:", err);
-      }
-    }
-    fetchLoadData();
-  }, []);
-
-
   const handleClick = async (event) => {
     console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
-    console.log(`Previous coins value: ${coins}`)
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
 
@@ -102,7 +78,7 @@ const Game = () => {
         throw new Error("Ошибка загрузки данных");
       }
       const userData = await response.data
-      setCoins(userData.coins); // Обновляем количество монет
+      dispatch(setCoins(response.data.coins)); // Обновляем монеты в Redux
       console.log(`New coins value: ${userData.coins}`)
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);

@@ -1,32 +1,37 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/components/Header.css";
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchCoins} from '../redux/coinsSlice.jsx';  // Импортируем useSelector
+
 
 const Header = () => {
   const [avatar, setAvatar] = useState(null);
-  const [coins, setCoins] = useState(0);
+  const dispatch = useDispatch();
+  const { coins, loading, error } = useSelector((state) => state.coins);  // Получаем данные о монетах из Redux
+  const userId = sessionStorage.getItem("userId");
+
 
   useEffect(() => {
     // Получаем аватар из Telegram WebApp
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url) {
       setAvatar(window.Telegram.WebApp.initDataUnsafe.user.photo_url);
     }
-
-    // Запрашиваем количество коинов
-    const fetchCoins = async () => {
-      try {
-        const userId = sessionStorage.getItem("userId");
-        if (!userId) return;
-
-        const response = await axios.get(`/api/user/${userId}/coins`);
-        setCoins(response.data.coins);
-      } catch (error) {
-        console.error("Ошибка загрузки коинов:", error);
-      }
-    };
-
-    fetchCoins();
   }, []);
+
+
+  useEffect(() => {
+    dispatch(fetchCoins(userId));
+  }, [dispatch]); // Зависимость от dispatch, чтобы запрос не повторялся без необходимости
+
+  if (loading) {
+    return <div>..</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
 
   return (
     <header className="header">

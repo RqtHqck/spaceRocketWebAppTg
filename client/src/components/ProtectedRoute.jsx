@@ -3,9 +3,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import api from "../utils/api";
 
+
 const ProtectedRoute = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -59,11 +61,13 @@ const ProtectedRoute = () => {
     checkAuth();
   }, []);  // Пустой массив зависимостей, чтобы выполнить один раз при монтировании
 
+
   // Логирование состояния
   useEffect(() => {
     console.log("Loading state: ", loading);
     console.log("Error state: ", error);
   }, [loading, error]);
+
 
   // Пока идет загрузка, показываем индикатор
   if (loading) {
