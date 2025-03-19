@@ -6,7 +6,7 @@ import App from './App.jsx'
 import store from './redux/store.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>  // Оборачиваем приложение в Provider
+  <Provider store={store}>
     <App />
   </Provider>
 );

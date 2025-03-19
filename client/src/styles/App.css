@@ -37,11 +37,11 @@ body {
 }
 
 .main-content {
-  flex-grow: 1; /* Растягиваем основной контент */
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   justify-content: center;
   align-items: center;
-  height: 100vh /* Используем calc для вычитания высоты Header + BottomNav */
+  height: calc(100vh - 170px); /* Предполагаемая высота Header + BottomNav = 60px + 60px */
+  margin: 90px 0; /* Отступы равные высоте Header и BottomNav */
 }
-

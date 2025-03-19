@@ -7,7 +7,6 @@ import api from '../utils/api.js';
 
 const Shop = () => {
   const [items, setItems] = useState([]);
-  const [coins, setCoins] = useState(0);
   const [hoveredItem, setHoveredItem] = useState(null);
   const userId = sessionStorage.getItem("userId")
 
@@ -23,19 +22,7 @@ const Shop = () => {
       }
     };
 
-    const fetchCoins = async () => {
-      try {
-        const response = await api.get(`/user/${userId}/coins`);
-        setCoins(response.data.coins);
-        console.log("Coins: " + response.data.coins)
-
-      } catch (error) {
-        console.error("Ошибка загрузки монет:", error);
-      }
-    };
-
     fetchItems();
-    fetchCoins();
   }, []);
 
   const handleBuy = async (itemId) => {
@@ -45,7 +32,6 @@ const Shop = () => {
         itemId,
       });
       console.log(`Add item ${itemId} to user ${userId}`)
-      setCoins(response.data.coins);
     } catch (error) {
       console.error("Ошибка при покупке предмета:", error);
     }
@@ -56,27 +42,32 @@ const Shop = () => {
       <div className="shop-container">
         {items.map((item) => (
           <div key={item._id} className="shop-item">
-            <img src={item.imageUrl} alt={item.name} className="item-image" />
+            <div className="item-image-container">
+              <img src={item.imageUrl} alt={item.name} className="item-image" />
+            </div>
             <div className="item-info">
-              <h3>{item.name}</h3>
-              <button
-                className="info-button"
-                onMouseEnter={() => setHoveredItem(item._id)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                ?
-              </button>
-              {hoveredItem === item._id && (
-                <div className="tooltip">{item.description}</div>
-              )}
+              <h3 className="item-title">{item.name}</h3>
+              {/*<div className="tooltip-wrapper">*/}
+              {/*  <button*/}
+              {/*    className="info-button"*/}
+              {/*    onMouseEnter={() => setHoveredItem(item._id)}*/}
+              {/*    onMouseLeave={() => setHoveredItem(null)}*/}
+              {/*  >*/}
+              {/*    <span>?</span>*/}
+              {/*  </button>*/}
+              {/*  {hoveredItem === item._id && (*/}
+              {/*    <div className="tooltip">{item.description}</div>*/}
+              {/*  )}*/}
+              {/*</div>*/}
             </div>
             <button className="buy-button" onClick={() => handleBuy(item._id)}>
-              Купить за {item.price} монет
+              Купить за {item.price}₿
             </button>
           </div>
         ))}
       </div>
     </>
+
   );
 };
 

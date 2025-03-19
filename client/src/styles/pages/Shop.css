@@ -1,77 +1,124 @@
 .shop-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 15px;
+    overflow-y: auto;
+    max-height: 70vh; /* Ограничение высоты для прокрутки */
 }
 
 .shop-item {
-    background: #3c096c;
+    background: linear-gradient(145deg, #3c096c, #240046);
     border-radius: 12px;
-    padding: 15px;
+    padding: 10px;
     text-align: center;
-    width: 180px;
-    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-/* .shop-item:hover {
-    transform: scale(1.05);
-} */
+.shop-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.item-image-container {
+    background: #10002b;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
 
 .item-image {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100px; /* Уменьшен размер */
     object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.item-image:hover {
+    transform: scale(1.05);
 }
 
 .item-info {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-top: 10px;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.item-title {
+    color: #e0aaff;
+    font-size: 1.3rem; /* Чуть меньше */
+    margin: 0;
+    text-align: left;
+    flex-grow: 1;
+}
+
+
+.tooltip-wrapper {
+    position: relative;
+    margin-left: 10px;
 }
 
 .info-button {
-    background: #10002b;
+    background: linear-gradient(45deg, #5a189a, #7b2cbf);
     color: white;
     border: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    /*width: 2px;*/
+    height: 30px;
+    /*border-radius: 50%;*/
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.info-button:hover {
+    transform: scale(1.1);
+    background: linear-gradient(45deg, #7b2cbf, #9d4edd);
 }
 
 .tooltip {
     position: absolute;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(25, 25, 25, 0.95);
     color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    width: 150px;
-    top: -30px;
-    left: 50%;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 160px;
+    top: -85px;
+    /*left: 50%;*/
     transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    backdrop-filter: blur(4px);
+    line-height: 1.4;
+    border: 1px solid #5a189a;
+    z-index: 1;
 }
 
-.info-button:hover + .tooltip {
-    opacity: 1;
-}
 
 .buy-button {
-    margin-top: 10px;
-    background: #e0aaff;
+    margin-top: 8px;
+    background: linear-gradient(45deg, #9d4edd, #7b2cbf);
+    color: white;
     border: none;
     padding: 10px;
     width: 100%;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s ease-in-out;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-size: 0.85rem;
 }
 
 .buy-button:hover {
-    background: #c77dff;
+    background: linear-gradient(45deg, #c77dff, #9d4edd);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 12px rgba(156, 125, 255, 0.25);
 }
