@@ -48,7 +48,7 @@ const Header = () => {
           alt="Coins"
           className="coin-image no-interaction"
         />
-        <span className="coin-count">{coins}</span>
+        <span className="coin-count">{Math.round(coins)}</span>
       </div>
     </header>
   );
