@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Shop.css";
-import Header from "../components/Header";
-import BottomNav from "../components/BottomNav";
+import CoinDisplay from '../components/CoinsDisplay.jsx';
 import api from '../utils/api.js';
 import { useDispatch } from 'react-redux';
 import { setCoins } from '../redux/coinsSlice.jsx';
@@ -10,6 +9,8 @@ import { setCoins } from '../redux/coinsSlice.jsx';
 const Shop = () => {
   const [items, setItems] = useState([]);
   const [userItems, setUserItems] = useState([]);
+  const [activeItem, setActiveItem] = useState(null);
+
   const dispatch = useDispatch();
   const userId = sessionStorage.getItem("userId");
 
@@ -54,6 +55,9 @@ const Shop = () => {
     }
   };
 
+  const handleCardClick = (itemId) => {
+    setActiveItem(itemId);  // Устанавливаем активную карточку
+  };
 
   return (
     <>
@@ -68,7 +72,11 @@ const Shop = () => {
           let nextIncome = isOwned ? Math.round(userItem.income * item.incomeMultiplier) : Math.round(item.baseIncome);
 
           return (
-            <div key={item._id} className="shop-item">
+            <div
+              key={item._id}
+              className={`shop-item ${activeItem === item._id ? 'active' : ''}`}
+              onClick={() => handleCardClick(item._id)} // При клике добавляем класс активного состояния
+            >
               {/* Level Badge */}
               <div className="level-badge">
                 {isOwned ? userItem.level : 1}
@@ -81,10 +89,11 @@ const Shop = () => {
                 <h3 className="item-title">{item.name}</h3>
               </div>
               <button className="buy-button" onClick={() => handleAction(item._id, isOwned)}>
-                {isOwned ? "Улучшить" : "Купить"} {price}₿
+                {isOwned ? "Улучшить" : "Купить"}
+                <CoinDisplay coinsAmount={price} />
               </button>
               <div className="income-info">
-                Добыча: {currentIncome} → {nextIncome}
+                <CoinDisplay coinsAmount={currentIncome} /> → <CoinDisplay coinsAmount={nextIncome} />
               </div>
             </div>
           );

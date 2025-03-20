@@ -1,0 +1,16 @@
+.coin-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+}
+
+.coin-amount {
+    margin-right: 0px;
+}
+
+.coin-image {
+    width: 24px; /* Размер картинки монеты */
+    height: 24px;
+}

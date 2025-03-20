@@ -1,10 +1,14 @@
 .game-container {
+  max-width: 480px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  position: relative;
+  max-height: calc(100vh - 170px); /* Ограничиваем высоту контейнера, учитывая высоту Header и BottomNav */
+
+  /*position: relative;*/
 }
 
 .planet {
@@ -14,28 +18,16 @@
   position: relative;
 }
 
-.rocket {
+.rocket-img {
   width: 230px;
   cursor: pointer;
   transition: transform 0.1s ease-in-out;
-  position: absolute;
-  top: 70%; /* Опустил ниже */
-  left: 12%;
-  transform: translate(-50%, -50%);
+  position: fixed; /* Фиксированное позиционирование */
+  top: calc(100vh - 35vh);
+  left: calc(50vw - 130px);
+  transform: translate(-50%, -50%); /* Коррекция смещения */
   z-index: 2;
   animation: glow 1.5s infinite alternate;
-  position: relative; /* Теперь кнопка будет позиционироваться относительно ракеты */
-}
-
-.rocket-button {
-  position: absolute;
-  bottom: 2px; /* Размещаем кнопку прямо под ракетой */
-  left: 36%;
-  transform: translateX(-50%);
-  z-index: 2; /* Под ракетой */
-  background: transparent;
-  border: none;
-  cursor: pointer;
 }
 
 
@@ -73,8 +65,8 @@
 
 .planet-sun {
   position: absolute;
-  top: 18%;
-  left: 30%;
+  top: 25%;
+  left: 34%;
   width: 120px;
   aspect-ratio: 1;
   transform: translateY(-50%) rotate(35deg); 
@@ -89,7 +81,7 @@
 .rocket-sun {
   position: absolute;
   top: 72%;
-  left: 45%;
+  left: 48%;
   width: 0px;
   aspect-ratio: 1;
   transform: translateY(-50%) rotate(35deg); 

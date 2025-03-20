@@ -112,16 +112,17 @@ const Game = () => {
           ))}
           
           <div className="rocket-sun"></div>
-          <button className="rocket-button no-interaction" onClick={handleClick}>
+          {/*<button className="rocket-button no-interaction" >*/}
             <img
               src={rocketImg}
               alt="Ракета"
-              className="rocket"
+              className="rocket-img"
               style={{
                 transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
               }}
+              onClick={handleClick}
             />
-          </button>
+          {/*</button>*/}
         </div>
     </>
   );

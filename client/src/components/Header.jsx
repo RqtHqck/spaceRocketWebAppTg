@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "../styles/components/Header.css";
 import {useDispatch, useSelector} from 'react-redux';
+import CoinDisplay from '../components/CoinsDisplay.jsx';
 import {fetchCoins} from '../redux/coinsSlice.jsx';  // Импортируем useSelector
 
 
@@ -48,7 +48,7 @@ const Header = () => {
           alt="Coins"
           className="coin-image no-interaction"
         />
-        <span className="coin-count">{Math.round(coins)}</span>
+        <span className="coin-count"><CoinDisplay coinsAmount={coins} /></span>
       </div>
     </header>
   );
