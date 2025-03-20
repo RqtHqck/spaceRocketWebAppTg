@@ -11,10 +11,12 @@ const userSchema = mongoose.Schema({
     {
       itemId: { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
       level: {type: Number, default: 0, required: false},
-      price: {type: Number, default: 0, required: false},
-      earn: {type: Number, default: 2, required: false},
+      upgradePrice: {type: Number, default: 0, required: false},
+      income: {type: Number, default: 2, required: false},
     }
   ],
+  createdAt: {type: Date, default: Date.now},
+  updatedAt: {type: Date, default: Date.now},
 })
 
 module.exports = mongoose.model("User", userSchema);

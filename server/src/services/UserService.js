@@ -1,8 +1,10 @@
 const UserModel = require('../models/UserModel');
 const ItemService = require('../services/ItemService');
+const TransactionService = require('../services/TransactionService');
 const ApiError = require('@errors/ApiError');
 const logger = require('../utils/logger');
 const { Types } = require('mongoose');
+const mongoose = require('mongoose');
 
 class UserService {
 
@@ -80,36 +82,94 @@ class UserService {
   }
 
 
-  static async buyItem(userId, itemId, level = 1) {
+  static async processTransaction(userId, itemId) {
+    logger.info("UserService::processTransaction")
+
+    const user = await this.findByUserId(userId);
+    const dbItem = await ItemService.findById(itemId);
+
+    // Пытаемся найти предмет в массиве item пользователя
+    let existingItem = user.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
+
     try {
-      logger.info("UserService::addItem")
-
-      const user = await this.findByUserId(userId);
-      const dbItem = await ItemService.findById(itemId);
-
-      // Пытаемся найти предмет в массиве item пользователя
-      let existingItem = user.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
-
-      if (!existingItem) {
-        // Если нету такого предмета
-        logger.info("Items isn't exists in user items")
-        user.items.push({ itemId, level, price: dbItem.basePrice, earn: dbItem.baseEarn });
-      } else {
-        // Если объект есть, то увеличиваем уровень и стоимость
-        logger.info("Item exists. Update")
-        existingItem.level += 1;
-        existingItem.price = Math.round(existingItem.price * dbItem.priceMultiplier); // Округляем цену
-        // existingItem.earn += 1;
-        existingItem.earn = Math.round(existingItem.earn * dbItem.earnMultiplier); // Округляем коины за клик
-      }
-
-      await user.save();
-      return user;
+        if (!existingItem) {
+          // Если нету такого предмета, то покупаем
+          logger.info("Items isn't exists in user items")
+          await this.buyItem(user, dbItem);
+        } else {
+          // Если объект есть, то обновляем
+          logger.info("Item exists. Update")
+          await this.upgradeItem(user, existingItem, dbItem);
+        }
+      logger.info("Транзакция успешно завершена");
     } catch (err) {
-      throw ApiError.internalError("Ошибка при добавлении предмета в инвентарь пользователя", err);
+      throw ApiError.internalError('Ошибка в ходе processTransaction', err)
     }
   }
 
+
+  static async upgradeItem(user, existingItem, dbItem) {
+    try {
+      logger.info("UserService::upgradeItem")
+
+      // Списываем коины
+      if (user.coins < existingItem.upgradePrice) {
+        throw new Error('Недостаточно коинов');
+      }
+      user.coins -= existingItem.upgradePrice;
+
+      // Логика upgrade
+      existingItem.level += 1;
+      existingItem.upgradePrice = Math.round(existingItem.upgradePrice * dbItem.priceMultiplier);
+      existingItem.income = Math.round(existingItem.income * dbItem.incomeMultiplier);
+
+      await user.save();
+
+      const transactionDto = {
+        userId: user._id,
+        itemId: dbItem._id,
+        type: 'purchase:itemUpgrade',
+        amount: -existingItem.upgradePrice,
+        userBalance: user.coins
+      }
+      const transaction = await TransactionService.create(transactionDto);
+      logger.info("Item bought successfully");
+
+      return user;
+    } catch (err) {
+      throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
+    }
+  }
+
+
+  static async buyItem(user, dbItem) {
+    try{
+      logger.info("UserService::buyItem")
+
+      // Списываем коины
+      if (user.coins < dbItem.basePrice) {
+        throw new Error('Недостаточно коинов');
+      }
+      user.coins -= dbItem.basePrice;
+      user.items.push({ itemId: dbItem._id, level: 1, upgradePrice: dbItem.basePrice * dbItem.priceMultiplier, income: dbItem.baseEarn });
+      await user.save();
+
+      const transactionDto = {
+        userId: user._id,
+        itemId: dbItem._id,
+        type: 'purchase:itemPurchase',
+        amount: -dbItem.basePrice,
+        userBalance: user.coins
+      }
+      const transaction = await TransactionService.create(transactionDto);
+
+      logger.info("Item bought successfully");
+
+      return user;
+    } catch (err) {
+      throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
+  }
+}
 }
 
 module.exports = UserService;

@@ -108,7 +108,7 @@ class UserController {
       logger.info('UserController::addItem')
       const { userId, itemId } = req.body;
       logger.info(`Query param: { userId:${userId}, itemId:${itemId}`)
-      const coins = await UserService.buyItem(userId, itemId);
+      const coins = await UserService.processTransaction(userId, itemId);
       res
         .status(200)
         .json(coins);
