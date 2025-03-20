@@ -1,4 +1,4 @@
-const TransactionModel = require('../models/ItemTransactionModel');
+const TransactionModel = require('../models/TransactionModel');
 const ApiError = require('@errors/ApiError');
 const logger = require('../utils/logger');
 
