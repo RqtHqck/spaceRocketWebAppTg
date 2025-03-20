@@ -135,7 +135,7 @@ class UserService {
       const transaction = await TransactionService.create(transactionDto);
       logger.info("Item bought successfully");
 
-      return user;
+      return transaction;
     } catch (err) {
       throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
     }
@@ -165,7 +165,7 @@ class UserService {
 
       logger.info("Item bought successfully");
 
-      return user;
+      return transaction;
     } catch (err) {
       throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
   }
