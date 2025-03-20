@@ -25,11 +25,10 @@ class TransactionService {
   }
 
 
-  static async create(transactionDto,  session = null) {
+  static async create(transactionDto) {
     try {
       logger.info("TransactionService::create: " + JSON.stringify(transactionDto));
-      const options = session ? { session } : {};
-      return await TransactionModel.create([transactionDto], options);
+      return await TransactionModel.create(transactionDto);
     } catch (err) {
       throw ApiError.internalError(`Ошибка при создании транзакции`, err);
     }

@@ -92,16 +92,19 @@ class UserService {
     let existingItem = user.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
 
     try {
-        if (!existingItem) {
-          // Если нету такого предмета, то покупаем
-          logger.info("Items isn't exists in user items")
-          await this.buyItem(user, dbItem);
-        } else {
-          // Если объект есть, то обновляем
-          logger.info("Item exists. Update")
-          await this.upgradeItem(user, existingItem, dbItem);
-        }
+      let res;
+      if (!existingItem) {
+        // Если нету такого предмета, то покупаем
+        logger.info("Items isn't exists in user items")
+        res = await this.buyItem(user, dbItem);
+      } else {
+        // Если объект есть, то обновляем
+        logger.info("Item exists. Update")
+        res = await this.upgradeItem(user, existingItem, dbItem);
+      }
+
       logger.info("Транзакция успешно завершена");
+      return res
     } catch (err) {
       throw ApiError.internalError('Ошибка в ходе processTransaction', err)
     }
