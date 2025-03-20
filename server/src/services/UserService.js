@@ -154,7 +154,12 @@ class UserService {
         throw new Error('Недостаточно коинов');
       }
       user.coins -= dbItem.basePrice;
-      user.items.push({ itemId: dbItem._id, level: 1, upgradePrice: dbItem.basePrice * dbItem.priceMultiplier, income: dbItem.baseEarn });
+      user.items.push({
+        itemId: dbItem._id,
+        level: 1,
+        upgradePrice: dbItem.basePrice * dbItem.priceMultiplier,
+        income: dbItem.baseIncome
+      });
       await user.save();
 
       const transactionDto = {
