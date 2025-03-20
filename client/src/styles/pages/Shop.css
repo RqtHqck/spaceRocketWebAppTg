@@ -1,15 +1,25 @@
+/* Container to hold all items */
 .shop-container {
+    background: rgba(145, 145, 145, 0.2); /* Полупрозрачный фон */
+    border-radius: 15px;
+    backdrop-filter: blur(10px); /* Эффект размытия */
+    -webkit-backdrop-filter: blur(10px); /* Для старых браузеров */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    border: 1px solid rgba(255, 255, 255, 0.3);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-auto-rows: 260px; /* Явное задание высоты строк */
+    gap: 20px; /* Увеличиваем промежуток между элементами */
     max-width: 480px;
-    margin: 0 auto;
-    padding: 15px;
+    margin: 0 15px;
+    padding: 20px;
     overflow-y: auto;
-    max-height: 70vh; /* Ограничение высоты для прокрутки */
+    box-sizing: border-box;
 }
-
+/* Shop item container */
 .shop-item {
+    height: 100%; /* Занимаем всю высоту строки */
+    min-height: auto; /* Убираем фиксированный минимум */
     background: linear-gradient(145deg, #3c096c, #240046);
     border-radius: 12px;
     padding: 10px;
@@ -18,23 +28,52 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    cursor: pointer; /* Adds a pointer cursor for better UX */
 }
 
 .shop-item:hover {
-    transform: translateY(-4px);
+    /*transform: translateY(-4px);*/
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
+/* Add scaling effect and white border only on clicking the shop item */
+.shop-item:active {
+    /*transform: scale(1);*/
+    border: none;
+}
+
+.shop-item:active:not(:has(.buy-button:active)) {
+    border: 3px solid white;
+}
+
+
+/* Styling for the level badge */
+.level-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: white;
+    color: #10002b;
+    border-radius: 20%;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+/* Image container */
 .item-image-container {
+    height: 110px; /* Оптимизация под новую высоту */
+    margin-bottom: 10px;
+    padding: 10px;
     background: #10002b;
     border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 15px;
 }
 
 .item-image {
     width: 100%;
-    height: 100px; /* Уменьшен размер */
+    height: 80px; /* Уменьшенная высота изображения */
     object-fit: contain;
     transition: transform 0.3s ease;
 }
@@ -58,23 +97,26 @@
     flex-grow: 1;
 }
 
-
+/* Styling for the tooltip wrapper */
 .tooltip-wrapper {
-    position: relative;
-    margin-left: 10px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
 }
 
 .info-button {
     background: linear-gradient(45deg, #5a189a, #7b2cbf);
     color: white;
     border: none;
-    /*width: 2px;*/
-    height: 30px;
-    /*border-radius: 50%;*/
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.2rem;
     transition: all 0.2s ease;
 }
 
@@ -92,7 +134,6 @@
     font-size: 0.9rem;
     width: 160px;
     top: -85px;
-    /*left: 50%;*/
     transform: translateX(-50%);
     backdrop-filter: blur(4px);
     line-height: 1.4;
@@ -100,13 +141,14 @@
     z-index: 1;
 }
 
-
+/* Buy button */
 .buy-button {
-    margin-top: 8px;
+    position: relative; /* Создаем новый контекст стекинга */
+    margin-top: 12px; /* Увеличенный отступ от описания */
+    padding: 8px; /* Уменьшенный внутренний отступ */
     background: linear-gradient(45deg, #9d4edd, #7b2cbf);
     color: white;
     border: none;
-    padding: 10px;
     width: 100%;
     border-radius: 6px;
     cursor: pointer;
@@ -115,12 +157,19 @@
     text-transform: uppercase;
     letter-spacing: 0.8px;
     font-size: 0.85rem;
+    z-index: 3; /* Поднимаем кнопку выше карточки */
+
 }
 
 .buy-button:hover {
     background: linear-gradient(45deg, #c77dff, #9d4edd);
-    transform: translateY(-2px);
+    /*transform: translateY(-2px);*/
     box-shadow: 0 3px 12px rgba(156, 125, 255, 0.25);
+}
+
+/* No scale effect on the buy button click */
+.buy-button:active {
+    transform: none; /* Ensures no transformation on buy button click */
 }
 
 .income-info {

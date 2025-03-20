@@ -69,8 +69,13 @@ const Shop = () => {
 
           return (
             <div key={item._id} className="shop-item">
+              {/* Level Badge */}
+              <div className="level-badge">
+                {isOwned ? userItem.level : 1}
+              </div>
+
               <div className="item-image-container">
-                <img src={item.imageUrl} alt={item.name} className="item-image"/>
+                <img src={item.imageUrl} alt={item.name} className="item-image no-interaction"/>
               </div>
               <div className="item-info">
                 <h3 className="item-title">{item.name}</h3>
