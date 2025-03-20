@@ -61,10 +61,13 @@ class UserService {
   static async incrementCoins(userId, incomeAmountInc) {
     try {
       logger.info("UserService::incrementCoins")
-      const totalIncome = await this.calculateCoinsIncrement();
+      const totalIncome = await this.calculateCoinsIncrement(userId);
       return await UserModel.findOneAndUpdate(
         {_id: userId},
-        {$inc: {coins: 1 + totalIncome}},
+        {$inc: {
+            coins: 1 + totalIncome + (incomeAmountInc || 0)
+          }
+        },
         {new: true}
       );
     } catch (err) {

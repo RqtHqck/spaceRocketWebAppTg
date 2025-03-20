@@ -63,10 +63,10 @@ class UserController {
       logger.info('UserController::incrementCoins')
       const { userId, amount } = req.body
       logger.info(`Body: { userId:${userId}, amount:${amount} }`)
-      const updatedUser = await UserService.incrementCoins(userId, amount);
+      const updatedUserCoins = await UserService.incrementCoins(userId, amount);
       res
         .status(200)
-        .json(updatedUser);
+        .json(updatedUserCoins);
     } catch (err) {
       next(err)
     }
