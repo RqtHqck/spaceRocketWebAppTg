@@ -59,14 +59,18 @@ const Shop = () => {
     <>
       <div className="shop-container">
         {items.map((item) => {
-            const userItem = userItems.find(userItem => userItem.itemId._id === item._id);
+          const userItem = userItems.find(userItem => userItem.itemId._id === item._id);
           const isOwned = !!userItem;
           const price = isOwned ? userItem.upgradePrice : item.basePrice;
+
+          // Значение добычи сейчас и после улучшения с округлением
+          let currentIncome = isOwned ? Math.round(userItem.income) : 0;
+          let nextIncome = isOwned ? Math.round(userItem.income * item.incomeMultiplier) : Math.round(item.baseIncome);
 
           return (
             <div key={item._id} className="shop-item">
               <div className="item-image-container">
-                <img src={item.imageUrl} alt={item.name} className="item-image" />
+                <img src={item.imageUrl} alt={item.name} className="item-image"/>
               </div>
               <div className="item-info">
                 <h3 className="item-title">{item.name}</h3>
@@ -74,12 +78,14 @@ const Shop = () => {
               <button className="buy-button" onClick={() => handleAction(item._id, isOwned)}>
                 {isOwned ? "Улучшить" : "Купить"} {price}₿
               </button>
+              <div className="income-info">
+                Добыча: {currentIncome} → {nextIncome}
+              </div>
             </div>
           );
         })}
       </div>
     </>
-
   );
 };
 
