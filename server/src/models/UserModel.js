@@ -19,4 +19,12 @@ const userSchema = mongoose.Schema({
   updatedAt: {type: Date, default: Date.now},
 })
 
+// Метод для подсчета общего дохода всех items
+userSchema.methods.calculateTotalIncome = function() {
+  return this.items.reduce((totalIncome, item) => {
+    return totalIncome + item.income;
+  }, 0);
+};
+
+
 module.exports = mongoose.model("User", userSchema);
