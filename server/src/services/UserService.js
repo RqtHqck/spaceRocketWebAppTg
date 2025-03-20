@@ -47,12 +47,24 @@ class UserService {
   }
 
 
-  static async incrementCoins(userId) {
+  static async calculateCoinsIncrement(userId) {
+    try {
+      logger.info("UserService::calculateCoinsIncrement")
+      const user = await UserService.findByUserId(userId);
+      return user.calculateTotalIncome();
+    } catch (err) {
+      throw ApiError.internalError("Ошибка при получении пользователя", err);
+    }
+  }
+
+
+  static async incrementCoins(userId, incomeAmountInc) {
     try {
       logger.info("UserService::incrementCoins")
+      const totalIncome = await this.calculateCoinsIncrement();
       return await UserModel.findOneAndUpdate(
         {_id: userId},
-        {$inc: {coins: 1}},
+        {$inc: {coins: 1 + totalIncome}},
         {new: true}
       );
     } catch (err) {
