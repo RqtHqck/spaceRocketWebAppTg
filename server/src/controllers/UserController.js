@@ -81,7 +81,7 @@ class UserController {
       const coins = await UserService.getCoins(userId);
       res
         .status(200)
-        .json(coins);
+        .json({coins});
     } catch (err) {
       next(err)
     }
@@ -93,10 +93,10 @@ class UserController {
       logger.info('UserController::getUserItems')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const coins = await UserService.getUserItems(userId);
+      const items = await UserService.getUserItems(userId);
       res
         .status(200)
-        .json(coins);
+        .json({items});
     } catch (err) {
       next(err)
     }

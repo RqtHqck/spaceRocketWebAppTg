@@ -11,9 +11,11 @@ class UserService {
   static async findAll() {
     try {
       logger.info("UserService::findAll")
-      return await UserModel.find().populate("items.itemId");
+      const users = await UserModel.find().populate("items.itemId");
+      if (!users) return [];
+      return users;
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователей", err);
+      throw ApiError.databaseError(404, "Error when found all users", err);
     }
   }
 
@@ -21,9 +23,15 @@ class UserService {
   static async findByUserId(userId) {
     try {
       logger.info("UserService::findByUserId")
-      return await UserModel.findById(userId).populate("items.itemId");
+      const user = await UserModel.findById(userId).populate("items.itemId");
+      if (!user) throw ApiError.databaseError(404, `Not found user with userId: ${userId}`)
+      return user
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(404, `Error get user with userId: ${userId} from database`, err);
+      }
     }
   }
 
@@ -31,9 +39,15 @@ class UserService {
   static async findByTgId(tgId) {
     try {
       logger.info("UserService::findByTgId")
-      return await UserModel.findOne({tgId});
+      const user = await UserModel.findOne({tgId}).populate("items.itemId");
+      if (!user) throw ApiError.databaseError(404, `Not found user with tgId: ${tgId}`)
+      return user
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(404, `Error get user with tgId: ${tgId} from database`, err);
+      }
     }
   }
 
@@ -42,18 +56,23 @@ class UserService {
       logger.info("UserService::create: " + JSON.stringify(userDto));
       return await UserModel.create(userDto);
     } catch (err) {
-      throw ApiError.internalError(`Error when creating user`, err);
+      throw ApiError.databaseError(500, `Error when creating user`, err);
     }
   }
 
 
-  static async calculateCoinsIncrement(userId) {
+  static async calculateCoinsIncrementValue(userId) {
     try {
       logger.info("UserService::calculateCoinsIncrement")
       const user = await UserService.findByUserId(userId);
+      if (!user) throw ApiError.databaseError()
       return user.calculateTotalIncome();
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.internalError(`Error when calculated coins increment value for user with userId: ${userId}`, err);
+      }
     }
   }
 
@@ -61,7 +80,7 @@ class UserService {
   static async incrementCoins(userId, incomeAmountInc) {
     try {
       logger.info("UserService::incrementCoins")
-      const totalIncome = await this.calculateCoinsIncrement(userId);
+      const totalIncome = await this.calculateCoinsIncrementValue(userId);
       return await UserModel.findOneAndUpdate(
         {_id: userId},
         {$inc: {
@@ -71,18 +90,26 @@ class UserService {
         {new: true}
       );
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(`Error increment coins for user with userId: ${userId}`, err);
+      }
     }
   }
 
 
   static async getCoins(userId) {
     try {
-      logger.info("UserService::getCoins")
-      return await UserModel.findOne({ _id: userId }, { coins: 1 })
-
+      logger.info("UserService::getCoins");
+      const user = await this.findByUserId(userId);
+      return user.coins;
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(`Error get coins for user with userId: ${userId}`, err);
+      }
     }
   }
 
@@ -90,9 +117,14 @@ class UserService {
   static async getUserItems(userId) {
     try {
       logger.info("UserService::getUserItems")
-      return await UserModel.findOne({ _id: userId }, { items: 1 }).populate("items.itemId");
+      const user = await this.findByUserId(userId)
+      return user.items;
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении инвентаря пользователя", err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get items array for user with userId: ${userId}`, err);
+      }
     }
   }
 
@@ -118,12 +150,17 @@ class UserService {
         res = await this.upgradeItem(user, existingItem, dbItem);
       }
 
-      logger.info("Транзакция успешно завершена");
+      logger.info("Transaction successful!");
       return res
     } catch (err) {
-      throw ApiError.internalError('Ошибка в ходе processTransaction', err)
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.transactionError('Error during processTransaction', err)
+      }
     }
   }
+
 
 
   static async upgradeItem(user, existingItem, dbItem) {
@@ -132,7 +169,7 @@ class UserService {
 
       // Списываем коины
       if (user.coins < existingItem.upgradePrice) {
-        throw new Error('Недостаточно коинов');
+        throw ApiError.userError(400, 'You have not enough coins!');
       }
       user.coins -= existingItem.upgradePrice;
 
@@ -141,8 +178,6 @@ class UserService {
       existingItem.upgradePrice = Math.round(existingItem.upgradePrice * dbItem.priceMultiplier);
       existingItem.income = Math.round(existingItem.income * dbItem.incomeMultiplier);
 
-      await user.save();
-
       const transactionDto = {
         userId: user._id,
         itemId: dbItem._id,
@@ -150,12 +185,18 @@ class UserService {
         amount: -existingItem.upgradePrice,
         userBalance: user.coins
       }
-      const transaction = await TransactionService.create(transactionDto);
-      logger.info("Item bought successfully");
 
+      const transaction = await TransactionService.create(transactionDto);
+      await user.save();
+
+      logger.info("Item upgrade successfully");
       return transaction;
     } catch (err) {
-      throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.internalError(`Error upgrade item with id: ${dbItem._id}`, err);
+      }
     }
   }
 
@@ -166,7 +207,7 @@ class UserService {
 
       // Списываем коины
       if (user.coins < dbItem.basePrice) {
-        throw new Error('Недостаточно коинов');
+        throw ApiError.userError(400, 'You have not enough coins!');
       }
       user.coins -= dbItem.basePrice;
       user.items.push({
@@ -190,9 +231,13 @@ class UserService {
 
       return transaction;
     } catch (err) {
-      throw ApiError.internalError(`Ошибка при покупки предмета ${dbItem._id}`, err);
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.internalError(`Error bought item with id: ${dbItem._id}`, err);
+      }
+    }
   }
-}
 }
 
 module.exports = UserService;

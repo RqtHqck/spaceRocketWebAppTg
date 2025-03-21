@@ -1,9 +1,9 @@
 module.exports = class ApiError extends Error {
   constructor(status, message, code, originalError) {
       super(message); // Устанавливаем сообщение ошибки
-      this.name = this.constructor.name; // Указываем имя класса
       this.status = status; // HTTP-статус ошибки
       this.code = code; // Код ошибки
+      this.name = this.constructor.name; // Указываем имя класса
 
       // Если передана оригинальная ошибка, добавляем её стек
       if (originalError) {
@@ -31,6 +31,28 @@ module.exports = class ApiError extends Error {
 
   static notFound(message = "Not Found", originalError) {
       return new ApiError(404, message, "NOT_FOUND", originalError);
+  }
+
+  static transactionError(message = "Transaction Error", originalError) {
+    return new ApiError(404, message, "TRANSACTION_FOUND", originalError);
+  }
+
+  static userError(status = 500, message = "Something went wrong with user", originalError) {
+    switch (status) {
+      case 500:
+        return new ApiError(status, message, "USER_ERROR", originalError);
+      case 400:
+        return new ApiError(status, message, "USER_FOUND_ERROR", originalError);
+    }
+  }
+
+  static databaseError(status = 500, message = "Database error", originalError) {
+    switch (status) {
+      case 500:
+        return new ApiError(status, message, "DATABASE_ERROR", originalError);
+      case 404:
+        return new ApiError(status, message, "DATABASE_FOUND_ERROR", originalError);
+    }
   }
 
   static internalError(message = "Internal Server Error", originalError) {
