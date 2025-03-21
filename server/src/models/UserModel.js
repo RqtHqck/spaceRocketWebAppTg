@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
       itemId: { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
       level: {type: Number, default: 0, required: false},
       upgradePrice: {type: Number, default: 0, required: false},
-      income: {type: Number, default: 2, required: false},
+      income: {type: Number, default: 1, required: false},
     }
   ],
   createdAt: {type: Date, default: Date.now},

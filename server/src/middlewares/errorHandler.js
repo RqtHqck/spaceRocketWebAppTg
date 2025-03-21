@@ -13,6 +13,7 @@ const ErrorHandler = (error, req, res, next) => {
             error: {
                 code: error.code,
                 message: error.message,
+                details: error.details
             },
         });
         return; // Завершаем выполнение
@@ -27,6 +28,7 @@ const ErrorHandler = (error, req, res, next) => {
         error: {
             code: "INTERNAL_SERVER_ERROR",
             message: "An unexpected error occurred.",
+            details: error.details
         },
     });
     return; // Завершаем выполнение

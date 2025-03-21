@@ -1,10 +1,10 @@
 module.exports = class ApiError extends Error {
-  constructor(status, message, code, originalError) {
+  constructor(status, message, code, originalError, details=[]) {
       super(message); // Устанавливаем сообщение ошибки
       this.status = status; // HTTP-статус ошибки
       this.code = code; // Код ошибки
       this.name = this.constructor.name; // Указываем имя класса
-
+      this.details = details;
       // Если передана оригинальная ошибка, добавляем её стек
       if (originalError) {
           const safeError = originalError instanceof Error ? originalError : new Error(String(originalError));
@@ -19,6 +19,10 @@ module.exports = class ApiError extends Error {
 
   static badRequest(message = "Bad Request", originalError) {
       return new ApiError(400, message, "BAD_REQUEST", originalError);
+  }
+
+  static validationError(message = "Validation Error", originalError, details) {
+    return new ApiError(400, message, "VALIDATION_ERROR", originalError, details);
   }
 
   static unauthorized(message = "Unauthorized", originalError) {

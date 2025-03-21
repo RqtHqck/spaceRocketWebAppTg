@@ -14,8 +14,8 @@ const errorHandler = require('./middlewares/errorHandler')
 // SERVER
 const app = express();
 app.use(cors());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(compression());  // Response compression by different types 
 app.use(helmet()); // Defense; from the XSS attacks
 app.use(morgan("combined", { stream: logger.stream }));

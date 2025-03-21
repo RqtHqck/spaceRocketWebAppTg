@@ -103,7 +103,7 @@ class UserController {
   }
 
 
-  static async buyItem(req, res, next) {
+  static async addItem(req, res, next) {
     try {
       logger.info('UserController::addItem')
       const { userId, itemId } = req.body;
