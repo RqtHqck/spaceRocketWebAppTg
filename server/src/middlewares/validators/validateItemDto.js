@@ -7,13 +7,13 @@ module.exports.validateItemDto = (req, res, next) => {
   const itemDto = req.body;
 
   const ItemDtoSchema = Joi.object({
-    name: Joi.string().optional(),
-    description: Joi.string().optional(),
-    basePrice: Joi.number().optional(),
-    baseIncome: Joi.number().optional(),
-    priceMultiplier: Joi.number().optional(),
-    incomeMultiplier: Joi.number().optional(),
-    imageUrl: Joi.string().optional(),
+    name: Joi.string().required(),
+    description: Joi.string().required(),
+    basePrice: Joi.number().required(),
+    baseIncome: Joi.number().required(),
+    priceMultiplier: Joi.number().required(),
+    incomeMultiplier: Joi.number().required(),
+    imageUrl: Joi.string().required(),
   });
 
   const { error } = ItemDtoSchema.validate(itemDto);

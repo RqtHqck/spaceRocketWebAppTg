@@ -11,6 +11,7 @@ const ErrorHandler = (error, req, res, next) => {
         res.status(error.status).json({
             success: false,
             error: {
+                status: error.status,
                 code: error.code,
                 message: error.message,
                 details: error.details
@@ -26,6 +27,7 @@ const ErrorHandler = (error, req, res, next) => {
     res.status(500).json({
         success: false,
         error: {
+            status: error.status,
             code: "INTERNAL_SERVER_ERROR",
             message: "An unexpected error occurred.",
             details: error.details

@@ -40,6 +40,6 @@ body {
   flex-grow: 1;
   justify-content: center;
   align-items: center;
-  /*height: calc(100vh - 170px); !* Предполагаемая высота Header + BottomNav = 60px + 60px *!*/
+  height: calc(100vh - 170px); /* Предполагаемая высота Header + BottomNav = 60px + 60px */
   margin: 90px 0; /* Отступы равные высоте Header и BottomNav */
 }

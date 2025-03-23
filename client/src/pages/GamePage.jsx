@@ -6,12 +6,13 @@ const tgStar = "/icons/tgStar.png";
 import { useDispatch } from 'react-redux';
 import { setCoins } from '../redux/coinsSlice.jsx';
 import api from "../utils/api";
-
+import { useError } from "../context/ErrorContext";
 
 const Game = () => {
   const [scale, setScale] = useState(1);
   const [particles, setParticles] = useState([]);
   const dispatch = useDispatch();
+  const { showError } = useError();
 
   const userId = sessionStorage.getItem("userId");
 
@@ -45,18 +46,15 @@ const Game = () => {
     setScale(1.1);
     setTimeout(() => setScale(1), 100);
 
-    // Получаем позицию контейнера игры
     const gameContainer = event.currentTarget.closest('.game-container');
     const containerRect = gameContainer.getBoundingClientRect();
-
-    // Координаты ракеты относительно контейнера
     const rocketRect = event.target.getBoundingClientRect();
     const rocketX = rocketRect.left - containerRect.left + rocketRect.width / 2;
     const rocketY = rocketRect.top - containerRect.top + rocketRect.height / 3;
 
     const getRandom = (min, max) => Math.random() * (max - min) + min;
 
-    const newParticles = Array.from({length: 3}).map(() => ({
+    const newParticles = Array.from({ length: 3 }).map(() => ({
       id: Math.random(),
       img: tgStar,
       x: rocketX,
@@ -73,17 +71,21 @@ const Game = () => {
     setParticles((prev) => [...prev, ...newParticles]);
 
     try {
-      const response = await api.post("/user/coins", {userId}); // Замените на свой эндпоинт
+      const response = await api.post("/user/coin", { userId });
+
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
       }
-      const userData = await response.data
-      dispatch(setCoins(response.data.coins)); // Обновляем монеты в Redux
-      console.log(`New coins value: ${userData.coins}`)
+
+      const userData = response.data;
+      dispatch(setCoins(userData.coins));
+      console.log(`New coins value: ${userData.coins}`);
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
+      showError(error.response?.status || 500, error.message || "Ошибка сервера");
     }
   };
+
 
 
   return (

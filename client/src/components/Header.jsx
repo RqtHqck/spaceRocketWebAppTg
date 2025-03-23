@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "../styles/components/Header.css";
-import {useDispatch, useSelector} from 'react-redux';
-import CoinDisplay from '../components/CoinsDisplay.jsx';
-import {fetchCoins} from '../redux/coinsSlice.jsx';  // Импортируем useSelector
-
+import { useDispatch, useSelector } from "react-redux";
+import CoinDisplay from "../components/CoinsDisplay.jsx";
+import { fetchCoins } from "../redux/coinsSlice.jsx";
+import { useError } from "../context/ErrorContext"; // Подключаем useError
 
 const Header = () => {
   const [avatar, setAvatar] = useState(null);
   const dispatch = useDispatch();
-  const { coins, loading, error } = useSelector((state) => state.coins);  // Получаем данные о монетах из Redux
+  const { coins, loading, error } = useSelector((state) => state.coins);
+  const { showError } = useError();
   const userId = sessionStorage.getItem("userId");
 
 
   useEffect(() => {
-    // Получаем аватар из Telegram WebApp
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url) {
       setAvatar(window.Telegram.WebApp.initDataUnsafe.user.photo_url);
     }
   }, []);
 
-
   useEffect(() => {
     dispatch(fetchCoins(userId));
-  }, [dispatch]); // Зависимость от dispatch, чтобы запрос не повторялся без необходимости
+  }, [dispatch]);
+
+  // Показываем ошибку, если она появилась
+  useEffect(() => {
+    if (error) {
+        showError(500, error); // 500 – код ошибки, можешь заменить на свой
+    }
+  }, [error, showError]);
 
   if (loading) {
     return <div>..</div>;
   }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
 
   return (
     <header className="header">
@@ -48,7 +49,9 @@ const Header = () => {
           alt="Coins"
           className="coin-image no-interaction"
         />
-        <span className="coin-count"><CoinDisplay coinsAmount={coins} /></span>
+        <span className="coin-count">
+          <CoinDisplay coinsAmount={coins} />
+        </span>
       </div>
     </header>
   );
