@@ -4,12 +4,14 @@ import CoinDisplay from '../components/CoinsDisplay.jsx';
 import api from '../utils/api.js';
 import { useDispatch } from 'react-redux';
 import { setCoins } from '../redux/coinsSlice.jsx';
+import {useError} from '../context/ErrorContext.jsx';
 
 
 const Shop = () => {
   const [items, setItems] = useState([]);
   const [userItems, setUserItems] = useState([]);
   const [activeItem, setActiveItem] = useState(null);
+  const { showError } = useError();
 
   const dispatch = useDispatch();
   const userId = sessionStorage.getItem("userId");
@@ -23,6 +25,8 @@ const Shop = () => {
         setItems(response.data);
       } catch (error) {
         console.error("Ошибка загрузки предметов:", error);
+        showError(error.status, error.code);
+
       }
     };
 
@@ -33,6 +37,7 @@ const Shop = () => {
         setUserItems(response.data.items);
       } catch (error) {
         console.error("Ошибка загрузки предметов пользователя:", error);
+        showError(error.status, error.code);
       }
     };
 
@@ -52,6 +57,7 @@ const Shop = () => {
       setUserItems(responseUserItems.data.items);
     } catch (error) {
       console.error(`Ошибка при ${isOwned ? "улучшении" : "покупке"} предмета:`, error);
+      showError(error.status, error.code);
     }
   };
 

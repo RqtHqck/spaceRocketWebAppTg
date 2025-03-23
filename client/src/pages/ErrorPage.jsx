@@ -12,7 +12,7 @@ const ErrorPage = () => {
   const errorDetails = error.details || 'Дополнительной информации нет';
 
   return (
-    <div className="error-container">
+    <div className="error-page-container">
       <h1>⚠️ Ошибка</h1>
       <div className="error-content">
         <p className="error-message">{errorMessage}</p>

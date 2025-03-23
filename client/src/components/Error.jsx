@@ -22,7 +22,7 @@ const Error = ({ status, message, onClose }) => {
     <div className="error-container">
       <img src={imagePath} alt="Error" className="error-icon" />
       <div className="error-text">
-        {message}
+        {status} {message}
       </div>
       <button className="error-close" onClick={() => setVisible(false)}>
         ✖

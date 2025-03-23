@@ -26,7 +26,7 @@ const Header = () => {
   // Показываем ошибку, если она появилась
   useEffect(() => {
     if (error) {
-        showError(500, error); // 500 – код ошибки, можешь заменить на свой
+        showError(error.status, error.code, error.message); // 500 – код ошибки, можешь заменить на свой
     }
   }, [error, showError]);
 

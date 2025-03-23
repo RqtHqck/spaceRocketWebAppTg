@@ -10,7 +10,7 @@ export const ErrorProvider = ({ children }) => {
 
   const showError = (status, message) => {
     setError({ status, message });
-    setTimeout(() => setError(null), 3000); // Скрыть через 3 сек
+    setTimeout(() => setError(null), 200000); // Скрыть через 3 сек
   };
 
   return (

@@ -71,7 +71,7 @@ const Game = () => {
     setParticles((prev) => [...prev, ...newParticles]);
 
     try {
-      const response = await api.post("/user/coin", { userId });
+      const response = await api.post("/user/coins", { userId });
 
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");
@@ -82,7 +82,7 @@ const Game = () => {
       console.log(`New coins value: ${userData.coins}`);
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
-      showError(error.response?.status || 500, error.message || "Ошибка сервера");
+      showError(error.status, error.code);
     }
   };
 

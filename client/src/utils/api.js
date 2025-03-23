@@ -17,4 +17,23 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response) {
+      const serverError = error.response.data.error;
+      return Promise.reject({
+        status: serverError?.status || error.response.status,
+        code: serverError?.code || 'UNKNOWN_ERROR',
+        // message: serverError?.message || error.message,
+        details: serverError?.details || null
+      });
+    }
+    return Promise.reject(error);
+  }
+);
+
+
+
 export default api;
