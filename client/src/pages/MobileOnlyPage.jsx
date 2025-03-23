@@ -2,6 +2,8 @@
 import React from 'react';
 import '../styles/pages/MobileOnlyPage.css';
 import '../styles/App.css'
+
+
 const MobileOnlyPage = () => {
   return (
     <div className="container">

@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   imageUrl: {type: String, required: false},
   // GameData
   game: { type: mongoose.Schema.Types.ObjectId, ref: "Game", unique: true },
-  statistics: { type: mongoose.Schema.Types.ObjectId, ref: "Statistics", unique: true },
+  statistic: { type: mongoose.Schema.Types.ObjectId, ref: "Statistic", unique: true },
   // Document
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},

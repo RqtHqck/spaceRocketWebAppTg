@@ -20,8 +20,8 @@ const Shop = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        console.log("fetch all items from shop");
-        const response = await api.get("/shop/items");
+        console.log("fetch all items");
+        const response = await api.get("/items");
         setItems(response.data);
       } catch (error) {
         console.error("Ошибка загрузки предметов:", error);
@@ -33,7 +33,7 @@ const Shop = () => {
     const fetchUserItems = async () => {
       try {
         console.log(`fetch user ${userId} items`);
-        const response = await api.get(`/user/${userId}/items`);
+        const response = await api.get(`/game/items/${userId}`);
         setUserItems(response.data.items);
       } catch (error) {
         console.error("Ошибка загрузки предметов пользователя:", error);
@@ -48,11 +48,18 @@ const Shop = () => {
 
   const handleAction = async (itemId, isOwned) => {
     try {
-      const transactionResponse = await api.post("/user/items", { userId, itemId });
+      let transactionResponse;
+      if (isOwned) {
+        transactionResponse = await api.post("/game/item/buy", { userId, itemId });
+      } else {
+        transactionResponse = await api.post("/game/item/upgrade", { userId, itemId });
+      }
+
       console.log(transactionResponse)
       console.log(`${isOwned ? "Upgrade" : "Buy"} item ${itemId} for user ${userId}`);
+
       // Обновляем список предметов пользователя после покупки/улучшения
-      const responseUserItems = await api.get(`/user/${userId}/items`);
+      const responseUserItems = await api.get(`/game/items/${userId}`);
       dispatch(setCoins(transactionResponse.data.userBalance)); // Обновляем монеты в Redux
       setUserItems(responseUserItems.data.items);
     } catch (error) {

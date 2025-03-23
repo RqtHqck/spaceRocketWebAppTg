@@ -6,7 +6,7 @@ export const fetchCoins = createAsyncThunk(
   'coins/fetchCoins',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/user/${userId}/coins`);
+      const response = await api.get(`/game/coins/${userId}`);
       return response.data.coins;
     } catch (error) {
       return rejectWithValue({

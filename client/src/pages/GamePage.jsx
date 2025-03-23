@@ -71,7 +71,7 @@ const Game = () => {
     setParticles((prev) => [...prev, ...newParticles]);
 
     try {
-      const response = await api.post("/user/coins", { userId });
+      const response = await api.post("/game/coins", { userId });
 
       if (response.status !== 200) {
         throw new Error("Ошибка загрузки данных");

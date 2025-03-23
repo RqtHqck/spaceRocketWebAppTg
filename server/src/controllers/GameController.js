@@ -27,7 +27,7 @@ class GameController {
       const coins = await GameService.getCoins(userId);
       res
         .status(200)
-        .json(coins);
+        .json({coins});
     } catch (err) {
       next(err)
     }

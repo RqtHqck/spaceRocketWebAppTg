@@ -6,7 +6,7 @@ const UserModel = require('../models/UserModel');
 const ItemService = require('../services/ItemService');
 const TransactionService = require('../services/TransactionService');
 const GameService = require('./GameService');
-const StatisticsService = require('./StatisticsService');
+const StatisticsService = require('./StatisticService');
 
 class UserService {
 
@@ -32,8 +32,8 @@ class UserService {
           ]
         })
         .populate({
-          path: 'statistics',
-          model: 'Statistics'
+          path: 'statistic',
+          model: 'Statistic'
         })
       if (!users) return [];
       return users;
@@ -64,8 +64,8 @@ class UserService {
         ]
       })
         .populate({
-          path: 'statistics',
-          model: 'Statistics'
+          path: 'statistic',
+          model: 'Statistic'
         })
       return user
     } catch (err) {
@@ -95,8 +95,8 @@ class UserService {
         ]
       })
         .populate({
-          path: 'statistics',
-          model: 'Statistics'
+          path: 'statistic',
+          model: 'Statistic'
         })
       return user
     } catch (err) {

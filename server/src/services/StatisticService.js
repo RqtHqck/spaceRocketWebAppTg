@@ -3,7 +3,7 @@ const StatisticsModel = require('../models/StatisticModel');
 const ApiError = require('../errors/ApiError');
 
 
-class StatisticsService {
+class StatisticService {
 
   static async create(statisticsDto) {
     try {
@@ -15,4 +15,4 @@ class StatisticsService {
   }
 }
 
-module.exports = StatisticsService;
+module.exports = StatisticService;

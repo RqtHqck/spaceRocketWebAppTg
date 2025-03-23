@@ -44,11 +44,6 @@ const Header = () => {
         />
       </div>
       <div className="header-right">
-        <img
-          src="/icons/tgStar.png"
-          alt="Coins"
-          className="coin-image no-interaction"
-        />
         <span className="coin-count">
           <CoinDisplay coinsAmount={coins} />
         </span>

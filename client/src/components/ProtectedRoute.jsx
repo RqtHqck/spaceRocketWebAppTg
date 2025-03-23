@@ -36,7 +36,7 @@ const ProtectedRoute = () => {
 
         // Запрос на API для получения пользователя
         console.log("TgId: " + tgIdFromWebApp);
-        const response = await api.get(`/user/tg/${tgIdFromWebApp}`);
+        const response = await api.get(`/users/tg/${tgIdFromWebApp}`);
         console.log("Response data:", response.data);
 
         if (!response.data?._id) {

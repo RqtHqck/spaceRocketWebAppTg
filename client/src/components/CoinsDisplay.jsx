@@ -2,10 +2,12 @@
 import React from 'react';
 import "../styles/components/CoinsDisplay.css";
 
-const CoinDisplay = ({ coinsAmount }) => {
+const CoinDisplay = ({ coinsAmount = 0 }) => {
+  // Проверяем, является ли значение числом
+  const validAmount = Number.isFinite(coinsAmount) ? coinsAmount : 0;
 
   // Округляем число до десятых
-  const roundedAmount = Math.round(coinsAmount * 10) / 10;
+  const roundedAmount = Math.round(validAmount * 10) / 10;
 
   // Функция для форматирования числа
   const formatCoins = (amount) => {
@@ -16,7 +18,7 @@ const CoinDisplay = ({ coinsAmount }) => {
     } else if (amount >= 1e3) {
       return `${(amount / 1e3).toFixed(1)}K`;  // тысячи
     } else {
-      return `${amount.toFixed(1)}`;  // для меньших значений
+      return amount.toFixed(1);  // для меньших значений
     }
   };
 
