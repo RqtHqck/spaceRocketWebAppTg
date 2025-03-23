@@ -2,7 +2,7 @@ const ApiError = require('../../errors/ApiError');
 const logger = require('../../utils/logger');
 const Joi = require('joi');
 
-module.exports.validateUserAddItem = (req, res, next) => {
+module.exports.validateItemPurchase = (req, res, next) => {
   logger.info("validate validateUserAddItem..")
   const userItemPostDto = req.body;
 

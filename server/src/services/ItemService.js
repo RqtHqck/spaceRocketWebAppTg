@@ -10,7 +10,7 @@ class ItemService {
       logger.info("ItemService::findAll")
       return await ItemModel.find()
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении предметов", err);
+      throw ApiError.databaseError(500,"Error find items", err);
     }
   }
 
@@ -20,7 +20,7 @@ class ItemService {
       logger.info("ItemService::findById")
       return await ItemModel.findById(itemId);
     } catch (err) {
-      throw ApiError.internalError("Ошибка при получении предмета", err);
+      throw ApiError.databaseError(500, "Error find items", err);
     }
   }
 
@@ -30,7 +30,7 @@ class ItemService {
       logger.info("ItemService::create: " + JSON.stringify(itemDto));
       return await ItemModel.create(itemDto);
     } catch (err) {
-      throw ApiError.internalError(`Ошибка при создании предмета`, err);
+      throw ApiError.databaseError(500, `Error create item`, err);
     }
   }
 
@@ -40,7 +40,7 @@ class ItemService {
       logger.info("ItemService::create: " + JSON.stringify(itemDtos));
       return await ItemModel.insertMany(itemDtos, {ordered: true});
     } catch (err) {
-      throw ApiError.internalError(`Ошибка при создании предмета`, err);
+      throw ApiError.databaseError(500, `Error create items`, err);
     }
   }
 }

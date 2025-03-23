@@ -4,12 +4,12 @@ const {validateItemDto} = require('../middlewares/validators/validateItemDto');
 const itemRouter = express.Router()
 
 // POST: localhost:3000/api/shop/items
-itemRouter.post('/item', validateItemDto, ItemController.create)
+itemRouter.post('/', ItemController.create)
 // POST: localhost:3000/api/shop/items
-itemRouter.post('/items', ItemController.createMany)
+itemRouter.post('/', ItemController.createMany)
 // GET: localhost:3000/api/shop/items
-itemRouter.get('/items', ItemController.findAll)
+itemRouter.get('/', ItemController.findAll)
 // GET: localhost:3000/api/shop/item/:itemId
-itemRouter.get('/items/:itemId', ItemController.findAll)
+itemRouter.get('/:itemId', ItemController.findAll)
 
 module.exports = itemRouter;
