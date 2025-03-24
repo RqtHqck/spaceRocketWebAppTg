@@ -78,6 +78,28 @@ class GameService {
   }
 
 
+  static async incrementCoins(userId, amount) {
+    try {
+      logger.info("GameService::incrementCoins")
+      // Find total game coins
+      const game = await this.findByUserId(userId);
+      const totalIncome = game.calculateTotalIncome() + (amount || 0);
+      // Update coins
+      const updatedGame = await this.addCoins(userId, totalIncome);
+      // Add exp
+      await this.incrementExp(userId, 5);
+
+      return updatedGame
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error increment coins for user with userId: ${userId}`, err);
+      }
+    }
+  }
+
+
   static async addCoins(userId, amount) {
     logger.info("GameService::addCoins")
     return GameModel.findOneAndUpdate(
@@ -91,23 +113,12 @@ class GameService {
     );
   }
 
-  static async incrementCoins(userId, amount) {
-    try {
-      logger.info("GameService::incrementCoins")
-      // Find total game coins
-      const game = await this.findByUserId(userId);
-      const totalIncome = game.calculateTotalIncome() + (amount || 0);
-      // Update coins
-      const coins = await this.addCoins(userId, totalIncome);
-      await this.addExp(userId, 5);
-      return coins
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.databaseError(500, `Error increment coins for user with userId: ${userId}`, err);
-      }
-    }
+
+  static async incrementExp(userId, amount) {
+    // Add exp and update level if need
+    const updatedGame = await this.addExp(userId, amount);
+    await this.updateLevel(updatedGame);
+    return updatedGame;
   }
 
 
@@ -117,14 +128,38 @@ class GameService {
       {userId},
       {
         $inc: {
-          exp: +amount
+          exp: amount
         },
       },
+      { new: true }
     );
   }
 
-  static async getRequiredExp(level) {
-    return Math.floor(1000 * Math.pow(1.5, level - 1));
+
+  static async updateLevel(playerGame) {
+    let updatedGame = playerGame; // Хранит обновленный объект
+
+    while (updatedGame.exp >= this.getRequiredExp(updatedGame.level)) {
+      const requiredExp = this.getRequiredExp(updatedGame.level);
+
+      // Вычитаем опыт и увеличиваем уровень
+      updatedGame = await GameModel.findOneAndUpdate(
+        { userId: updatedGame.userId },
+        {
+          $inc: { level: 1, exp: -requiredExp },
+        },
+        { new: true } // Возвращает обновленный объект
+      );
+
+      console.log(`Новый уровень: ${updatedGame.level}! Осталось опыта: ${updatedGame.exp}`);
+    }
+  }
+
+
+  static getRequiredExp(level) {
+    const baseExp = 100; // Базовое количество опыта для первого уровня
+    const expMultiplier = 1.5; // Множитель для увеличения опыта
+    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
   }
 
 
