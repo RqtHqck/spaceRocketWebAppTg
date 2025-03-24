@@ -1,17 +1,14 @@
 .game-container {
   max-width: 480px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   height: 100%;
   max-height: calc(100vh - 170px); /* Ограничиваем высоту контейнера, учитывая высоту Header и BottomNav */
-
-  /*position: relative;*/
 }
 
-.planet {
+.current-planet {
   width: 350px;
   top:-80px;
   z-index: 2;

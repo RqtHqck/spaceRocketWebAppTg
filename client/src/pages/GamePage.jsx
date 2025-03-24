@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
-import rocketImg from "../assets/rocket.png";
-import planetImg from "../assets/mars.png";
 const tgStar = "/icons/tgStar.png";
 import { useDispatch } from 'react-redux';
 import { setCoins } from '../redux/coinsSlice.jsx';
@@ -93,7 +91,7 @@ const Game = () => {
         <div className="game-container">
           <div className="score-bar"></div>
           <div className="planet-sun"></div>
-          <img src={planetImg} alt="Планета" className="planet no-interaction" />
+          <img src="/planets/mars.png" alt="Планета" className="current-planet no-interaction" />
 
           {particles.map((particle) => (
             <img
@@ -116,7 +114,7 @@ const Game = () => {
           <div className="rocket-sun"></div>
           {/*<button className="rocket-button no-interaction" >*/}
             <img
-              src={rocketImg}
+              src="/rocket/rocket.png"
               alt="Ракета"
               className="rocket-img"
               style={{

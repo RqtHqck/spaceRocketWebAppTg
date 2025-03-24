@@ -6,7 +6,7 @@ const PlanetSchema = mongoose.Schema({
   imageUrl: {type: String, required: true},
   requiredLevel: {type: Number, required: true},
   unlockCost: {type: Number, required: true},
-  incomeUpdateAmount: {type: Number, default: 1},
+  incomeAmount: {type: Number, default: 1},
   index: {type: Number, default: 0, required: true},
   createdAt: {type: Date, default: Date.now},
 })

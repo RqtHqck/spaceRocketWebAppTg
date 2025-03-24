@@ -8,6 +8,7 @@ import ShopPage from './pages/ShopPage.jsx';
 import MobileOnlyPage from './pages/MobileOnlyPage';
 import ErrorPage from './pages/ErrorPage.jsx';
 import { ErrorProvider } from "./context/ErrorContext";
+import MapPage from './pages/MapPage.jsx';
 
 const App = () => {
   return (
@@ -20,6 +21,8 @@ const App = () => {
                 <Route element={<MainLayout />}>
                   <Route path="/game" element={<GamePage />} />
                   <Route path="/shop" element={<ShopPage />} />
+                  <Route path="/map" element={<MapPage />} />
+
                 </Route>
               </Route>
               <Route path="/mobile-only" element={<MobileOnlyPage />} />

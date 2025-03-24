@@ -82,11 +82,12 @@ class GameService {
     try {
       logger.info("GameService::incrementCoins")
       const totalIncome = await this.calculateCoinsIncrementValue(userId);
+      // Update coins and experience
       return await GameModel.findOneAndUpdate(
         {userId},
         {$inc: {
-            coins: 1 + totalIncome + (incomeAmountInc || 0)
-          }
+            coins: 1 + totalIncome + (incomeAmountInc || 0), experience: 5
+          },
         },
         {new: true}
       );
