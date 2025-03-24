@@ -8,7 +8,7 @@ class PlanetService {
   static async findAll() {
     try {
       logger.info("PlanetService::findAll")
-      return await PlanetModel.find()
+      return await PlanetModel.find().sort({ index: -1 })
     } catch (err) {
       throw ApiError.databaseError(500, "Error find planets", err);
     }
