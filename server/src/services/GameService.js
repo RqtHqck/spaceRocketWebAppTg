@@ -48,6 +48,21 @@ class GameService {
   }
 
 
+  static async getItems(userId) {
+    try {
+      logger.info("GameService::getItems")
+      const game = await this.findByUserId(userId)
+      return game.items;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get items array for user with userId: ${userId}`, err);
+      }
+    }
+  }
+
+
   static async getCoins(userId) {
     try {
       logger.info("GameService::getCoins");
@@ -63,34 +78,29 @@ class GameService {
   }
 
 
-  static async calculateCoinsIncrementValue(userId) {
-    try {
-      logger.info("GameService::calculateCoinsIncrement")
-      const game = await this.findByUserId(userId);
-      return game.calculateTotalIncome();
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.internalError(`Error when calculated coins increment value for user with userId: ${userId}`, err);
-      }
-    }
+  static async addCoins(userId, amount) {
+    logger.info("GameService::addCoins")
+    return GameModel.findOneAndUpdate(
+      {userId},
+      {
+        $inc: {
+          coins: 1 + amount
+        },
+      },
+      {new: true} // return update
+    );
   }
 
-
-  static async incrementCoins(userId, incomeAmountInc) {
+  static async incrementCoins(userId, amount) {
     try {
       logger.info("GameService::incrementCoins")
-      const totalIncome = await this.calculateCoinsIncrementValue(userId);
-      // Update coins and experience
-      return await GameModel.findOneAndUpdate(
-        {userId},
-        {$inc: {
-            coins: 1 + totalIncome + (incomeAmountInc || 0), experience: 5
-          },
-        },
-        {new: true}
-      );
+      // Find total game coins
+      const game = await this.findByUserId(userId);
+      const totalIncome = game.calculateTotalIncome() + (amount || 0);
+      // Update coins
+      const coins = await this.addCoins(userId, totalIncome);
+      await this.addExp(userId, 5);
+      return coins
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -101,18 +111,20 @@ class GameService {
   }
 
 
-  static async getItems(userId) {
-    try {
-      logger.info("GameService::getItems")
-      const game = await this.findByUserId(userId)
-      return game.items;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.databaseError(500, `Error get items array for user with userId: ${userId}`, err);
-      }
-    }
+  static async addExp(userId, amount) {
+    logger.info("GameService::addExp")
+    return GameModel.findOneAndUpdate(
+      {userId},
+      {
+        $inc: {
+          exp: +amount
+        },
+      },
+    );
+  }
+
+  static async getRequiredExp(level) {
+    return Math.floor(1000 * Math.pow(1.5, level - 1));
   }
 
 

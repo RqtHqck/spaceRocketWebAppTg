@@ -39,10 +39,10 @@ class GameController {
       logger.info('GameController::incrementCoins')
       const { userId, amount} = req.body;
       logger.info(`Query param: { userId:${userId}, amount:${amount} }`)
-      const coins = await GameService.incrementCoins(userId, amount);
+      const game = await GameService.incrementCoins(userId, amount);
       res
         .status(200)
-        .json(coins);
+        .json(game);
     } catch (err) {
       next(err)
     }

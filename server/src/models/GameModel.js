@@ -10,8 +10,8 @@ const gameSchema = mongoose.Schema({
   currentPlanet: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
   // Profile
   coins: {type: Number, default: 0},
-  level: {type: Number, default: 1},
-  experience: {type: Number, default: 0, required: false},
+  level: {type: Number, default: 0},
+  exp: {type: Number, default: 0, required: false},
   // Items
   items: [
     {
