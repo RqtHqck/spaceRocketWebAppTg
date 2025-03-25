@@ -7,7 +7,7 @@ class PlanetRepository {
 
   static async findAll() {
     try {
-      logger.info("PlanetService::findAll")
+      logger.info("PlanetRepository::findAll")
       return await PlanetModel.find().sort({ index: -1 })
     } catch (err) {
       throw ApiError.databaseError(500, "Error find planets", err);
@@ -17,7 +17,7 @@ class PlanetRepository {
 
   static async findById(itemId) {
     try {
-      logger.info("PlanetService::findById")
+      logger.info("PlanetRepository::findById")
       return await PlanetModel.findById(itemId);
     } catch (err) {
       throw ApiError.databaseError(500, "Error find planet", err);
@@ -27,7 +27,7 @@ class PlanetRepository {
 
   static async create(planetDto) {
     try {
-      logger.info("PlanetService::create: " + JSON.stringify(planetDto));
+      logger.info("PlanetRepository::create: " + JSON.stringify(planetDto));
       return await PlanetModel.create(planetDto);
     } catch (err) {
       throw ApiError.databaseError(500,`Error create planet`, err);
@@ -37,7 +37,7 @@ class PlanetRepository {
 
   static async createMany(planetsDto) {
     try {
-      logger.info("PlanetService::create: " + JSON.stringify(planetsDto));
+      logger.info("PlanetRepository::create: " + JSON.stringify(planetsDto));
       return await PlanetModel.insertMany(planetsDto, {ordered: true});
     } catch (err) {
       throw ApiError.databaseError(500, `Error create planets`, err);

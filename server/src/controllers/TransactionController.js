@@ -1,11 +1,11 @@
-const logger = require('../utils/logger');
-const TransactionService = require('../services/TransactionService');
+const logger = require('@utils/logger');
+const TransactionRepository = require('@repository/TransactionRepository');
 
 class TransactionController {
   static async findAll(req, res, next) {
     try {
       logger.info('TransactionController::findAll')
-      const transactions = await TransactionService.findAll();
+      const transactions = await TransactionRepository.findAll();
       res
         .status(200)
         .json(transactions);
@@ -20,7 +20,7 @@ class TransactionController {
       logger.info('TransactionController::findById')
       const transactionId = req.query.transactionId;
       logger.info(`Query param: { transactionId:${transactionId} }`)
-      const transaction = await TransactionService.findById(transactionId);
+      const transaction = await TransactionRepository.findById(transactionId);
       res
         .status(200)
         .json(transaction);
@@ -34,7 +34,7 @@ class TransactionController {
     try {
       const transactionDto = req.body
       logger.info('TransactionController::create')
-      const transaction = await TransactionService.create(transactionDto);
+      const transaction = await TransactionRepository.create(transactionDto);
       res
         .status(201)
         .json(transaction);
