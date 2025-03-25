@@ -1,5 +1,5 @@
 const logger = require('../utils/logger');
-const UserRepository = require('@services/UserRepository');
+const UserRepository = require('@repository/UserRepository');
 const UserService = require('@services/UserService');
 
 

@@ -1,5 +1,6 @@
-const logger = require('../utils/logger');
-const GameService = require('../services/GameService');
+const logger = require('@utils/logger');
+const GameService = require('@services/GameService');
+const GameRepository = require('@repository/GameRepository');
 
 
 class GameController {
@@ -9,7 +10,7 @@ class GameController {
       logger.info('GameController::findByUserId')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const game = await GameService.findByUserId(userId);
+      const game = await GameRepository.findByUserId(userId);
       res
         .status(200)
         .json(game);
@@ -18,13 +19,13 @@ class GameController {
     }
   }
 
-  // Coins handlers
+
   static async getCoins(req, res, next) {
     try {
       logger.info('GameController::getCoins')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const coins = await GameService.getCoins(userId);
+      const coins = await GameRepository.getCoins(userId);
       res
         .status(200)
         .json({coins});
@@ -48,13 +49,13 @@ class GameController {
     }
   }
 
-  // Items handlers
+
   static async getItems(req, res, next) {
     try {
       logger.info('GameController::getUserItems')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const items = await GameService.getItems(userId);
+      const items = await GameRepository.getItems(userId);
       res
         .status(200)
         .json({items});
@@ -63,7 +64,7 @@ class GameController {
     }
   }
 
-  // ------------------- Purchase handlers
+
   static async buyItem(req, res, next) {
     try {
       logger.info('GameController::buyItem')

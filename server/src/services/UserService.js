@@ -1,6 +1,6 @@
 const logger = require('@utils/logger');
 const ApiError = require('@errors/ApiError');
-const UserRepository = require('@repository/UserRepositury');
+const UserRepository = require('@repository/UserRepository');
 const StatisticRepository = require('@repository/StatisticRepository');
 const GameService = require('@services/GameService');
 

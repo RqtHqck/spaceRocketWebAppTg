@@ -1,91 +1,21 @@
-const logger = require('../utils/logger');
-const ApiError = require('../errors/ApiError');
-const GameModel = require('../models/GameModel');
-const TransactionService = require('./TransactionService');
-const ItemService = require('./ItemService');
+const logger = require('@utils/logger');
+const ApiError = require('@errors/ApiError');
 const {Types} = require('mongoose');
+const GameRepository = require('@repository/GameRepository');
+const ItemRepository = require('@repository/ItemRepository');
+const TransactionRepository = require('@repository/TransactionRepository');
 
 
 class GameService {
-
-  // CRUD handlers
-  static async findByUserId(userId) {
-    try {
-      logger.info("GameService::findByUserId")
-      const game = await GameModel.findOne({userId}).populate([
-        {
-          path: 'unlockedPlanets.planet',
-          model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
-        },
-        {
-          path: 'currentPlanet',
-          model: 'Planet'
-        },
-        {
-          path: 'items.itemId',
-          model: 'Item' // Убедитесь, что модель Item зарегистрирована
-        }
-      ]);
-      if (!game) throw ApiError.databaseError(500, `Not found game with userId: ${userId}`)
-      return game
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.databaseError(500, `Error get game with userId: ${userId} from database`, err);
-      }
-    }
-  }
-
-
-  static async create(gameDto) {
-    try {
-      logger.info(`GameService::create dto: ${JSON.stringify(gameDto)}`);
-      return  await GameModel.create(gameDto);
-    } catch (err) {
-      throw ApiError.databaseError(500, `Error when creating game document`, err);
-    }
-  }
-
-
-  static async getItems(userId) {
-    try {
-      logger.info("GameService::getItems")
-      const game = await this.findByUserId(userId)
-      return game.items;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.databaseError(500, `Error get items array for user with userId: ${userId}`, err);
-      }
-    }
-  }
-
-
-  static async getCoins(userId) {
-    try {
-      logger.info("GameService::getCoins");
-      const game = await this.findByUserId(userId);
-      return game.coins;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      } else {
-        throw ApiError.databaseError(500, `Error get coins for user with userId: ${userId}`, err);
-      }
-    }
-  }
-
 
   static async incrementCoins(userId, amount) {
     try {
       logger.info("GameService::incrementCoins")
       // Find total game coins
-      const game = await this.findByUserId(userId);
+      const game = await GameRepository.findByUserId(userId);
       const totalIncome = game.calculateTotalIncome() + (amount || 0);
       // Update coins
-      const updatedGame = await this.addCoins(userId, totalIncome);
+      const updatedGame = await GameRepository.addCoins(userId, totalIncome);
       // Add exp
       await this.incrementExp(userId, 'click');
 
@@ -97,20 +27,6 @@ class GameService {
         throw ApiError.databaseError(500, `Error increment coins for user with userId: ${userId}`, err);
       }
     }
-  }
-
-
-  static async addCoins(userId, amount) {
-    logger.info("GameService::addCoins")
-    return GameModel.findOneAndUpdate(
-      {userId},
-      {
-        $inc: {
-          coins: 1 + amount
-        },
-      },
-      {new: true} // return update
-    );
   }
 
 
@@ -136,7 +52,7 @@ class GameService {
 
   static async incrementExp(userId, actionType) {
     // Получаем текущие данные пользователя
-    const game = await GameModel.findOne({ userId });
+    const game = await GameRepository.findByUserId(userId);
     if (!game) {
       throw new Error("User game data not found");
     }
@@ -162,24 +78,13 @@ class GameService {
     }
 
     // Начисляем опыт и обновляем уровень
-    const updatedGame = await this.addExp(userId, amount);
+    const updatedGame = await GameRepository.addExp(userId, amount);
     await this.updateLevel(updatedGame);
     return updatedGame;
   }
 
 
-  static async addExp(userId, amount) {
-    logger.info("GameService::addExp")
-    return GameModel.findOneAndUpdate(
-      {userId},
-      {
-        $inc: {
-          exp: amount
-        },
-      },
-      { new: true }
-    );
-  }
+
 
 
   static getRequiredExp(level) {
@@ -196,13 +101,7 @@ class GameService {
       const requiredExp = this.getRequiredExp(updatedGame.level);
 
       // Вычитаем опыт и увеличиваем уровень
-      updatedGame = await GameModel.findOneAndUpdate(
-        { userId: updatedGame.userId },
-        {
-          $inc: { level: 1, exp: -requiredExp },
-        },
-        { new: true } // Возвращает обновленный объект
-      );
+      updatedGame = await GameRepository.addLevel(updatedGame.userId, 1, requiredExp)
 
       console.log(`Новый уровень: ${updatedGame.level}! Осталось опыта: ${updatedGame.exp}`);
     }
@@ -212,8 +111,8 @@ class GameService {
   static async processPurchase(userId, itemId) {
     logger.info("GameService::processTransaction")
 
-    const game = await this.findByUserId(userId);
-    const dbItem = await ItemService.findById(itemId);
+    const game = await GameRepository.findByUserId(userId);
+    const dbItem = await ItemRepository.findById(itemId);
 
     // Пытаемся найти предмет в массиве item пользователя
     let existingItem = game.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
@@ -263,7 +162,7 @@ class GameService {
         userBalance: game.coins
       }
 
-      const transaction = await TransactionService.create(transactionDto);
+      const transaction = await TransactionRepository.create(transactionDto);
       await game.save();
 
       logger.info("Item upgrade successfully");
@@ -301,7 +200,7 @@ class GameService {
         amount: -dbItem.basePrice,
         userBalance: game.coins
       }
-      const transaction = await TransactionService.create(transactionDto);
+      const transaction = await TransactionRepository.create(transactionDto);
       await game.save();
 
       logger.info("Item bought successfully");
