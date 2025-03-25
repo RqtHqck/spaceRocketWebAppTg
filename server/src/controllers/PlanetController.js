@@ -1,11 +1,11 @@
 const logger = require('../utils/logger');
-const PlanetService = require('../services/PlanetService');
+const PlanetRepository = require('../repository/PlanetRepository');
 
 class PlanetController {
   static async findAll(req, res, next) {
     try {
       logger.info('PlanetController::findAll');
-      const planets = await PlanetService.findAll();
+      const planets = await PlanetRepository.findAll();
       res.status(200).json(planets);
     } catch (err) {
       next(err);
@@ -17,7 +17,7 @@ class PlanetController {
       logger.info('PlanetController::findById');
       const planetId = req.query.planetId;
       logger.info(`Query param: { planetId:${planetId} }`);
-      const planet = await PlanetService.findById(planetId);
+      const planet = await PlanetRepository.findById(planetId);
       res.status(200).json(planet);
     } catch (err) {
       next(err);
@@ -28,7 +28,7 @@ class PlanetController {
     try {
       const planetDto = req.body;
       logger.info('PlanetController::create');
-      const newPlanet = await PlanetService.create(planetDto);
+      const newPlanet = await PlanetRepository.create(planetDto);
       res.status(201).json(newPlanet);
     } catch (err) {
       next(err);
@@ -39,7 +39,7 @@ class PlanetController {
     try {
       const planetsDto = req.body;
       logger.info('PlanetController::createMany');
-      const newPlanets = await PlanetService.createMany(planetsDto);
+      const newPlanets = await PlanetRepository.createMany(planetsDto);
       res.status(201).json(newPlanets);
     } catch (err) {
       next(err);
