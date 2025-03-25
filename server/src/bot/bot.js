@@ -2,7 +2,7 @@ require('@config/dotenv.js');
 const logger = require('@utils/logger');
 const TelegramBot = require('node-telegram-bot-api');
 const keyboard = require('./keyboards/inline/greeting');
-const UserService = require('../services/UserService');
+const UserService = require('@services/UserService');
 const ApiError = require('@errors/ApiError');
 
 

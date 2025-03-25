@@ -1,11 +1,11 @@
 const logger = require('../utils/logger');
-const ItemService = require('../services/ItemService');
+const ItemRepository = require('@repository/ItemRepository');
 
 class ItemController {
   static async findAll(req, res, next) {
     try {
       logger.info('ItemController::findAll')
-      const items = await ItemService.findAll();
+      const items = await ItemRepository.findAll();
       res
         .status(200)
         .json(items);
@@ -20,7 +20,7 @@ class ItemController {
       logger.info('ItemController::findById')
       const itemId = req.query.itemId;
       logger.info(`Query param: { itemId:${itemId} }`)
-      const item = await ItemService.findById(itemId);
+      const item = await ItemRepository.findById(itemId);
       res
         .status(200)
         .json(item);
@@ -34,7 +34,7 @@ class ItemController {
     try {
       const itemDto = req.body
       logger.info('ItemController::create')
-      const newItem = await ItemService.create(itemDto);
+      const newItem = await ItemRepository.create(itemDto);
       res
         .status(201)
         .json(newItem);
@@ -47,7 +47,7 @@ class ItemController {
     try {
       const itemDtos = req.body
       logger.info('ItemController::create')
-      const newItem = await ItemService.createMany(itemDtos);
+      const newItem = await ItemRepository.createMany(itemDtos);
       res
         .status(201)
         .json(newItem);

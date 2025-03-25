@@ -7,7 +7,7 @@ class UserRepository {
 
   static async findAll() {
     try {
-      logger.info("UserService::findAll")
+      logger.info("UserRepository::findAll")
       const users = await UserModel.find()
         .populate({
           path: 'game',
@@ -40,7 +40,7 @@ class UserRepository {
 
   static async findByUserId(userId) {
     try {
-      logger.info("UserService::findByUserId")
+      logger.info("UserRepository::findByUserId")
       const user = await UserModel.findById(userId).populate({
         path: 'game',
         populate: [
@@ -71,7 +71,7 @@ class UserRepository {
 
   static async findByTgId(tgId) {
     try {
-      logger.info("UserService::findByTgId")
+      logger.info("UserRepository::findByTgId")
       const user = await UserModel.findOne({tgId}).populate({
         path: 'game',
         populate: [
@@ -102,7 +102,7 @@ class UserRepository {
 
   static async create(userDto) {
     try {
-      logger.info("UserService::create");
+      logger.info("UserRepository::create");
       return await UserModel.create(userDto);
     } catch (err) {
       throw ApiError.databaseError(500, `Error when creating user`, err);
