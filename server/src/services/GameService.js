@@ -87,7 +87,7 @@ class GameService {
       // Update coins
       const updatedGame = await this.addCoins(userId, totalIncome);
       // Add exp
-      await this.incrementExp(userId, 5);
+      await this.incrementExp(userId, 'click');
 
       return updatedGame
     } catch (err) {
@@ -114,8 +114,54 @@ class GameService {
   }
 
 
-  static async incrementExp(userId, amount) {
-    // Add exp and update level if need
+  static getClickExp(userLevel, baseExp = 5, multiplier = 1.1) {
+    return baseExp + ((userLevel !== 0 ? userLevel * multiplier : userLevel));
+  }
+
+
+  static getUpdateItemExp(userLevel, baseExp = 5, multiplier = 1.3) {
+    return baseExp + (userLevel * multiplier);
+  }
+
+
+  static getPurchaseItemExp(userLevel, baseExp = 5, multiplier = 1.5) {
+    return baseExp + (userLevel * multiplier);
+  }
+
+
+  static getPlanetUnlockingExp(userLevel, baseExp = 5, multiplier = 1.7) {
+    return baseExp + (userLevel * multiplier);
+  }
+
+
+  static async incrementExp(userId, actionType) {
+    // Получаем текущие данные пользователя
+    const game = await GameModel.findOne({ userId });
+    if (!game) {
+      throw new Error("User game data not found");
+    }
+
+    // Определяем количество опыта в зависимости от действия
+    let amount;
+    const userLevel = game.level; // Предполагаем, что уровень хранится здесь
+    switch (actionType) {
+      case "updateItem":
+        amount = this.getUpdateItemExp(userLevel);
+        break;
+      case "unlockPlanet":
+        amount = this.getPlanetUnlockingExp(userLevel);
+        break;
+      case "purchaseItem":
+        amount = this.getPurchaseItemExp(userLevel);
+        break;
+      case "click":
+        amount = this.getClickExp(userLevel);
+        break;
+      default:
+        throw new Error("Invalid action type");
+    }
+
+    // Начисляем опыт и обновляем уровень
     const updatedGame = await this.addExp(userId, amount);
     await this.updateLevel(updatedGame);
     return updatedGame;
@@ -133,6 +179,13 @@ class GameService {
       },
       { new: true }
     );
+  }
+
+
+  static getRequiredExp(level) {
+    const baseExp = 1000; // Базовое количество опыта для первого уровня
+    const expMultiplier = 1.5; // Множитель для увеличения опыта
+    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
   }
 
 
@@ -156,13 +209,6 @@ class GameService {
   }
 
 
-  static getRequiredExp(level) {
-    const baseExp = 100; // Базовое количество опыта для первого уровня
-    const expMultiplier = 1.5; // Множитель для увеличения опыта
-    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
-  }
-
-
   static async processPurchase(userId, itemId) {
     logger.info("GameService::processTransaction")
 
@@ -178,10 +224,12 @@ class GameService {
         // Если нету такого предмета, то покупаем
         logger.info("Items isn't exists in user items")
         res = await this.buyItem(game, dbItem);
+        await this.incrementExp(userId, 'purchaseItem');
       } else {
         // Если объект есть, то обновляем
         logger.info("Item exists. Update")
         res = await this.upgradeItem(game, existingItem, dbItem);
+        await this.incrementExp(userId, 'updateItem');
       }
 
       logger.info("Transaction successful!");
