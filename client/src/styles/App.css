@@ -11,8 +11,8 @@ html, body {
 }
 
 body {
-  background: #10002b;
-  color: var(--tg-theme-text-color);
+  background: rgb(16,0,43);
+  background: linear-gradient(180deg, rgba(16,0,43,1) 0%, rgba(36,0,70,1) 100%);
   overflow: hidden; /* Убираем скролл */
 }
 
