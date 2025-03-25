@@ -34,6 +34,10 @@
   "_moduleAliases": {
     "@config": "./src/config",
     "@utils": "./src/utils",
-    "@errors": "./src/errors"
+    "@errors": "./src/errors",
+    "@services": "./src/services",
+    "@controllers": "./src/controllers",
+    "@repository": "./src/repository",
+    "@models": "./src/models"
   }
 }

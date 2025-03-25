@@ -1,4 +1,4 @@
-const PlanetModel = require('../models/PlanetModel')
+const PlanetRepository = require('@repository/PlanetRepository')
 const ApiError = require('@errors/ApiError')
 const logger = require('../utils/logger');
 

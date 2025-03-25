@@ -1,5 +1,7 @@
 const logger = require('../utils/logger');
-const UserService = require('../services/UserService');
+const UserRepository = require('@services/UserRepository');
+const UserService = require('@services/UserService');
+
 
 class UserController {
 
@@ -20,7 +22,7 @@ class UserController {
   static async findAll(req, res, next) {
     try {
       logger.info('UserController::findAll')
-      const user = await UserService.findAll();
+      const user = await UserRepository.findAll();
       res
         .status(200)
         .json(user);
@@ -35,7 +37,7 @@ class UserController {
       logger.info('UserController::findByUserId')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const user = await UserService.findByUserId(userId);
+      const user = await UserRepository.findByUserId(userId);
       res
         .status(200)
         .json(user);
@@ -50,7 +52,7 @@ class UserController {
       logger.info('UserController::findByTgId')
       const tgId = req.params.tgId.toString();
       logger.info(`Query param: { tgId:${tgId} }`)
-      const user = await UserService.findByTgId(tgId);
+      const user = await UserRepository.findByTgId(tgId);
       res
         .status(200)
         .json(user);
