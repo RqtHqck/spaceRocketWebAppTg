@@ -129,6 +129,8 @@
 .buy-button:active {
     background: linear-gradient(45deg, #c77dff, #9d4edd);
     box-shadow: 0 3px 12px rgba(156, 125, 255, 0.25);
+    transform: scale(1.05); /* Увеличиваем карточку */
+    border: 1px solid white; /* Добавляем белую рамку */
 }
 
 /* Income info */

@@ -15,6 +15,19 @@
   position: relative;
 }
 
+.planet-placeholder {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%; /* Делаем круг */
+  background: rgb(60,50,75);
+  background: linear-gradient(235deg, rgba(60,50,75,1) 0%, rgba(9,0,14,1) 100%);    /*position: absolute; !* Перекрывает картинку *!*/
+  position: absolute;
+  z-index: 2;
+  top: 22%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .rocket-img {
   width: 230px;
   cursor: pointer;

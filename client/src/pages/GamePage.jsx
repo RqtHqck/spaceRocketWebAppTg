@@ -7,8 +7,9 @@ import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
 
 const Game = () => {
-  const [scale, setScale] = useState(1);
-  const [particles, setParticles] = useState([]);
+  const [scale, setScale] = useState(1); // Установка масштаба
+  const [particles, setParticles] = useState([]); // Отрисовка частиц
+  const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
   const dispatch = useDispatch();
   const { showError } = useError();
 
@@ -91,7 +92,18 @@ const Game = () => {
         <div className="game-container">
           <div className="score-bar"></div>
           <div className="planet-sun"></div>
-          <img src="/planets/mars.png" alt="Планета" className="current-planet no-interaction" />
+
+          {/* Серый круг-плейсхолдер */}
+          {!isLoaded && <div className="planet-placeholder"></div>}
+
+          {/* Изображение планеты */}
+          <img
+            src="/planets/mars.png"
+            alt="Планета"
+            className="current-planet no-interaction"
+            onLoad={() => setIsLoaded(true)}
+            style={{ display: isLoaded ? "block" : "none" }}
+          />
 
           {particles.map((particle) => (
             <img

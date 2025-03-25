@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import api from "../utils/api";
 import "../styles/pages/Map.css"; // Подключаем стили
-import { useError } from "../context/ErrorContext.jsx"; // Импорт экшена
+import { useError } from "../context/ErrorContext.jsx";
+import CoinDisplay from '../components/CoinsDisplay.jsx'; // Импорт экшена
 
 export default function MapPage() {
   const [planets, setPlanets] = useState([]);
   const [game, setGame] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
   const { showError } = useError();
   const bottomRef = useRef(null); // Реф для прокрутки вниз
 
@@ -65,22 +67,39 @@ export default function MapPage() {
               key={planet.index}
               className={`planet ${isLeft ? "left" : "right"}`}
             >
-              <img src={planet.imageUrl} alt={planet.name} className="planet-image" />
+              {/* Серый круг-плейсхолдер */}
+              {/*{!isLoaded && <div className="planet-placeholder"></div>}*/}
+              {/* Изображение планеты */}
+              <img
+                src={planet.imageUrl}
+                alt={planet.name}
+                className="planet-image"
+                onLoad={() => setIsLoaded(true)}
+                style={{display: isLoaded ? "block" : "none"}}
+              />
 
               {isUnlocked ? (
-                <img src="/icons/check.png" alt="Разблокировано" className="planet-check" />
+                <img src="/icons/check.png" alt="Разблокировано" className="planet-check"/>
               ) : (
                 <div className="planet-info">
                   <p className="planet-level">Требуется уровень {planet.requiredLevel}</p>
                   <button className={`planet-button ${canAfford ? "active" : "disabled"}`} disabled={!canAfford}>
-                    {canAfford ? `Купить за ${planet.unlockCost} 💰` : "Недоступно"}
+                    {canAfford ? (
+                      <div>
+                        Купить <CoinDisplay coinsAmount={planet.unlockCost}/>
+                      </div>
+                    ) : (
+                      "Недоступно"
+                    )}
                   </button>
+
                 </div>
               )}
             </div>
           );
         })}
-        <div ref={bottomRef} /> {/* Невидимый элемент для прокрутки вниз */}
+        <div ref={bottomRef}/>
+        {/* Невидимый элемент для прокрутки вниз */}
       </div>
     </div>
   );
