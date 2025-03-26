@@ -8,6 +8,7 @@ import CoinDisplay from '../components/CoinsDisplay.jsx'; // Импорт экш
 export default function MapPage() {
   const [planets, setPlanets] = useState([]);
   const [game, setGame] = useState(null);
+  const [userPlanets, setUserPlanets] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
   const { showError } = useError();
   const bottomRef = useRef(null); // Реф для прокрутки вниз
@@ -21,7 +22,9 @@ export default function MapPage() {
         if (response.status !== 200) {
           throw new Error("Ошибка загрузки данных");
         }
-        setGame(response.data);
+        const game = response.data;
+        setGame(game);
+        setUserPlanets(game.unlockedPlanets)
       } catch (error) {
         console.error("Ошибка при получении данных пользователя:", error);
         showError(error.status, error.code);
@@ -58,48 +61,66 @@ export default function MapPage() {
     <div className="map-container">
       <div className="planets-list">
         {planets.map((planet, i) => {
+          const userPlanet = userPlanets.find(up => up.planetId._id === planet._id);
+          const isOwned = !!userPlanet;
           const isLeft = i % 2 === 0;
-          const isUnlocked = game && game.level >= planet.requiredLevel;
-          const canAfford = game && game.coins >= planet.unlockCost;
+
+// Проверка предыдущей планеты
+          const prevPlanet = i < planets.length - 1 ? planets[i + 1] : null; // Изменили на i + 1
+          const isPrevOwned = prevPlanet
+            ? userPlanets.some(up => up.planetId._id === prevPlanet._id)
+            : true; // Для последней планеты в списке (которая у вас первая) считаем, что предыдущая owned
+
+          // Условия доступности
+          const hasEnoughLevel = game?.level >= planet.requiredLevel;
+          const hasEnoughCoins = game?.coins >= planet.unlockCost;
+
+
+          const canBuy = isPrevOwned && hasEnoughLevel && hasEnoughCoins;
 
           return (
             <div
-              key={planet.index}
-              className={`planet ${isLeft ? "left" : "right"}`}
+              key={planet._id}
+              className={`planet ${isLeft ? 'left' : 'right'}`}
             >
-              {/* Серый круг-плейсхолдер */}
-              {/*{!isLoaded && <div className="planet-placeholder"></div>}*/}
-              {/* Изображение планеты */}
               <img
                 src={planet.imageUrl}
                 alt={planet.name}
                 className="planet-image"
                 onLoad={() => setIsLoaded(true)}
-                style={{display: isLoaded ? "block" : "none"}}
+                style={{ display: isLoaded ? 'block' : 'none' }}
               />
+              <div className="planet-name">{planet.name}</div>
 
-              {isUnlocked ? (
-                <img src="/icons/check.png" alt="Разблокировано" className="planet-check"/>
+              {isOwned ? (
+                // Checkbox is planet exists
+                <img src="/icons/check.png" alt="Unlocked" className="planet-check" />
               ) : (
+
+
                 <div className="planet-info">
-                  <p className="planet-level">Требуется уровень {planet.requiredLevel}</p>
-                  <button className={`planet-button ${canAfford ? "active" : "disabled"}`} disabled={!canAfford}>
-                    {canAfford ? (
-                      <div>
-                        Купить <CoinDisplay coinsAmount={planet.unlockCost}/>
-                      </div>
+                  <button
+                    className={`planet-button ${canBuy ? 'active' : 'disabled'}`}
+                    disabled={!canBuy}
+                  >
+                    {!isPrevOwned ? (
+                      "Buy previous"
+                    ) : !hasEnoughLevel ? (
+                      `Level: ${planet.requiredLevel}`
+                    ) : !hasEnoughCoins ? (
+                      <span>Buy: {planet.unlockCost}</span>
                     ) : (
-                      "Недоступно"
+                      <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost} /></span>
                     )}
                   </button>
-
                 </div>
+
+
               )}
             </div>
           );
         })}
-        <div ref={bottomRef}/>
-        {/* Невидимый элемент для прокрутки вниз */}
+        <div ref={bottomRef} />
       </div>
     </div>
   );
