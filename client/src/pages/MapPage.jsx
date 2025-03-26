@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
 import api from "../utils/api";
 import "../styles/pages/Map.css"; // Подключаем стили
 import { useError } from "../context/ErrorContext.jsx";
-import CoinDisplay from '../components/CoinsDisplay.jsx'; // Импорт экшена
+import CoinDisplay from '../components/CoinsDisplay.jsx';
 
 export default function MapPage() {
   const [planets, setPlanets] = useState([]);
@@ -15,47 +14,62 @@ export default function MapPage() {
 
   const userId = sessionStorage.getItem("userId");
 
+
+  const fetchUserGameData = async () => {
+    try {
+      const response = await api.get(`/game/${userId}`);
+      if (response.status !== 200) {
+        throw new Error("Ошибка загрузки данных");
+      }
+      const game = response.data;
+      setGame(game);
+      setUserPlanets(game.unlockedPlanets)
+    } catch (error) {
+      console.error("Ошибка при получении данных пользователя:", error);
+      showError(error.status, error.code);
+    }
+  };
+
+  const fetchPlanets = async () => {
+    try {
+      const response = await api.get("/planets");
+      const sortedPlanets = response.data
+        .map((planet, index) => ({ ...planet, index })) // Добавляем индекс
+        .sort((a, b) => a.index - b.index); // Сортируем по индексу
+      setPlanets(sortedPlanets);
+
+      // Прокручиваем вниз после загрузки данных
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        });
+      }, 300);
+
+    } catch (error) {
+      console.error("Ошибка загрузки планет:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await api.get(`/game/${userId}`);
-        if (response.status !== 200) {
-          throw new Error("Ошибка загрузки данных");
-        }
-        const game = response.data;
-        setGame(game);
-        setUserPlanets(game.unlockedPlanets)
-      } catch (error) {
-        console.error("Ошибка при получении данных пользователя:", error);
-        showError(error.status, error.code);
-      }
-    };
-
-    const fetchPlanets = async () => {
-      try {
-        const response = await api.get("/planets");
-        const sortedPlanets = response.data
-          .map((planet, index) => ({ ...planet, index })) // Добавляем индекс
-          .sort((a, b) => a.index - b.index); // Сортируем по индексу
-        setPlanets(sortedPlanets);
-
-        // Прокручиваем вниз после загрузки данных
-        setTimeout(() => {
-          bottomRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-            inline: "nearest",
-          });
-        }, 300);
-
-      } catch (error) {
-        console.error("Ошибка загрузки планет:", error);
-      }
-    };
-
-    fetchUserData();
+    fetchUserGameData();
     fetchPlanets();
   }, [userId]);
+
+
+  const handleAction = async (planetId) => {
+    try {
+      const transactionResponse = await api.post("/game/planet/buy", { userId, planetId });
+      console.log(transactionResponse)
+
+      console.log(`Buy planet ${planetId} for user ${userId}`);
+      fetchUserGameData();
+    } catch (error) {
+      console.error(`Ошибка при покупке планеты: `, error);
+      showError(error.status, error.code);
+    }
+  };
 
   return (
     <div className="map-container">
@@ -66,7 +80,7 @@ export default function MapPage() {
           const isLeft = i % 2 === 0;
 
 // Проверка предыдущей планеты
-          const prevPlanet = i < planets.length - 1 ? planets[i + 1] : null; // Изменили на i + 1
+          const prevPlanet = i < planets.length - 1 ? planets[i + 1] : null;
           const isPrevOwned = prevPlanet
             ? userPlanets.some(up => up.planetId._id === prevPlanet._id)
             : true; // Для последней планеты в списке (которая у вас первая) считаем, что предыдущая owned
@@ -74,8 +88,6 @@ export default function MapPage() {
           // Условия доступности
           const hasEnoughLevel = game?.level >= planet.requiredLevel;
           const hasEnoughCoins = game?.coins >= planet.unlockCost;
-
-
           const canBuy = isPrevOwned && hasEnoughLevel && hasEnoughCoins;
 
           return (
@@ -102,6 +114,7 @@ export default function MapPage() {
                   <button
                     className={`planet-button ${canBuy ? 'active' : 'disabled'}`}
                     disabled={!canBuy}
+                    onClick={() => handleAction(planet._id)}
                   >
                     {!isPrevOwned ? (
                       "Buy previous"

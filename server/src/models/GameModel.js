@@ -1,17 +1,19 @@
 const mongoose = require('mongoose');
 
 const gameSchema = mongoose.Schema({
-  // Planets
-  userId: {type: mongoose.Schema.Types.ObjectId, required: true},
-  unlockedPlanets: [{
-    planetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
-    unlockedAt: { type: Date, default: Date.now }
-  }],
-  currentPlanet: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
   // Profile
+  userId: {type: mongoose.Schema.Types.ObjectId, required: true},
   coins: {type: Number, default: 0},
   level: {type: Number, default: 0},
   exp: {type: Number, default: 0, required: false},
+  // Planets
+  unlockedPlanets: [
+    {
+      planetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
+      unlockedAt: { type: Date, default: Date.now }
+    }
+  ],
+  currentPlanet: { type: Number, default: 0 },
   // Items
   items: [
     {
@@ -19,6 +21,8 @@ const gameSchema = mongoose.Schema({
       level: {type: Number, default: 0, required: false},
       upgradePrice: {type: Number, default: 0, required: false},
       income: {type: Number, default: 1, required: false},
+      boughtAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now }
     }
   ],
 })

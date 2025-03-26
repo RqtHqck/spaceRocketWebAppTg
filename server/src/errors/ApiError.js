@@ -7,8 +7,8 @@ module.exports = class ApiError extends Error {
       this.details = details;
       // Если передана оригинальная ошибка, добавляем её стек
       if (originalError) {
-          const safeError = originalError instanceof Error ? originalError : new Error(String(originalError));
-          this.stack += `\nCaused by: ${safeError.stack}`;
+        const safeError = originalError instanceof Error ? originalError : new Error(String(originalError));
+        this.stack = `${this.stack}\nCaused by: ${safeError.stack}`;  // Добавляем стек оригинальной ошибки
       }
 
       // Устанавливаем прототип для корректного наследования
@@ -38,7 +38,7 @@ module.exports = class ApiError extends Error {
   }
 
   static transactionError(message = "Transaction Error", originalError) {
-    return new ApiError(404, message, "TRANSACTION_FOUND", originalError);
+    return new ApiError(422, message, "TRANSACTION_ERROR", originalError);
   }
 
   static userError(status = 500, message = "Something went wrong with user", originalError) {

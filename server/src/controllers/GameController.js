@@ -50,12 +50,12 @@ class GameController {
   }
 
 
-  static async getItems(req, res, next) {
+  static async getUserItems(req, res, next) {
     try {
       logger.info('GameController::getUserItems')
       const userId = req.params.userId;
       logger.info(`Query param: { userId:${userId} }`)
-      const items = await GameRepository.getItems(userId);
+      const items = await GameRepository.getUserItems(userId);
       res
         .status(200)
         .json({items});
@@ -63,6 +63,22 @@ class GameController {
       next(err)
     }
   }
+
+
+  static async getUserPlanets(req, res, next) {
+    try {
+      logger.info('GameController::getUserPlanets')
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const planetsData = await GameRepository.getUserPlanets(userId);
+      res
+        .status(200)
+        .json(planetsData);
+    } catch (err) {
+      next(err)
+    }
+  }
+
 
 
   static async buyItem(req, res, next) {

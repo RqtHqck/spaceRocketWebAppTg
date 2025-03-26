@@ -17,10 +17,6 @@ class UserRepository {
               model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
             },
             {
-              path: 'currentPlanet',
-              model: 'Planet'
-            },
-            {
               path: 'items.itemId',
               model: 'Item' // Убедитесь, что модель Item зарегистрирована
             }
@@ -49,10 +45,6 @@ class UserRepository {
             model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
           },
           {
-            path: 'currentPlanet',
-            model: 'Planet'
-          },
-          {
             path: 'items.itemId',
             model: 'Item' // Убедитесь, что модель Item зарегистрирована
           }
@@ -78,10 +70,6 @@ class UserRepository {
           {
             path: 'unlockedPlanets.planetId',
             model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
-          },
-          {
-            path: 'currentPlanet',
-            model: 'Planet'
           },
           {
             path: 'items.itemId',

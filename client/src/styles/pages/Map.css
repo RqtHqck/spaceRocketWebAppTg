@@ -51,6 +51,12 @@
     object-fit: cover;
 }
 
+.planet-name {
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
 
 .planet-button {
     /* Общие стили */
@@ -109,4 +115,11 @@
     color: #fff;
     text-align: center;
     margin-top: 10px;
+}
+
+.planet-check {
+    width: 30px; /* Размер иконок */
+    height: 30px;
+    filter: brightness(0) invert(1); /* Делаем белыми */
+    transition: transform 0.2s ease;
 }

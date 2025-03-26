@@ -14,15 +14,11 @@ class GameRepository {
           model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
         },
         {
-          path: 'currentPlanet',
-          model: 'Planet'
-        },
-        {
           path: 'items.itemId',
           model: 'Item' // Убедитесь, что модель Item зарегистрирована
         }
       ]);
-      if (!game) throw ApiError.databaseError(500, `Not found game with userId: ${userId}`)
+      if (!game) throw ApiError.databaseError(400, `Not found game with userId: ${userId}`)
       return game
     } catch (err) {
       if (err instanceof ApiError) {
@@ -44,10 +40,16 @@ class GameRepository {
   }
 
 
-  static async getItems(userId) {
+  static async getUserItems(userId) {
     try {
-      logger.info("GameService::getItems")
-      const game = await this.findByUserId(userId)
+      logger.info("GameService::getUserItems")
+      const game = await GameModel.findOne({ userId }).populate([
+        {
+          path: 'items.itemId',
+          model: 'Item' // Убедитесь, что модель Item зарегистрирована
+        }
+      ]);
+      if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
       return game.items;
     } catch (err) {
       if (err instanceof ApiError) {
@@ -59,10 +61,55 @@ class GameRepository {
   }
 
 
+  static async getUserPlanets(userId) {
+    try {
+      logger.info("GameService::getUserPlanets");
+
+      const game = await GameModel.findOne({ userId }).populate([
+        {
+          path: 'unlockedPlanets.planetId',
+          model: 'Planet',
+        },
+      ]);
+      console.log('Populated game:', game); // Добавьте это для отладки
+
+      if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
+      return game.unlockedPlanets
+      // return {
+      //   current: game.currentPlanet,
+      //   unlockedPlanets: game.unlockedPlanets
+      // };
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get planets array for user with userId: ${userId}`, err);
+      }
+    }
+  }
+
+
+  static async getLevel(userId) {
+    try {
+      logger.info("GameService::getLevel");
+      const game = await this.findByUserId(userId);
+      if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
+      return game.level;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get coins for user with userId: ${userId}`, err);
+      }
+    }
+  }
+
+
   static async getCoins(userId) {
     try {
       logger.info("GameService::getCoins");
       const game = await this.findByUserId(userId);
+      if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
       return game.coins;
     } catch (err) {
       if (err instanceof ApiError) {
@@ -111,7 +158,6 @@ class GameRepository {
       },
       { new: true } // Возвращает обновленный объект
     );
-
   }
 
 }

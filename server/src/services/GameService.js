@@ -85,9 +85,6 @@ class GameService {
   }
 
 
-
-
-
   static getRequiredExp(level) {
     const baseExp = 1000; // Базовое количество опыта для первого уровня
     const expMultiplier = 1.5; // Множитель для увеличения опыта
@@ -157,10 +154,10 @@ class GameService {
 
       const transactionDto = {
         userId: game.userId,
-        itemId: dbItem._id,
-        type: 'purchase:itemUpgrade',
-        amount: -existingItem.upgradePrice,
-        userBalance: game.coins
+        objectId: dbItem._id,
+        type: 'item',
+        cost: -existingItem.upgradePrice,
+        balance: game.coins
       }
 
       const transaction = await TransactionRepository.create(transactionDto);
@@ -187,19 +184,20 @@ class GameService {
         throw ApiError.userError(400, 'You have not enough coins!');
       }
       game.coins -= dbItem.basePrice;
-      game.items.push({
+      const itemDto = {
         itemId: dbItem._id,
         level: 1,
         upgradePrice: dbItem.basePrice * dbItem.priceMultiplier,
         income: dbItem.baseIncome
-      });
+      }
+      game.items.push(itemDto);
 
       const transactionDto = {
         userId: game.userId,
-        itemId: dbItem._id,
-        type: 'purchase:itemPurchase',
-        amount: -dbItem.basePrice,
-        userBalance: game.coins
+        objectId: dbItem._id,
+        type: 'item',
+        cost: -dbItem.basePrice,
+        balance: game.coins
       }
       const transaction = await TransactionRepository.create(transactionDto);
       await game.save();
@@ -217,9 +215,84 @@ class GameService {
 
 
   static async processPurchasePlanet(userId, planetId) {
-    logger.info("GameService::processPurchasePlanet")
-    const planets = await PlanetRepository.findAll();
+    try {
+      logger.info("GameService::processPurchasePlanet")
 
+      const planets = await PlanetRepository.findAll();
+      const game = await GameRepository.findByUserId(userId);
+      const userPlanets = game.unlockedPlanets || [];
+
+      const planetToBuy = planets.find(planet => planet._id.toString() === planetId.toString())
+      if (!planetToBuy) {
+        throw ApiError.databaseError(404, `Planet with id: ${planetId} not found.`);
+      }
+
+      // Если планета уже разблокированна пользователем
+      let isPlanetExists = userPlanets.find(planet => new Types.ObjectId(planet.planetId).toString() === new Types.ObjectId(planetId).toString());
+      if (isPlanetExists) {
+        throw ApiError.databaseError(409, "Conflict: Planet already unlocked.");
+      }
+
+      // Проверяем, хватает ли уровня и денег
+      if (game.level < planetToBuy.requiredLevel) {
+        throw ApiError.databaseError(400, "Not enough level to unlock this planet");
+      }
+      if (game.coins < planetToBuy.unlockCost) {
+        throw ApiError.databaseError(400, "Not enough coins to unlock this planet");
+      }
+
+      // Предыдущая планета должна быть куплена
+      const prevPlanet = planets.find(p => p.index === planetToBuy.index - 1);
+      const isPrevPlanetBought = prevPlanet ? userPlanets.some(p => new Types.ObjectId(p.planetId).toString() === new Types.ObjectId(prevPlanet._id).toString()) : true;
+      if (!isPrevPlanetBought) {
+        throw ApiError.databaseError(400, "Previous planet must be unlocked first");
+      }
+
+      const res = await this.buyPlanet(game, planetToBuy);
+      await this.incrementExp(userId, 'unlockPlanet');
+
+      logger.info("Transaction successful!");
+
+      return res
+    } catch (err) {
+      console.error(err);
+      logger.info(err)
+      throw ApiError.transactionError('Error during processTransaction', err)
+    }
+  }
+
+
+  static async buyPlanet(game, dbPlanet) {
+    try{
+      logger.info("GameService::buyPlanet")
+
+      game.coins -= dbPlanet.unlockCost;
+
+
+      const planetDto = {
+        planetId: dbPlanet._id,
+      }
+      game.unlockedPlanets.push(planetDto);
+
+      const transactionDto = {
+        userId: game.userId,
+        objectId: dbPlanet._id,
+        type: 'planet',
+        cost: -dbPlanet.unlockCost,
+        balance: game.coins
+      }
+      const transaction = await TransactionRepository.create(transactionDto);
+      await game.save();
+
+      logger.info("Planet bought successfully");
+      return transaction;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.internalError(`Error bought planet with id: ${dbPlanet._id}`, err);
+      }
+    }
   }
 }
 

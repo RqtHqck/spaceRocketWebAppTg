@@ -60,7 +60,7 @@ const Shop = () => {
 
       // Обновляем список предметов пользователя после покупки/улучшения
       const responseUserItems = await api.get(`/game/items/${userId}`);
-      dispatch(setCoins(transactionResponse.data.userBalance)); // Обновляем монеты в Redux
+      dispatch(setCoins(transactionResponse.data.balance)); // Обновляем монеты в Redux
       setUserItems(responseUserItems.data.items);
     } catch (error) {
       console.error(`Ошибка при ${isOwned ? "улучшении" : "покупке"} предмета:`, error);
