@@ -10,7 +10,7 @@ class GameRepository {
       logger.info("GameService::findByUserId")
       const game = await GameModel.findOne({userId}).populate([
         {
-          path: 'unlockedPlanets.planet',
+          path: 'unlockedPlanets.planetId',
           model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
         },
         {

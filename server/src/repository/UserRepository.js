@@ -13,7 +13,7 @@ class UserRepository {
           path: 'game',
           populate: [
             {
-              path: 'unlockedPlanets.planet',
+              path: 'unlockedPlanets.planetId',
               model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
             },
             {
@@ -45,7 +45,7 @@ class UserRepository {
         path: 'game',
         populate: [
           {
-            path: 'unlockedPlanets.planet',
+            path: 'unlockedPlanets.planetId',
             model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
           },
           {
@@ -76,7 +76,7 @@ class UserRepository {
         path: 'game',
         populate: [
           {
-            path: 'unlockedPlanets.planet',
+            path: 'unlockedPlanets.planetId',
             model: 'Planet' // Убедитесь, что модель Planet зарегистрирована
           },
           {

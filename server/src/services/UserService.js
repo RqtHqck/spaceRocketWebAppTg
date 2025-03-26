@@ -2,7 +2,7 @@ const logger = require('@utils/logger');
 const ApiError = require('@errors/ApiError');
 const UserRepository = require('@repository/UserRepository');
 const StatisticRepository = require('@repository/StatisticRepository');
-const GameService = require('@services/GameService');
+const GameRepository = require('@repository/GameRepository');
 
 
 class UserService {
@@ -14,7 +14,7 @@ class UserService {
       const user = await UserRepository.create(userDto);
 
       // Создаём Game и Statistics, сразу привязывая userId
-      const game = await GameService.create({ userId: user._id });
+      const game = await GameRepository.create({ userId: user._id });
       const statistics = await StatisticRepository.create({ userId: user._id });
 
       // Обновляем пользователя, привязывая game и statistics

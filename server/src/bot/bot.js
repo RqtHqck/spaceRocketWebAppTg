@@ -4,6 +4,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const keyboard = require('./keyboards/inline/greeting');
 const UserService = require('@services/UserService');
 const ApiError = require('@errors/ApiError');
+const UserRepository = require('@repository/UserRepository');
 
 
 // Create a bot that uses 'polling' to fetch new updates
@@ -18,9 +19,9 @@ bot.on('message', async (msg) => {
 
     if (text === '/start') {
         try {
-            const user = await UserService.findByTgId(tgId);
+            const user = await UserRepository.findByTgId(tgId);
             if (!user) {
-                await UserService.create({ tgId: tgId })
+                await UserService.createAppUser({ tgId: tgId })
             }
         } catch (err) {
             throw ApiError.internalError('Error during register user', err);

@@ -4,6 +4,7 @@ const {Types} = require('mongoose');
 const GameRepository = require('@repository/GameRepository');
 const ItemRepository = require('@repository/ItemRepository');
 const TransactionRepository = require('@repository/TransactionRepository');
+const PlanetRepository = require('@repository/PlanetRepository');
 
 
 class GameService {
@@ -108,8 +109,8 @@ class GameService {
   }
 
 
-  static async processPurchase(userId, itemId) {
-    logger.info("GameService::processTransaction")
+  static async processPurchaseItem(userId, itemId) {
+    logger.info("GameService::processPurchaseItem")
 
     const game = await GameRepository.findByUserId(userId);
     const dbItem = await ItemRepository.findById(itemId);
@@ -212,6 +213,13 @@ class GameService {
         throw ApiError.internalError(`Error bought item with id: ${dbItem._id}`, err);
       }
     }
+  }
+
+
+  static async processPurchasePlanet(userId, planetId) {
+    logger.info("GameService::processPurchasePlanet")
+    const planets = await PlanetRepository.findAll();
+
   }
 }
 

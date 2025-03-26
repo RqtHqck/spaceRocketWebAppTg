@@ -4,7 +4,7 @@ const gameSchema = mongoose.Schema({
   // Planets
   userId: {type: mongoose.Schema.Types.ObjectId, required: true},
   unlockedPlanets: [{
-    planet: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
+    planetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
     unlockedAt: { type: Date, default: Date.now }
   }],
   currentPlanet: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' },
