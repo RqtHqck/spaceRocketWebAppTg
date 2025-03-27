@@ -121,7 +121,7 @@ export default function MapPage() {
                     ) : !hasEnoughLevel ? (
                       `Level: ${planet.requiredLevel}`
                     ) : !hasEnoughCoins ? (
-                      <span>Buy: {planet.unlockCost}</span>
+                      <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost} /></span>
                     ) : (
                       <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost} /></span>
                     )}
