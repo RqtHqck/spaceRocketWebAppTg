@@ -8,25 +8,21 @@ const CoinDisplay = ({ coinsAmount = 0 }) => {
 
   const formatCoins = (amount) => {
     if (amount >= 1e21) {
-      return `${(amount / 1e21).toFixed(1)}Sx`;  // Секстиллионы
+      return `${(amount / 1e21).toFixed(1)}Sx`;
     } else if (amount >= 1e18) {
-      return `${(amount / 1e18).toFixed(1)}Qi`;  // Квинтиллионы
+      return `${(amount / 1e18).toFixed(1)}Qi`;
     } else if (amount >= 1e15) {
-      return `${(amount / 1e15).toFixed(1)}Qa`;  // Квадриллионы
+      return `${(amount / 1e15).toFixed(1)}Qa`;
     } else if (amount >= 1e12) {
-      return `${(amount / 1e12).toFixed(1)}T`;   // Триллионы
+      return `${(amount / 1e12).toFixed(1)}T`;
     } else if (amount >= 1e9) {
-      return `${(amount / 1e9).toFixed(1)}B`;    // Миллиарды
+      return `${(amount / 1e9).toFixed(1)}B`;
     } else if (amount >= 1e6) {
-      return `${(amount / 1e6).toFixed(1)}M`;    // Миллионы
+      return `${(amount / 1e6).toFixed(1)}M`;
     } else if (amount >= 1e3) {
-      return `${(amount / 1e3).toFixed(1)}K`;    // Тысячи
-    } else if (amount >= 1e2) {
-      return `${(amount / 1e2).toFixed(1)}H`;    // Сотни
-    } else if (amount >= 1e1) {
-      return `${amount.toFixed(1)}`;              // Десятки
+      return `${(amount / 1e3).toFixed(1)}K`;
     } else {
-      return amount.toFixed(1);                   // Единицы
+      return amount % 1 === 0 ? amount.toString() : amount.toFixed(1);
     }
   };
 
