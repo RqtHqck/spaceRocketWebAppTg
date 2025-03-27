@@ -93,7 +93,7 @@ export default function MapPage() {
           return (
             <div
               key={planet._id}
-              className={`planet ${isLeft ? 'left' : 'right'}`}
+              className={`planet ${isLeft ? 'left' : 'right'} ${isOwned ? 'owned' : ''}`}
             >
               <img
                 src={planet.imageUrl}
