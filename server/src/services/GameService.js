@@ -249,8 +249,8 @@ class GameService {
       }
 
       const res = await this.buyPlanet(game, planetToBuy);
+      await GameRepository.incCurrentPlanetIndex(userId, planetToBuy.index)
       await this.incrementExp(userId, 'unlockPlanet');
-
       logger.info("Transaction successful!");
 
       return res

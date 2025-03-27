@@ -74,11 +74,10 @@ class GameRepository {
       console.log('Populated game:', game); // Добавьте это для отладки
 
       if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
-      return game.unlockedPlanets
-      // return {
-      //   current: game.currentPlanet,
-      //   unlockedPlanets: game.unlockedPlanets
-      // };
+      return {
+        current: game.currentPlanetIndex,
+        unlockedPlanets: game.unlockedPlanets
+      };
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -155,6 +154,18 @@ class GameRepository {
       { userId: userId },
       {
         $inc: { level: level, exp: -expToSubtract },
+      },
+      { new: true } // Возвращает обновленный объект
+    );
+  }
+
+
+  static async incCurrentPlanetIndex(userId, planetIndex) {
+    logger.info("GameRepository::incCurrentPlanetIndex")
+    return GameModel.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: { currentPlanetIndex: planetIndex + 1 },
       },
       { new: true } // Возвращает обновленный объект
     );

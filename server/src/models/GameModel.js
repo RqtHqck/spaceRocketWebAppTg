@@ -13,7 +13,7 @@ const gameSchema = mongoose.Schema({
       unlockedAt: { type: Date, default: Date.now }
     }
   ],
-  currentPlanet: { type: Number, default: 0 },
+  currentPlanetIndex: { type: Number, default: 0 },
   // Items
   items: [
     {
