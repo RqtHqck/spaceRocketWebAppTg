@@ -27,7 +27,10 @@ gameRouter.get('/items/:userId', GameController.getUserItems)
 gameRouter.get('/planets/:userId', GameController.getUserPlanets)
 // GET: localhost:3000/api/game/planets/currentIndex/:userId
 gameRouter.get('/planets/currentIndex/:userId', GameController.getCurrentPlanetIndex)
-
+// POST: localhost:3000/api/game/planet/buy
 gameRouter.post('/planet/buy', GameController.buyPlanet)
+
+// GET: localhost:3000/api/game/level/:userId
+gameRouter.get('/level/:userId', GameController.getLevel)
 
 module.exports = gameRouter

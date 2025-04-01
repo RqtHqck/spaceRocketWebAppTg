@@ -98,7 +98,7 @@ class GameRepository {
       if (err instanceof ApiError) {
         throw err;
       } else {
-        throw ApiError.databaseError(500, `Error get coins for user with userId: ${userId}`, err);
+        throw ApiError.databaseError(500, `Error get level for user with userId: ${userId}`, err);
       }
     }
   }

@@ -35,6 +35,21 @@ class GameController {
   }
 
 
+  static async getLevel(req, res, next) {
+    try {
+      logger.info('GameController::getLevel')
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const level = await GameRepository.getLevel(userId);
+      res
+        .status(200)
+        .json({level});
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
   static async getCurrentPlanetIndex(req, res, next) {
     try {
       logger.info('GameController::getCurrentPlanetIndex')

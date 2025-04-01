@@ -1,4 +1,4 @@
-.coin-display {
+.level-display {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6,14 +6,9 @@
     flex-direction: row;
 }
 
-.coin-amount {
+.level-amount {
     font-size: 18px;
     font-weight: bold;
     color: white;
     margin-right: 0px;
-}
-
-.coin-image {
-    width: 24px; /* Размер картинки монеты */
-    height: 24px;
 }

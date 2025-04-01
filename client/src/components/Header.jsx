@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import "../styles/components/Header.css";
 import { useDispatch, useSelector } from "react-redux";
 import CoinDisplay from "../components/CoinsDisplay.jsx";
+import LevelDisplay from '../components/LevelDisplay.jsx';
 import { fetchCoins } from "../redux/coinsSlice.jsx";
-import { useError } from "../context/ErrorContext"; // Подключаем useError
+import { fetchLevel } from "../redux/levelSlice.jsx";
+
+import { useError } from "../context/ErrorContext";
 
 const Header = () => {
-  const [avatar, setAvatar] = useState(null);
-  const dispatch = useDispatch();
-  const { coins, loading, error } = useSelector((state) => state.coins);
   const { showError } = useError();
+  const dispatch = useDispatch();
+
+  const [avatar, setAvatar] = useState(null);
+  const { coins, loading, error } = useSelector((state) => state.coins);
+  const { level } = useSelector((state) => state.level); // ✅ Добавлено
+
   const userId = sessionStorage.getItem("userId");
 
 
@@ -21,6 +27,7 @@ const Header = () => {
 
   useEffect(() => {
     dispatch(fetchCoins(userId));
+    dispatch(fetchLevel(userId));
   }, [dispatch]);
 
   // Показываем ошибку, если она появилась
@@ -31,7 +38,7 @@ const Header = () => {
   }, [error, showError]);
 
   if (loading) {
-    return <div>..</div>;
+    return <div>...</div>;
   }
 
   return (
@@ -42,6 +49,7 @@ const Header = () => {
           alt="Avatar"
           className="avatar no-interaction"
         />
+        <LevelDisplay level={level}/>
       </div>
       <div className="header-right">
         <span className="coin-count">
