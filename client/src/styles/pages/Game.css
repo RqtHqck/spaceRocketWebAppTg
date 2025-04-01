@@ -10,9 +10,34 @@
 
 .current-planet {
   width: 350px;
-  top:-80px;
+  top: calc(100vh - 110vh);
   z-index: 2;
   position: relative;
+  animation: planetGlow 3s infinite alternate ease-in-out;
+}
+
+@keyframes planetGlow {
+  0% {
+    filter: drop-shadow(0 0 10px var(--planet-glow-color, rgba(255, 16, 83, 0.5)));
+  }
+  100% {
+    filter: drop-shadow(0 0 30px var(--planet-glow-color, rgba(255, 16, 83, 0.9)));
+  }
+}
+
+/* Альтернатива: если нужно box-shadow */
+.current-planet img {
+  border-radius: 50%;
+  animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from {
+    box-shadow: 0 0 20px 5px var(--planet-glow-color, rgba(255, 16, 83, 0.6));
+  }
+  to {
+    box-shadow: 0 0 40px 15px var(--planet-glow-color, rgba(255, 16, 83, 0.9));
+  }
 }
 
 .planet-placeholder {
@@ -31,15 +56,14 @@
 .rocket-img {
   width: 230px;
   cursor: pointer;
-  transition: transform 0.1s ease-in-out;
-  position: fixed; /* Фиксированное позиционирование */
+  position: fixed;
   top: calc(100vh - 35vh);
   left: calc(50vw - 130px);
-  transform: translate(-50%, -50%); /* Коррекция смещения */
+  transform: translate(-50%, -50%);
   z-index: 2;
-  animation: glow 1.5s infinite alternate;
+  filter: drop-shadow(0 0 20px rgba(203, 135, 235, 0.8)); /* Статичное свечение */
+  transition: transform 0.1s ease-in-out;
 }
-
 
 .score-bar {
   position: absolute;
@@ -70,45 +94,5 @@
   100% {
     opacity: 0;
     transform: translate(var(--x), var(--y)) scale(0.5);
-  }
-}
-
-.planet-sun {
-  position: absolute;
-  top: 25%;
-  left: 34%;
-  width: 120px;
-  aspect-ratio: 1;
-  transform: translateY(-50%) rotate(35deg); 
-  background-color: rgb(161, 0, 65);
-  border-radius: 50%; 
-  box-shadow: 0 0 120px 80px rgba(255, 16, 83, 0.8); 
-  z-index: 1; 
-  opacity: 0; 
-  animation: showSun 2.0s ease-in-out forwards 0.2s; 
-}
-
-.rocket-sun {
-  position: absolute;
-  top: 72%;
-  left: 48%;
-  width: 0px;
-  aspect-ratio: 1;
-  transform: translateY(-50%) rotate(35deg); 
-  background-color: rgb(205, 0, 72);
-  border-radius: 50%; 
-  box-shadow: 0 0 120px 50px rgba(203, 135, 235, 0.8); 
-  z-index: 1; 
-  opacity: 0; 
-  animation: showSun 2.0s ease-in-out forwards 0.2s; 
-
-}
-
-@keyframes showSun {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }

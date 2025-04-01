@@ -24,6 +24,20 @@ class PlanetController {
     }
   }
 
+
+  static async findOne(req, res, next) {
+    try {
+      logger.info('PlanetController::findOne');
+      const filters = req.query;
+      logger.info(`Query params: ${JSON.stringify(filters)}`);
+      const planet = await PlanetRepository.findOne(filters);
+      res.status(200).json(planet);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
   static async create(req, res, next) {
     try {
       const planetDto = req.body;

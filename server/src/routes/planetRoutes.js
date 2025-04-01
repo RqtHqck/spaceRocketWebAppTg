@@ -3,13 +3,15 @@ const PlanetController = require('../controllers/PlanetController')
 const {validateItemDto} = require('../middlewares/validators/validateItemDto');
 const planetRouter = express.Router()
 
-// POST: localhost:3000/api/shop/items
+// POST: localhost:3000/api/planets
 planetRouter.post('/', PlanetController.create)
-// POST: localhost:3000/api/shop/items
-planetRouter.post('/', PlanetController.createMany)
-// GET: localhost:3000/api/shop/items
-planetRouter.get('/', PlanetController.findAll)
-// GET: localhost:3000/api/shop/item/:itemId
-planetRouter.get('/:planetId', PlanetController.findAll)
+// POST: localhost:3000/api/planets
+planetRouter.post('/many', PlanetController.createMany)
+// GET: localhost:3000/api/planets/all
+planetRouter.get('/all', PlanetController.findAll)
+// GET: localhost:3000/api/planets/filters?index=index
+planetRouter.get('/filters', PlanetController.findOne)
+// GET: localhost:3000/api/planets/:planetId
+planetRouter.get('/:planetId', PlanetController.findById)
 
 module.exports = planetRouter;

@@ -32,7 +32,7 @@ export default function MapPage() {
 
   const fetchPlanets = async () => {
     try {
-      const response = await api.get("/planets");
+      const response = await api.get("/planets/all");
       const sortedPlanets = response.data
         .map((planet, index) => ({ ...planet, index })) // Добавляем индекс
         .sort((a, b) => a.index - b.index); // Сортируем по индексу
@@ -94,6 +94,7 @@ export default function MapPage() {
             <div
               key={planet._id}
               className={`planet ${isLeft ? 'left' : 'right'} ${isOwned ? 'owned' : ''}`}
+              style={isOwned ? { "--glow-color": planet.color } : {}}
             >
               <img
                 src={planet.imageUrl}

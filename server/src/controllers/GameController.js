@@ -35,6 +35,21 @@ class GameController {
   }
 
 
+  static async getCurrentPlanetIndex(req, res, next) {
+    try {
+      logger.info('GameController::getCurrentPlanetIndex')
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const currentPlanetIndex = await GameRepository.getCurrentPlanetIndex(userId);
+      res
+        .status(200)
+        .json({currentPlanetIndex});
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
   static async incrementCoins(req, res, next) {
     try {
       logger.info('GameController::incrementCoins')

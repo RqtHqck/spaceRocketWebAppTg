@@ -8,6 +8,7 @@ const PlanetSchema = mongoose.Schema({
   unlockCost: {type: Number, required: true},
   incomeAmount: {type: Number, default: 1},
   index: {type: Number, default: 0, required: true},
+  color: {type: String, required: true},
   createdAt: {type: Date, default: Date.now},
 })
 

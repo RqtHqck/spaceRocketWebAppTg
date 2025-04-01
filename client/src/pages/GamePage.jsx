@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
 const tgStar = "/icons/tgStar.png";
 import { useDispatch } from 'react-redux';
-import { setCoins } from '../redux/coinsSlice.jsx';
 import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
+import { setCoins } from '../redux/coinsSlice.jsx';
 
 const Game = () => {
   const [scale, setScale] = useState(1); // Установка масштаба
   const [particles, setParticles] = useState([]); // Отрисовка частиц
   const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
+  const [currentPlanet, setCurrentPlanet] = useState(null);
   const dispatch = useDispatch();
   const { showError } = useError();
 
@@ -17,7 +18,6 @@ const Game = () => {
 
 
   useEffect(() => {
-
     let frame;
     const updateParticles = () => {
       setParticles((prev) =>
@@ -36,9 +36,26 @@ const Game = () => {
     };
 
     frame = requestAnimationFrame(updateParticles);
+
     return () => cancelAnimationFrame(frame);
   }, [particles]);
 
+  useEffect(() => {
+    fetchCurrentPlanet();
+  }, []);
+
+  const fetchCurrentPlanet = async () => {
+    try {
+      const responseCurrentPlanetIndex = await api.get(`/game/planets/currentIndex/${userId}`);
+      const currentPlanetIndex = responseCurrentPlanetIndex.data.currentPlanetIndex; // Берем индекс
+
+      const responsePlanet = await api.get(`/planets/filters?index=${currentPlanetIndex}`);
+      setCurrentPlanet(responsePlanet.data); // Убедись, что в API есть поле image или url
+      console.log(responsePlanet.data)
+    } catch (error) {
+      console.error("Ошибка загрузки планет:", error);
+    }
+  };
 
   const handleClick = async (event) => {
     console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
@@ -48,8 +65,8 @@ const Game = () => {
     const gameContainer = event.currentTarget.closest('.game-container');
     const containerRect = gameContainer.getBoundingClientRect();
     const rocketRect = event.target.getBoundingClientRect();
-    const rocketX = rocketRect.left - containerRect.left + rocketRect.width / 2;
-    const rocketY = rocketRect.top - containerRect.top + rocketRect.height / 3;
+    const rocketX = rocketRect.left - containerRect.left + rocketRect.width * 0.5; // Смещаем вправо (70% ширины ракеты)
+    const rocketY = rocketRect.top - containerRect.top + rocketRect.height * 0.6; // Смещаем вниз (90% высоты ракеты)
 
     const getRandom = (min, max) => Math.random() * (max - min) + min;
 
@@ -89,53 +106,54 @@ const Game = () => {
 
   return (
     <>
-        <div className="game-container">
-          <div className="score-bar"></div>
-          <div className="planet-sun"></div>
+      <div className="game-container">
 
-          {/* Серый круг-плейсхолдер */}
-          {!isLoaded && <div className="planet-placeholder"></div>}
+        {/* круг-плейсхолдер пока планета не прогрузилась */}
+        {!isLoaded && <div className="planet-placeholder"></div>}
 
-          {/* Изображение планеты */}
+        {/* планета */}
+        {currentPlanet && (
           <img
-            src="/planets/mars.png"
+            src={currentPlanet.imageUrl}
             alt="Планета"
             className="current-planet no-interaction"
             onLoad={() => setIsLoaded(true)}
-            style={{ display: isLoaded ? "block" : "none" }}
+            style={{
+              display: isLoaded ? "block" : "none",
+              "--planet-glow-color": currentPlanet.color || "rgba(255, 100, 50, 0.8)"
+            }}
           />
+        )}
+        <div className="score-bar"></div>
 
-          {particles.map((particle) => (
-            <img
-              key={particle.id}
-              src={particle.img}
-              alt="Частица"
-              className="particle"
-              style={{
-                position: "absolute", // Обеспечиваем абсолютное позиционирование частиц
-                left: `${particle.x}px`,
-                top: `${particle.y}px`,
-                width: `${particle.size}px`, // Устанавливаем случайный размер
-                height: `${particle.size}px`,
-                transform: `rotate(${particle.angle}deg)`,
-                opacity: particle.opacity
-              }}
-            />
-          ))}
-          
-          <div className="rocket-sun"></div>
-          {/*<button className="rocket-button no-interaction" >*/}
-            <img
-              src="/rocket/rocket.png"
-              alt="Ракета"
-              className="rocket-img"
-              style={{
-                transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
-              }}
-              onClick={handleClick}
-            />
-          {/*</button>*/}
-        </div>
+        {particles.map((particle) => (
+          <img
+            key={particle.id}
+            src={particle.img}
+            alt="Частица"
+            className="particle"
+            style={{
+              position: "absolute", // Обеспечиваем абсолютное позиционирование частиц
+              left: `${particle.x}px`,
+              top: `${particle.y}px`,
+              width: `${particle.size}px`, // Устанавливаем случайный размер
+              height: `${particle.size}px`,
+              transform: `rotate(${particle.angle}deg)`,
+              opacity: particle.opacity
+            }}
+          />
+        ))}
+
+        <img
+          src="/rocket/rocket.png"
+          alt="Ракета"
+          className="rocket-img"
+          style={{
+            transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
+          }}
+          onClick={handleClick}
+        />
+      </div>
     </>
   );
 };

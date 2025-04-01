@@ -7,7 +7,7 @@ class GameRepository {
 
   static async findByUserId(userId) {
     try {
-      logger.info("GameService::findByUserId")
+      logger.info("GameRepository::findByUserId")
       const game = await GameModel.findOne({userId}).populate([
         {
           path: 'unlockedPlanets.planetId',
@@ -32,7 +32,7 @@ class GameRepository {
 
   static async create(gameDto) {
     try {
-      logger.info(`GameService::create dto: ${JSON.stringify(gameDto)}`);
+      logger.info(`GameRepository::create dto: ${JSON.stringify(gameDto)}`);
       return  await GameModel.create(gameDto);
     } catch (err) {
       throw ApiError.databaseError(500, `Error when creating game document`, err);
@@ -42,7 +42,7 @@ class GameRepository {
 
   static async getUserItems(userId) {
     try {
-      logger.info("GameService::getUserItems")
+      logger.info("GameRepository::getUserItems")
       const game = await GameModel.findOne({ userId }).populate([
         {
           path: 'items.itemId',
@@ -63,7 +63,7 @@ class GameRepository {
 
   static async getUserPlanets(userId) {
     try {
-      logger.info("GameService::getUserPlanets");
+      logger.info("GameRepository::getUserPlanets");
 
       const game = await GameModel.findOne({ userId }).populate([
         {
@@ -90,7 +90,7 @@ class GameRepository {
 
   static async getLevel(userId) {
     try {
-      logger.info("GameService::getLevel");
+      logger.info("GameRepository::getLevel");
       const game = await this.findByUserId(userId);
       if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
       return game.level;
@@ -106,7 +106,7 @@ class GameRepository {
 
   static async getCoins(userId) {
     try {
-      logger.info("GameService::getCoins");
+      logger.info("GameRepository::getCoins");
       const game = await this.findByUserId(userId);
       if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
       return game.coins;
@@ -120,8 +120,26 @@ class GameRepository {
   }
 
 
+
+  static async getCurrentPlanetIndex(userId) {
+    try {
+      logger.info("GameRepository::getCurrentPlanetIndex");
+      const game = await this.findByUserId(userId);
+      if (!game) throw ApiError.databaseError(404, `Error get game with userId: ${userId}`);
+      return game.currentPlanetIndex;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get currentPlanetIndex for user with userId: ${userId}`, err);
+      }
+    }
+  }
+
+
+
   static async addCoins(userId, amount) {
-    logger.info("GameService::addCoins")
+    logger.info("GameRepository::addCoins")
     return GameModel.findOneAndUpdate(
       {userId},
       {
@@ -135,7 +153,7 @@ class GameRepository {
 
 
   static async addExp(userId, amount) {
-    logger.info("GameService::addExp")
+    logger.info("GameRepository::addExp")
     return GameModel.findOneAndUpdate(
       {userId},
       {

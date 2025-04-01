@@ -25,6 +25,20 @@ class PlanetRepository {
   }
 
 
+  static async findOne(filters) {
+    try {
+      logger.info("PlanetRepository::findOne")
+      const planet =  await PlanetModel.findOne(filters);
+
+      if (!planet) throw new ApiError.databaseError(404, `Not found planet with filters ${filters}`, err);
+
+      return planet
+    } catch (err) {
+      throw ApiError.databaseError(500, "Error find planet", err);
+    }
+  }
+
+
   static async create(planetDto) {
     try {
       logger.info("PlanetRepository::create: " + JSON.stringify(planetDto));

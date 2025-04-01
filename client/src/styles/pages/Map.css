@@ -40,7 +40,7 @@
     transform: translateX(-50%);
     width: 280px;
     height: 280px;
-    background: radial-gradient(circle, rgba(199, 125, 255, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+    background: radial-gradient(circle, var(--glow-color) 0%, rgba(0, 0, 0, 0) 70%);
     border-radius: 50%;
     filter: blur(12px);
     z-index: -1; /* Чтобы свечение не перекрывало планету */
@@ -49,7 +49,7 @@
 
     /* Анимация появления */
     animation: showSun 1s ease-in-out forwards;
-    animation-delay: 2s;
+    animation-delay: 1s;
 }
 
 @keyframes showSun {
