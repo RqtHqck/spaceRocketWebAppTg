@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
 import { setCoins } from '../redux/coinsSlice.jsx';
+import { setLevel } from '../redux/levelSlice.jsx';
 
 const Game = () => {
   const [scale, setScale] = useState(1); // Установка масштаба
@@ -93,9 +94,11 @@ const Game = () => {
         throw new Error("Ошибка загрузки данных");
       }
 
-      const userData = response.data;
-      dispatch(setCoins(userData.coins));
-      console.log(`New coins value: ${userData.coins}`);
+      const updatedGameData = response.data;
+      dispatch(setCoins(updatedGameData.coins));
+      dispatch(setLevel(updatedGameData.level));
+
+      console.log(`New coins value: ${updatedGameData.coins}`);
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
       showError(error.status, error.code);

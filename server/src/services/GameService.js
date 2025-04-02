@@ -37,26 +37,26 @@ class GameService  {
   }
 
 
-  static getUpdateItemExp(userLevel, baseExp = 5, multiplier = 1.3) {
+  static getUpdateItemExp(userLevel, baseExp = 40, multiplier = 1.3) {
     // updateItem
     return baseExp + (userLevel * multiplier);
   }
 
 
-  static getPurchaseItemExp(userLevel, baseExp = 5, multiplier = 1.5) {
+  static getPurchaseItemExp(userLevel, baseExp = 100, multiplier = 1.5) {
     // buyItem
     return baseExp + (userLevel * multiplier);
   }
 
 
-  static getPlanetUnlockingExp(userLevel, baseExp = 5, multiplier = 1.7) {
+  static getPlanetUnlockingExp(userLevel, baseExp = 150, multiplier = 1.8) {
     // buyPlanet
     return baseExp + (userLevel * multiplier);
   }
 
 
   static async incrementExp(game, actionType) {
-    logger.info("GameService::incrementExp")
+    logger.info(`GameService::incrementExp actionType: ${actionType}`)
 
     // Определяем количество опыта в зависимости от действия
     let amount;
@@ -77,7 +77,6 @@ class GameService  {
       default:
         throw new Error("Invalid action type");
     }
-
     // Начисляем опыт и обновляем уровень
     const updatedGame = await GameRepository.addExp(game.userId, amount);
     // Try to update level event
@@ -257,7 +256,7 @@ class GameService  {
 
       const res = await this.buyPlanet(game, planetToBuy);
       await GameRepository.incCurrentPlanetIndex(userId, planetToBuy.index)
-      await this.incrementExp(userId, 'unlockPlanet');
+      eventEmitter.emit('exp:update', { game, actionType: 'unlockPlanet' });
       logger.info("Transaction successful!");
 
       return res

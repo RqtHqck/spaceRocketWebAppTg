@@ -6,7 +6,7 @@ const {info} = require('@utils/logger');
 
 eventEmitter.on('exp:update', async ({game, actionType}) => {
   console.log(`Update exp for userId ${game.userId}, actionType: ${actionType}`);
-  await GameService.incrementExp(game, 'click');
+  await GameService.incrementExp(game, actionType);
 });
 
 eventEmitter.on('level:update', async ({game}) => {
