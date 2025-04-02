@@ -2,6 +2,9 @@ const app = require('./app')
 const logger = require('@utils/logger')
 const ApiError = require('./errors/ApiError');
 const mongoose = require('mongoose');
+const http = require('http');
+const server = http.createServer(app);
+require('./events/eventListeners');
 
 (() => {
   // MONGO
@@ -15,7 +18,7 @@ const mongoose = require('mongoose');
     logger.error(err);
   }
   // SERVER
-  app.listen(process.env.LOCAL_PORT, () => {
+  server.listen(process.env.LOCAL_PORT, () => {
     logger.info(`Server started http://localhost:${process.env.LOCAL_PORT}.`)
   })
 })()

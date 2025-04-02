@@ -59,6 +59,10 @@ module.exports = class ApiError extends Error {
     }
   }
 
+  static eventError(message = "Event Error", originalError) {
+    return new ApiError(500, message, "EVENT_ERROR", originalError);
+  }
+
   static internalError(message = "Internal Server Error", originalError) {
       return new ApiError(500, message, "INTERNAL_SERVER_ERROR", originalError);
   }
