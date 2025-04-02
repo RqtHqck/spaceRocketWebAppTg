@@ -68,7 +68,7 @@ class GameController {
   static async incrementCoins(req, res, next) {
     try {
       logger.info('GameController::incrementCoins')
-      const { userId, amount} = req.body;
+      const { userId, amount } = req.body;
       logger.info(`Query param: { userId:${userId}, amount:${amount} }`)
       const game = await GameService.incrementCoins(userId, amount);
       res
@@ -158,7 +158,7 @@ class GameController {
 
   static async incrementLevel(req, res, next) {
     try {
-      logger.info('GameController::addLevel')
+      logger.info('GameController::incrementLevel')
       const { userId, amount } = req.body;
       logger.info(`Body param: { userId:${userId}, amount:${amount}`)
       const game = await GameService.addExp(userId, amount);

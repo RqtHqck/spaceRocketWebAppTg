@@ -27,6 +27,7 @@ const gameSchema = mongoose.Schema({
   ],
 })
 
+gameSchema.index({ userId: 1 }, { unique: true });
 
 // Метод для подсчета общего дохода всех items
 gameSchema.methods.calculateTotalIncome = function() {

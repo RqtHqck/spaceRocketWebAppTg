@@ -141,13 +141,13 @@ class GameRepository {
   static async addCoins(userId, amount) {
     logger.info("GameRepository::addCoins")
     return GameModel.findOneAndUpdate(
-      {userId},
+      { userId },
       {
         $inc: {
           coins: 1 + amount
         },
       },
-      {new: true} // return update
+      { new: true } // return update
     );
   }
 
@@ -155,7 +155,7 @@ class GameRepository {
   static async addExp(userId, amount) {
     logger.info("GameRepository::addExp")
     return GameModel.findOneAndUpdate(
-      {userId},
+      { userId },
       {
         $inc: {
           exp: amount
@@ -169,7 +169,7 @@ class GameRepository {
   static async addLevel(userId, level=1, expToSubtract) {
     logger.info("GameRepository::addLevel")
     return GameModel.findOneAndUpdate(
-      { userId: userId },
+      { userId },
       {
         $inc: { level: level, exp: -expToSubtract },
       },
@@ -181,7 +181,7 @@ class GameRepository {
   static async incCurrentPlanetIndex(userId, planetIndex) {
     logger.info("GameRepository::incCurrentPlanetIndex")
     return GameModel.findOneAndUpdate(
-      { userId: userId },
+      { userId },
       {
         $set: { currentPlanetIndex: planetIndex + 1 },
       },
