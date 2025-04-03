@@ -177,18 +177,6 @@ class GameRepository {
     );
   }
 
-
-  static async incCurrentPlanetIndex(userId, planetIndex) {
-    logger.info("GameRepository::incCurrentPlanetIndex")
-    return GameModel.findOneAndUpdate(
-      { userId },
-      {
-        $set: { currentPlanetIndex: planetIndex + 1 },
-      },
-      { new: true } // Возвращает обновленный объект
-    );
-  }
-
 }
 
 module.exports = GameRepository;

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const ExperienceService = require('@services/ExperienceService');
+const logger = require('../utils/logger');
 
 const gameSchema = mongoose.Schema({
   // Profile
@@ -31,10 +33,35 @@ gameSchema.index({ userId: 1 }, { unique: true });
 
 // Метод для подсчета общего дохода всех items
 gameSchema.methods.calculateTotalIncome = function() {
+  logger.info(`GameSchema::calculateExpGain`)
+
   return this.items.reduce((totalIncome, item) => {
     return totalIncome + item.income;
   }, 0);
 };
+
+gameSchema.methods.calculateExpGain = function(actionType) {
+  logger.info(`GameSchema::calculateExpGain actionType:${actionType}`)
+  let amount;
+  const userLevel = this.level;
+  switch (actionType) {
+    case "updateItem":
+      amount = ExperienceService.getUpdateItemExp(userLevel);
+      break;
+    case "unlockPlanet":
+      amount = ExperienceService.getPlanetUnlockingExp(userLevel);
+      break;
+    case "purchaseItem":
+      amount = ExperienceService.getPurchaseItemExp(userLevel);
+      break;
+    case "click":
+      amount = ExperienceService.getClickExp(userLevel);
+      break;
+    default:
+      throw new Error("Invalid action type");
+  }
+  return amount;
+}
 
 
 module.exports = mongoose.model("Game", gameSchema);

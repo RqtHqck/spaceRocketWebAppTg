@@ -41,9 +41,11 @@ const Game = () => {
     return () => cancelAnimationFrame(frame);
   }, [particles]);
 
+
   useEffect(() => {
     fetchCurrentPlanet();
   }, []);
+
 
   const fetchCurrentPlanet = async () => {
     try {
@@ -52,7 +54,6 @@ const Game = () => {
 
       const responsePlanet = await api.get(`/planets/filters?index=${currentPlanetIndex}`);
       setCurrentPlanet(responsePlanet.data); // Убедись, что в API есть поле image или url
-      console.log(responsePlanet.data)
     } catch (error) {
       console.error("Ошибка загрузки планет:", error);
     }

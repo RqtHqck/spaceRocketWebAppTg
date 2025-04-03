@@ -3,14 +3,19 @@ import api from "../utils/api";
 import "../styles/pages/Map.css"; // Подключаем стили
 import { useError } from "../context/ErrorContext.jsx";
 import CoinDisplay from '../components/CoinsDisplay.jsx';
+import {useDispatch} from 'react-redux';
+import {setLevel} from '../redux/levelSlice.jsx';
+
 
 export default function MapPage() {
+  const dispatch = useDispatch();
+  const { showError } = useError();
   const [planets, setPlanets] = useState([]);
   const [game, setGame] = useState(null);
   const [userPlanets, setUserPlanets] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
-  const { showError } = useError();
   const bottomRef = useRef(null); // Реф для прокрутки вниз
+
 
   const userId = sessionStorage.getItem("userId");
 
@@ -60,10 +65,10 @@ export default function MapPage() {
 
   const handleAction = async (planetId) => {
     try {
-      const transactionResponse = await api.post("/game/planet/buy", { userId, planetId });
-      console.log(transactionResponse)
-
+      const updatedGame = await api.post("/game/planet/buy", { userId, planetId });
       console.log(`Buy planet ${planetId} for user ${userId}`);
+      console.log(updatedGame.data.level)
+      dispatch(setLevel(updatedGame.data.level))
       fetchUserGameData();
     } catch (error) {
       console.error(`Ошибка при покупке планеты: `, error);

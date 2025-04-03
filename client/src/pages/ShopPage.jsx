@@ -4,6 +4,7 @@ import CoinDisplay from '../components/CoinsDisplay.jsx';
 import api from '../utils/api.js';
 import { useDispatch } from 'react-redux';
 import { setCoins } from '../redux/coinsSlice.jsx';
+import {setLevel} from '../redux/levelSlice.jsx';
 import {useError} from '../context/ErrorContext.jsx';
 
 
@@ -48,19 +49,18 @@ const Shop = () => {
 
   const handleAction = async (itemId, isOwned) => {
     try {
-      let transactionResponse;
+      let game;
       if (isOwned) {
-        transactionResponse = await api.post("/game/item/buy", { userId, itemId });
+        game = await api.post("/game/item/buy", { userId, itemId });
       } else {
-        transactionResponse = await api.post("/game/item/upgrade", { userId, itemId });
+        game = await api.post("/game/item/upgrade", { userId, itemId });
       }
-
-      console.log(transactionResponse)
       console.log(`${isOwned ? "Upgrade" : "Buy"} item ${itemId} for user ${userId}`);
 
       // Обновляем список предметов пользователя после покупки/улучшения
       const responseUserItems = await api.get(`/game/items/${userId}`);
-      dispatch(setCoins(transactionResponse.data.balance)); // Обновляем монеты в Redux
+      dispatch(setCoins(game.data.coins));
+      dispatch(setLevel(game.data.level));
       setUserItems(responseUserItems.data.items);
     } catch (error) {
       console.error(`Ошибка при ${isOwned ? "улучшении" : "покупке"} предмета:`, error);

@@ -1,10 +1,11 @@
 const logger = require('@utils/logger');
 const ApiError = require('@errors/ApiError');
-const {Types} = require('mongoose');
+const { Types } = require('mongoose');
 const GameRepository = require('@repository/GameRepository');
 const ItemRepository = require('@repository/ItemRepository');
 const TransactionRepository = require('@repository/TransactionRepository');
 const PlanetRepository = require('@repository/PlanetRepository');
+const ExperienceService = require('@services/ExperienceService')
 // const eventEmitter = require('../events/eventEmitter');
 
 class GameService  {
@@ -13,14 +14,17 @@ class GameService  {
     try {
       logger.info("GameService::incrementCoins")
       // Find total game coins
-      const game = await GameRepository.findByUserId(userId);
-      const totalIncome = game.calculateTotalIncome() + (amount || 0);
+      let game = await GameRepository.findByUserId(userId);
       // Update coins
-      const updatedGame = await GameRepository.addCoins(userId, totalIncome);
-      // Increment Exp event
-      eventEmitter.emit('exp:update', { game: updatedGame, actionType: 'click' });
+      this.addCoins(game, amount);
+      // Update exp
+      this.incrementExp(game, 'click');
+      // Update level
+      this.incrementLevel(game);
 
-      return updatedGame
+      await game.save();
+
+      return game;
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -31,112 +35,79 @@ class GameService  {
   }
 
 
-  static getClickExp(userLevel, baseExp = 5, multiplier = 1.1) {
-    // Click
-    return baseExp + ((userLevel !== 0 ? userLevel * multiplier : userLevel));
-  }
-
-
-  static getUpdateItemExp(userLevel, baseExp = 40, multiplier = 1.3) {
-    // updateItem
-    return baseExp + (userLevel * multiplier);
-  }
-
-
-  static getPurchaseItemExp(userLevel, baseExp = 100, multiplier = 1.5) {
-    // buyItem
-    return baseExp + (userLevel * multiplier);
-  }
-
-
-  static getPlanetUnlockingExp(userLevel, baseExp = 150, multiplier = 1.8) {
-    // buyPlanet
-    return baseExp + (userLevel * multiplier);
-  }
-
-
-  static async incrementExp(game, actionType) {
+  static incrementExp(game, actionType) {
     logger.info(`GameService::incrementExp actionType: ${actionType}`)
-
     // Определяем количество опыта в зависимости от действия
-    let amount;
-    const userLevel = game.level; // Предполагаем, что уровень хранится здесь
-    switch (actionType) {
-      case "updateItem":
-        amount = this.getUpdateItemExp(userLevel);
-        break;
-      case "unlockPlanet":
-        amount = this.getPlanetUnlockingExp(userLevel);
-        break;
-      case "purchaseItem":
-        amount = this.getPurchaseItemExp(userLevel);
-        break;
-      case "click":
-        amount = this.getClickExp(userLevel);
-        break;
-      default:
-        throw new Error("Invalid action type");
+    const amount = game.calculateExpGain(actionType);
+    return GameService.addExp(game, amount);
+  }
+
+
+  static incrementLevel(game) {
+    logger.info("GameService::tryIncrementLevel")
+    let updatedGame = game; // Хранит обновленный объект
+
+    while (updatedGame.exp >= ExperienceService.getRequiredExp(updatedGame.level)) {
+      logger.info('Can increment level')
+      const requiredExp = ExperienceService.getRequiredExp(updatedGame.level);
+      // Вычитаем опыт и увеличиваем уровень
+      logger.info(`New Level: ${updatedGame.level}! Exp left: ${updatedGame.exp}`);
+      updatedGame = GameService.addLevel(updatedGame, 1, requiredExp)
     }
-    // Начисляем опыт и обновляем уровень
-    const updatedGame = await GameRepository.addExp(game.userId, amount);
-    // Try to update level event
-    eventEmitter.emit('level:update', {game: updatedGame})
     return updatedGame;
   }
 
 
-  static getRequiredExp(level) {
-    const baseExp = 1000; // Базовое количество опыта для первого уровня
-    const expMultiplier = 1.5; // Множитель для увеличения опыта
-    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
+  static addCoins(game, amount) {
+    const totalIncome = game.calculateTotalIncome() + (amount || 0);
+    return game.coins += totalIncome + 1;
   }
 
 
-  static async incrementLevel(game) {
-    logger.info("GameService::tryIncrementLevel")
+  static addExp(game, amount) {
+    return game.exp += amount;
+  }
 
-    let updatedGame = game; // Хранит обновленный объект
 
-    while (updatedGame.exp >= this.getRequiredExp(updatedGame.level)) {
-      logger.info('Can increment level')
-
-      const requiredExp = this.getRequiredExp(updatedGame.level);
-      // Вычитаем опыт и увеличиваем уровень
-      updatedGame = await GameRepository.addLevel(updatedGame.userId, 1, requiredExp)
-
-      logger.info(`New Level: ${updatedGame.level}! Exp left: ${updatedGame.exp}`);
-    }
-
+  static addLevel(game, level=1, expToSubtract) {
+    game.level += level;
+    game.exp -= expToSubtract;
+    return game;
   }
 
 
   static async processPurchaseItem(userId, itemId) {
     logger.info("GameService::processPurchaseItem")
 
-    const game = await GameRepository.findByUserId(userId);
+    let game = await GameRepository.findByUserId(userId);
     const dbItem = await ItemRepository.findById(itemId);
 
     // Пытаемся найти предмет в массиве item пользователя
     let existingItem = game.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
 
     try {
-      let res;
       if (!existingItem) {
         // Если нету такого предмета, то покупаем
         logger.info("Items isn't exists in user items")
-        res = await this.buyItem(game, dbItem);
+        game = await this.buyItem(game, dbItem);
         // Increment Exp event
         eventEmitter.emit('exp:update', { game, actionType: 'purchaseItem' });
       } else {
         // Если объект есть, то обновляем
         logger.info("Item exists. Update")
-        res = await this.upgradeItem(game, existingItem, dbItem);
+        game = await this.upgradeItem(game, existingItem, dbItem);
         // Increment Exp event
         eventEmitter.emit('exp:update', { game, actionType: 'updateItem' });
       }
 
+      // Update exp
+      this.incrementExp(game, 'click');
+      // Update level
+      this.incrementLevel(game);
+      await game.save();
+
       logger.info("Transaction successful!");
-      return res
+      return game
     } catch (err) {
       throw ApiError.transactionError('Error during processTransaction', err)
     }
@@ -166,11 +137,11 @@ class GameService  {
         balance: game.coins
       }
 
-      const transaction = await TransactionRepository.create(transactionDto);
+      await TransactionRepository.create(transactionDto);
       await game.save();
 
       logger.info("Item upgrade successfully");
-      return transaction;
+      return game;
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -205,11 +176,11 @@ class GameService  {
         cost: -dbItem.basePrice,
         balance: game.coins
       }
-      const transaction = await TransactionRepository.create(transactionDto);
+      await TransactionRepository.create(transactionDto);
       await game.save();
 
       logger.info("Item bought successfully");
-      return transaction;
+      return game;
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
@@ -225,7 +196,7 @@ class GameService  {
       logger.info("GameService::processPurchasePlanet")
 
       const planets = await PlanetRepository.findAll();
-      const game = await GameRepository.findByUserId(userId);
+      let game = await GameRepository.findByUserId(userId);
       const userPlanets = game.unlockedPlanets || [];
 
       const planetToBuy = planets.find(planet => planet._id.toString() === planetId.toString())
@@ -254,12 +225,16 @@ class GameService  {
         throw ApiError.databaseError(400, "Previous planet must be unlocked first");
       }
 
-      const res = await this.buyPlanet(game, planetToBuy);
-      await GameRepository.incCurrentPlanetIndex(userId, planetToBuy.index)
-      eventEmitter.emit('exp:update', { game, actionType: 'unlockPlanet' });
+      game = await this.buyPlanet(game, planetToBuy);
+      // Update exp
+      this.incrementExp(game, 'click');
+      // Update level
+      this.incrementLevel(game);
       logger.info("Transaction successful!");
 
-      return res
+      await game.save();
+
+      return game
     } catch (err) {
       console.error(err);
       logger.info(err)
@@ -273,12 +248,11 @@ class GameService  {
       logger.info("GameService::buyPlanet")
 
       game.coins -= dbPlanet.unlockCost;
-
-
       const planetDto = {
         planetId: dbPlanet._id,
       }
       game.unlockedPlanets.push(planetDto);
+      game.currentPlanetIndex = dbPlanet.index + 1
 
       const transactionDto = {
         userId: game.userId,
@@ -287,11 +261,11 @@ class GameService  {
         cost: -dbPlanet.unlockCost,
         balance: game.coins
       }
-      const transaction = await TransactionRepository.create(transactionDto);
+      await TransactionRepository.create(transactionDto);
       await game.save();
 
       logger.info("Planet bought successfully");
-      return transaction;
+      return game;
     } catch (err) {
       if (err instanceof ApiError) {
         throw err;
