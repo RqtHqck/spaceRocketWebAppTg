@@ -88,12 +88,12 @@
 }
 
 .planet-image:active {
-    transition: all 0.3s ease;
+    transition: all 0.9s ease;
     transform: scale(1.2);
 }
 
 .planet-image:hover {
-    transition: all 0.3s ease;
+    transition: all 0.7s ease;
     transform: scale(1.2);
 }
 
@@ -163,9 +163,33 @@
     margin-top: 10px;
 }
 
-.planet-check {
+.planet-checked-img {
     width: 30px; /* Размер иконок */
     height: 30px;
     filter: brightness(0) invert(1); /* Делаем белыми */
-    transition: transform 0.2s ease;
+    transition: transform 0.8s ease;
 }
+.planet-lock {
+    color:white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* расстояние между замком и текстом */
+}
+.planet-lock span {
+    position: relative;
+    top:-1px;
+}
+.planet-lock img {
+    position: relative;
+    top:-2px;
+}
+.planet-locked-img {
+    position: relative;
+    top: -2px;
+    width: 14px;
+    height: 18px;
+    filter: brightness(0) invert(1); /* белая иконка */
+}
+
