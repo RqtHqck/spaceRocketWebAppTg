@@ -235,8 +235,6 @@ class GameService  {
 
       return game
     } catch (err) {
-      console.error(err);
-      logger.info(err)
       throw ApiError.transactionError('Error during processTransaction', err)
     }
   }
