@@ -112,7 +112,7 @@ export default function MapPage() {
 
               {isOwned ? (
                 // Checkbox is planet exists
-                <img src="/icons/check.png" alt="Unlocked" className="planet-check" />
+                <img src="/icons/check.png" alt="Unlocked" className="planet-checked-img" />
               ) : (
 
 
@@ -123,13 +123,19 @@ export default function MapPage() {
                     onClick={() => handleAction(planet._id)}
                   >
                     {!isPrevOwned ? (
-                      "Buy previous"
+                      <span className="planet-lock">
+                        <img src="/icons/map/lock.png" alt="Locked" className="planet-locked-img" />
+                        Buy previous
+                      </span>
                     ) : !hasEnoughLevel ? (
                       `Level: ${planet.requiredLevel}`
                     ) : !hasEnoughCoins ? (
-                      <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost} /></span>
+                      <span className="planet-lock">
+                        <img src="/icons/map/lock.png" alt="Locked" className="planet-locked-img"/>
+                        Buy: <CoinDisplay coinsAmount={planet.unlockCost}/>
+                      </span>
                     ) : (
-                      <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost} /></span>
+                      <span>Buy: <CoinDisplay coinsAmount={planet.unlockCost}/></span>
                     )}
                   </button>
                 </div>
