@@ -65,15 +65,15 @@ class GameController {
   }
 
 
-  static async incrementCoins(req, res, next) {
+  static async incrementCoinsByClick(req, res, next) {
     try {
       logger.info('GameController::incrementCoins')
       const { userId, amount } = req.body;
       logger.info(`Query param: { userId:${userId}, amount:${amount} }`)
-      const game = await GameService.incrementCoins(userId, amount);
+      const gameData = await GameService.incrementCoinsByClick(userId, amount);
       res
         .status(200)
-        .json(game);
+        .json(gameData);
     } catch (err) {
       next(err)
     }

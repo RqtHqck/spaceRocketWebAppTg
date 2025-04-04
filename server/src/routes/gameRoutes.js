@@ -11,7 +11,7 @@ gameRouter.get('/:userId', GameController.findByUserId)
 
 // ---------------------- Coins routes
 // POST: localhost:3000/api/game/coins
-gameRouter.post('/coins', validatePostCoinsDto, GameController.incrementCoins)
+gameRouter.post('/coins', validatePostCoinsDto, GameController.incrementCoinsByClick)
 // GET: localhost:3000/api/game/coins
 gameRouter.get('/coins/:userId', GameController.getCoins)
 

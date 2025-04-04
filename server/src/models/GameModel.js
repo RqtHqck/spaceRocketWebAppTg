@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const ExperienceService = require('@services/ExperienceService');
-const logger = require('../utils/logger');
+const logger = require('@utils/logger');
 
 const gameSchema = mongoose.Schema({
   // Profile
@@ -40,6 +40,7 @@ gameSchema.methods.calculateTotalIncome = function() {
   }, 0);
 };
 
+// Метод для подсчёта полученного опыта с действия
 gameSchema.methods.calculateExpGain = function(actionType) {
   logger.info(`GameSchema::calculateExpGain actionType:${actionType}`)
   let amount;
@@ -64,4 +65,20 @@ gameSchema.methods.calculateExpGain = function(actionType) {
 }
 
 
+gameSchema.virtual("expRequired").get(function() {
+  const total = ExperienceService.getRequiredExp(this.level);
+  const toNext = total - this.exp;
+  logger.info(`Current level: ${this.level}, exp: ${this.exp}, total: ${total}, toNext: ${toNext}`);
+
+  return {
+    total,
+    toNext
+  };
+})
+
+gameSchema.set("toJSON", { virtuals: true });
+
+
 module.exports = mongoose.model("Game", gameSchema);
+
+

@@ -6,11 +6,11 @@ const ItemRepository = require('@repository/ItemRepository');
 const TransactionRepository = require('@repository/TransactionRepository');
 const PlanetRepository = require('@repository/PlanetRepository');
 const ExperienceService = require('@services/ExperienceService')
-// const eventEmitter = require('../events/eventEmitter');
+
 
 class GameService  {
 
-  static async incrementCoins(userId, amount) {
+  static async incrementCoinsByClick(userId, amount) {
     try {
       logger.info("GameService::incrementCoins")
       // Find total game coins
@@ -21,7 +21,6 @@ class GameService  {
       this.incrementExp(game, 'click');
       // Update level
       this.incrementLevel(game);
-
       await game.save();
 
       return game;
