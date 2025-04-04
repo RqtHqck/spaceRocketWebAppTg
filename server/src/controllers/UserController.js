@@ -7,9 +7,10 @@ class UserController {
 
   static async create(req, res, next) {
     try {
-      const userDto = req.body
       logger.info('UserController::create')
-      const user = await UserService.create(userDto);
+      const userDto = req.body
+      logger.info(`Body: userDto:${JSON.stringify(userDto)} }`)
+      const user = await UserService.createAppUser(userDto);
       res
         .status(201)
         .json(user);
@@ -60,6 +61,35 @@ class UserController {
       next(err)
     }
   }
+
+
+  static async findSorted(req, res, next) {
+    try {
+      logger.info('UserController::findSorted')
+      const users = await UserRepository.findSorted();
+      res
+        .status(200)
+        .json(users);
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
+  // static async findFiltered(req, res, next) {
+  //   try {
+  //     logger.info('UserController::findFiltered')
+  //     const filters = req.query;
+  //     logger.info(`Query param: ${JSON.stringify(filters)}`)
+  //     const users = await UserService.fetchFiltered(filters);
+  //     res
+  //       .status(200)
+  //       .json(users);
+  //   } catch (err) {
+  //     next(err)
+  //   }
+  // }
+
 
 }
 

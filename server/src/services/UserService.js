@@ -6,9 +6,9 @@ const GameRepository = require('@repository/GameRepository');
 
 
 class UserService {
-  static async createAppUser (userDto) {
+  static async createAppUser(userDto) {
     try {
-      logger.info("UserService::create");
+      logger.info("UserService::createAppUser");
 
       // Создаём пользователя без game и statistics
       const user = await UserRepository.create(userDto);
@@ -26,6 +26,15 @@ class UserService {
       throw ApiError.databaseError(500, `Error when creating user`, err);
     }
   }
+
+
+  // static async fetchFiltered(filters) {
+  //   try {
+  //     return UserRepository.find(filters);
+  //   } catch (err) {
+  //     throw ApiError.databaseError(500, `Error when filtering users by filter: ${JSON.stringify(filters)}`, err);
+  //   }
+  // }
 }
 
 module.exports = UserService;

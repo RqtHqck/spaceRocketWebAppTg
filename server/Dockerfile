@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-WORKDIR /app/auth-ms
+WORKDIR /app/server
 
 COPY package*.json ./
 
@@ -13,6 +13,6 @@ COPY . .
 # Set ENV
 ENV NODE_ENV=dev
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD ["node", "run", "start:dev"]
