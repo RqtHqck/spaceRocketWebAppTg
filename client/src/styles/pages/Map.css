@@ -87,6 +87,16 @@
     object-fit: cover;
 }
 
+.planet-image:active {
+    transition: all 0.3s ease;
+    transform: scale(1.2);
+}
+
+.planet-image:hover {
+    transition: all 0.3s ease;
+    transform: scale(1.2);
+}
+
 .planet-name {
     font-size: 24px;
     font-weight: bold;
@@ -111,22 +121,22 @@
 }
 
 .planet-button.active {
-    background-color: #c77dff; /* Ярко-зелёный */
+    background-color: #c77dff;
     color: white;
     box-shadow: 0 3px 12px rgba(156, 125, 255, 0.25);
 }
 
 .planet-button.active:active {
-    background-color: #5a189a; /* Ярко-зелёный */
+    background-color: #5a189a;
     color: white;
-    transform: translateY(-1px); /* Лёгкий подъём */
-    transform: scale(1.1); /* Увеличиваем карточку */
+    transform: translateY(-1px);
+    transform: scale(1.1);
 
 }
 
 /* Дополнительно: hover-эффект для активной кнопки */
 .planet-button.active:hover {
-    background-color: #5a189a; /* Темнее при наведении */
+    background-color: #5a189a;
 }
 
 .planet-button.disabled {
