@@ -1,0 +1,21 @@
+/* styles/components/ScoreBar.css */
+.score-bar-wrapper {
+    width: 80%; /* Фиксированная ширина */
+    height: 12px;
+    border-radius: 6px;
+    background-color: #e0e0e0;
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    overflow: hidden; /* Для обрезки закруглений заполнения */
+}
+
+.score-bar-fill {
+    height: 100%;
+    width: 0; /* Будет управляться через style */
+    background-color: rgba(203, 135, 235, 0.8);
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}

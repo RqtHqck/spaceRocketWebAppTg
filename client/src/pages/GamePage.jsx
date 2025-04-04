@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
 const tgStar = "/icons/tgStar.png";
+import ScoreBar from "../components/ScoreBar";
 import { useDispatch } from 'react-redux';
 import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
@@ -8,14 +9,20 @@ import { setCoins } from '../redux/coinsSlice.jsx';
 import { setLevel } from '../redux/levelSlice.jsx';
 
 const Game = () => {
-  const [scale, setScale] = useState(1); // Установка масштаба
-  const [particles, setParticles] = useState([]); // Отрисовка частиц
-  const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
-  const [currentPlanet, setCurrentPlanet] = useState(null);
   const dispatch = useDispatch();
   const { showError } = useError();
-
   const userId = sessionStorage.getItem("userId");
+
+  const [scale, setScale] = useState(1); // Установка масштаба
+  const [particles, setParticles] = useState([]); // Отрисовка частиц
+
+  const [currentPlanet, setCurrentPlanet] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
+
+  const [expRequired, setExpRequired] = useState(0);
+  const [expUpdateRequired, setExpUpdateRequired] = useState(0);
+  const [gameExp, setGameExp] = useState(0); // текущий опыт
+
 
 
   useEffect(() => {
@@ -49,15 +56,20 @@ const Game = () => {
 
   const fetchCurrentPlanet = async () => {
     try {
-      const responseCurrentPlanetIndex = await api.get(`/game/planets/currentIndex/${userId}`);
-      const currentPlanetIndex = responseCurrentPlanetIndex.data.currentPlanetIndex; // Берем индекс
+      const gameResponse = await api.get(`/game/${userId}`);
+      const responsePlanet = await api.get(`/planets/filters?index=${gameResponse.data.currentPlanetIndex}`);
+      setCurrentPlanet(responsePlanet.data);
 
-      const responsePlanet = await api.get(`/planets/filters?index=${currentPlanetIndex}`);
-      setCurrentPlanet(responsePlanet.data); // Убедись, что в API есть поле image или url
+      const expRequired = gameResponse.data.expRequired;
+      setExpRequired(expRequired.total);
+      setExpUpdateRequired(expRequired.toNext);
+      setGameExp(gameResponse.data.exp); // Обновляем текущий опыт пользователя
     } catch (error) {
       console.error("Ошибка загрузки планет:", error);
     }
   };
+
+
 
   const handleClick = async (event) => {
     console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
@@ -89,23 +101,23 @@ const Game = () => {
     setParticles((prev) => [...prev, ...newParticles]);
 
     try {
-      const response = await api.post("/game/coins", { userId });
+      const gameResponse = await api.post("/game/coins", { userId });
+      const gameData = gameResponse.data;
+      const expRequired = gameData.expRequired;
 
-      if (response.status !== 200) {
-        throw new Error("Ошибка загрузки данных");
-      }
+      dispatch(setCoins(gameData.coins));
+      dispatch(setLevel(gameData.level));
+      setExpRequired(expRequired.total);
+      setExpUpdateRequired(expRequired.toNext);
+      setGameExp(gameData.exp); // Обновляем текущий опыт
 
-      const updatedGameData = response.data;
-      dispatch(setCoins(updatedGameData.coins));
-      dispatch(setLevel(updatedGameData.level));
-
-      console.log(`New coins value: ${updatedGameData.coins}`);
+      console.log(expRequired);
+      console.log(`New coins value: ${gameData.coins}`);
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
       showError(error.status, error.code);
     }
   };
-
 
 
   return (
@@ -128,7 +140,11 @@ const Game = () => {
             }}
           />
         )}
-        <div className="score-bar"></div>
+
+        {/* Шкала опыта */}
+        <div className="top-bar">
+          <ScoreBar expRequired={expRequired} expUpdate={gameExp}/>
+        </div>
 
         {particles.map((particle) => (
           <img
