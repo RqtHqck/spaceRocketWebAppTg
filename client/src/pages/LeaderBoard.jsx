@@ -5,6 +5,7 @@ import "../styles/pages/LeaderBoard.css";
 import api from '../utils/api.js';
 import CoinDisplay from '../components/CoinsDisplay.jsx';
 import LevelDisplay from '../components/LevelDisplay.jsx';
+import UserAvatar from '../components/UserAvatar.jsx';
 
 
 const LeaderBoard = () => {
@@ -52,26 +53,32 @@ const LeaderBoard = () => {
         <div className="users-list">
           {users.map((user, index) => (
             <div key={user._id} className="user-card">
-              <div className="user-rank">#{index + 1}</div>
-              <img
-                src={user.imageUrl || '/icons/profile.png'}
-                className="user-avatar"
-              />
+              <div className="user-rank">{index + 1}</div>
+              <div className="leaderboard-avatar">
+                <UserAvatar src={user.imageUrl}/>
+              </div>
               <div className="user-info">
-                <span className="user-name">{user.userName}</span>
-                <span className="user-level">{user.game.level}</span>
-              </div>        
+                <span className="user-name">{user.userName}adgdag</span>
+              </div>
 
               <div className="user-stats">
+                <div className="stat-item">
+                  <div className="user-level-badge">
+                    <span>
+                      <LevelDisplay level={user.game.level} size={'normal'}/>
+                    </span>
+                  </div>
+                </div>
                 <div className="stat-item">
                   <span className="stat-value">{Math.round(user.game.exp)} exp</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value small-coin">
-                    <CoinDisplay coinsAmount={user.game.coins} />
+                    <CoinDisplay coinsAmount={user.game.coins}/>
                   </span>
                 </div>
               </div>
+
             </div>
           ))}
         </div>

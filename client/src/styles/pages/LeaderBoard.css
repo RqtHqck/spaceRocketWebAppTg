@@ -1,22 +1,18 @@
 .leaderboard-container {
-    background: rgba(145, 145, 145, 0.2); /* Полупрозрачный фон */
+    background: rgba(145, 145, 145, 0.2);
     border-radius: 15px;
-    backdrop-filter: blur(10px); /* Эффект размытия */
-    -webkit-backdrop-filter: blur(10px); /* Для старых браузеров */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-
     display: flex;
     flex-direction: column;
-
-    /*max-width: 480px;*/
-    min-width: calc(100vw - 30px);
+    min-width: calc(100vw - 25px);
     margin: 0 15px;
     padding: 10px;
     overflow-y: auto;
-    overflow-x: hidden; /* Блокируем горизонтальный скролл */
     box-sizing: border-box;
-    max-height: calc(100vh - 170px); /* Ограничиваем высоту контейнера, учитывая высоту Header и BottomNav */
+    max-height: calc(100vh - 170px);
     height: 100%;
 }
 
@@ -26,20 +22,20 @@
     font-size: 1.5rem;
     top: 0;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
     margin-bottom: 20px;
     padding: 15px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(5px);
+    background: rgba(145, 145, 145, 0.2); /* Полупрозрачный фон */
+    backdrop-filter: blur(10px); /* Эффект размытия */
+    -webkit-backdrop-filter: blur(10px); /* Для старых браузеров */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px; /* Скругленные углы */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(224, 170, 255, 0.4); /* Светло-фиолетовое свечение, смещенное вниз */
 }
+
 
 .users-list {
     display: flex;
     color: white;
-    font-size: 1em;
     flex-direction: column;
     gap: 15px;
     width: 100%;
@@ -48,27 +44,36 @@
 .user-card {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
     padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     backdrop-filter: blur(10px);
     transition: transform 0.2s;
     box-sizing: border-box;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 0 10px;
-    border: 2px solid #cb87eb;
+/* Чередование фона карточек */
+.user-card:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.user-card:nth-child(even) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.user-rank {
+    font-size: 1.4rem;
+}
+
+.leaderboard-avatar {
+    margin: 0 6px;
 }
 
 .user-info {
     flex: 1;
-    min-width: 0; /* Фикс для обрезания длинных текстов */
+    min-width: 0;
+    overflow: hidden;
 }
 
 .user-name {
@@ -79,18 +84,10 @@
     text-overflow: ellipsis;
 }
 
-.user-level {
-    font-size: 0.9em;
-}
-
 .user-stats {
     display: flex;
-    gap: 15px;
-    margin-left: auto;
-    padding-left: 10px;
-}
-
-.stat-item {
-    text-align: center;
-    min-width: 60px; /* Фиксированная ширина для статистики */
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    min-width: 80px;
 }

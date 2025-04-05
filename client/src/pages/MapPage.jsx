@@ -5,6 +5,7 @@ import { useError } from "../context/ErrorContext.jsx";
 import CoinDisplay from '../components/CoinsDisplay.jsx';
 import {useDispatch} from 'react-redux';
 import {setLevel} from '../redux/levelSlice.jsx';
+import LevelDisplay from '../components/LevelDisplay.jsx';
 
 
 export default function MapPage() {
@@ -128,7 +129,9 @@ export default function MapPage() {
                         Buy previous
                       </span>
                     ) : !hasEnoughLevel ? (
-                      `Level: ${planet.requiredLevel}`
+                      <span>
+                        <LevelDisplay level={planet.requiredLevel} size={'normal'}/>
+                      </span>
                     ) : !hasEnoughCoins ? (
                       <span className="planet-lock">
                         <img src="/icons/map/lock.png" alt="Locked" className="planet-locked-img"/>

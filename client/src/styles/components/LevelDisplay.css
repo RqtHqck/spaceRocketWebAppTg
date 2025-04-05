@@ -1,13 +1,46 @@
 .level-display {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     flex-direction: row;
+    font-size: 1rem; /* базовый размер для масштабирования */
 }
 
 .level-amount {
-    font-size: 18px;
+    font-size: 1em; /* наследуется от .level-display */
     font-weight: bold;
     color: white;
+}
+
+.user-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em; /* масштабируется */
+    color: white;
+}
+
+.user-level-badge img {
+    position: relative;
+    top: -2px;
+    width: 1em;
+    height: 1em;
+    filter: brightness(0) invert(1); /* Делаем белыми */
+}
+
+/* Размерные модификаторы */
+.small-level {
+    font-size: 0.85rem;
+}
+
+.normal-level {
+    font-size: 1rem;
+}
+
+.large-level {
+    font-size: 1.2rem;
 }

@@ -7,6 +7,7 @@ import { fetchCoins } from "../redux/coinsSlice.jsx";
 import { fetchLevel } from "../redux/levelSlice.jsx";
 
 import { useError } from "../context/ErrorContext";
+import UserAvatar from './UserAvatar.jsx';
 
 const Header = () => {
   const { showError } = useError();
@@ -44,20 +45,20 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-left">
-        <img
-          src={avatar || "/icons/profile.png"}
-          alt="Avatar"
-          className="avatar no-interaction"
-        />
-        <LevelDisplay level={level}/>
+        <div className="header-avatar">
+          <UserAvatar src={avatar}/>
+        </div>
+        <div className="header-level">
+          <LevelDisplay level={level} size={'large'}/>
+        </div>
       </div>
       <div className="header-right">
-        <span className="coin-count">
-          <CoinDisplay coinsAmount={coins} size="large"/>
-        </span>
+      <span className="coin-count">
+        <CoinDisplay coinsAmount={coins} size="large"/>
+      </span>
       </div>
     </header>
-  );
+);
 };
 
 export default Header;
