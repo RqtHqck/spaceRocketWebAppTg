@@ -12,7 +12,7 @@
     /*max-width: 480px;*/
     min-width: calc(100vw - 30px);
     margin: 0 15px;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
     overflow-x: hidden; /* Блокируем горизонтальный скролл */
     box-sizing: border-box;
@@ -93,49 +93,4 @@
 .stat-item {
     text-align: center;
     min-width: 60px; /* Фиксированная ширина для статистики */
-}
-
-.small-coin {
-    font-size: 0.8rem; /* уменьшает текст */
-    transform: scale(0.8); /* уменьшает всё, включая иконки, если есть */
-    display: inline-flex;
-    align-items: center;
-    gap: 4px; /* если есть иконка и текст — отступ между ними */
-}
-
-
-/* Адаптивность для маленьких экранов */
-@media (max-width: 480px) {
-    .leaderboard-container {
-        padding: 10px;
-        margin: 0 10px;
-        width: calc(100% - 20px);
-    }
-
-    .user-card {
-        padding: 12px;
-    }
-
-    .user-avatar {
-        width: 35px;
-        height: 35px;
-        margin: 0 8px;
-    }
-
-    .stat-item {
-        align-items: center;
-        justify-content: center;
-        min-width: 50px;
-        gap: 10px;
-        display: inline-flex;
-    }
-
-    .stat-value {
-        font-size: 0.9em;
-
-    }
-
-    .stat-label {
-        font-size: 0.7em;
-    }
 }

@@ -1,19 +1,35 @@
 .coin-display {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    flex-direction: row;
+    gap: 4px;
+    font-size: 1rem; /* базовый размер для масштабирования */
 }
 
 .coin-amount {
-    font-size: 18px;
     font-weight: bold;
     color: white;
-    margin-right: 0px;
+    font-size: 1em; /* наследует от coin-display */
 }
 
 .coin-image {
-    width: 24px; /* Размер картинки монеты */
-    height: 24px;
+    position: relative;
+    top: -2px;
+    width: 1em;
+    height: 1em; /* масштабируется вместе с текстом */
+}
+
+/* Размеры */
+.small-coin {
+    font-size: 0.9rem; /* уменьшено */
+}
+
+.normal-coin {
+    font-size: 1rem; /* стандарт */
+}
+
+.large-coin {
+    font-size: 1.2rem; /* увеличено */
 }

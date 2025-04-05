@@ -53,7 +53,7 @@ const Header = () => {
       </div>
       <div className="header-right">
         <span className="coin-count">
-          <CoinDisplay coinsAmount={coins} />
+          <CoinDisplay coinsAmount={coins} size="large"/>
         </span>
       </div>
     </header>

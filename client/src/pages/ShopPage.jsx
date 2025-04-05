@@ -103,10 +103,12 @@ const Shop = () => {
               </div>
               <button className="buy-button" onClick={() => handleAction(item._id, isOwned)}>
                 {isOwned ? "Upgrade" : "Buy"}
-                <CoinDisplay coinsAmount={price} />
+                <span className="normal-coin">
+                  <CoinDisplay coinsAmount={price} size="normal"/>
+                </span>
               </button>
               <div className="income-info">
-                <CoinDisplay coinsAmount={currentIncome} /> → <CoinDisplay coinsAmount={nextIncome} />
+                <CoinDisplay coinsAmount={currentIncome} size="small"/> → <CoinDisplay coinsAmount={nextIncome} size="small"/>
               </div>
             </div>
           );

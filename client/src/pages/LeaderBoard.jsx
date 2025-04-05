@@ -44,17 +44,6 @@ const LeaderBoard = () => {
     <div className="leaderboard-container">
       <div className="leaderboard-header">
         <h2>Лидеры</h2>
-        {/*<div className="filters">*/}
-        {/*  <select*/}
-        {/*    value={filter}*/}
-        {/*    onChange={handleFilterChange}*/}
-        {/*    className="filter-select"*/}
-        {/*  >*/}
-        {/*    <option value="level">По уровню</option>*/}
-        {/*    <option value="experience">По опыту</option>*/}
-        {/*    <option value="coins">По монетам</option>*/}
-        {/*  </select>*/}
-        {/*</div>*/}
       </div>
 
       {isLoading ? (
@@ -77,8 +66,10 @@ const LeaderBoard = () => {
                 <div className="stat-item">
                   <span className="stat-value">{Math.round(user.game.exp)} exp</span>
                 </div>
-                <div className="stat-item small-coin">
-                  <span className="stat-value"><CoinDisplay coinsAmount={user.game.coins} /></span>
+                <div className="stat-item">
+                  <span className="stat-value small-coin">
+                    <CoinDisplay coinsAmount={user.game.coins} />
+                  </span>
                 </div>
               </div>
             </div>

@@ -177,14 +177,7 @@
     justify-content: center;
     gap: 6px; /* расстояние между замком и текстом */
 }
-.planet-lock span {
-    position: relative;
-    top:-1px;
-}
-.planet-lock img {
-    position: relative;
-    top:-2px;
-}
+
 .planet-locked-img {
     position: relative;
     top: -2px;

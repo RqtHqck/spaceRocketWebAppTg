@@ -118,18 +118,17 @@ class UserRepository {
           {
             $lookup:
               {
-                from: "statistics", // имя коллекции в MongoDB (не модель!)
-                localField: "statistic", // поле в statistic
-                foreignField: "_id", // поле в statisticSchema
-                as: "statistic" // новое поле с подтянутыми документами
+                from: "statistics",
+                localField: "statistic",
+                foreignField: "_id",
+                as: "statistic"
               }
           },
-          // { $unwind: "$statistic" },
           {
             $addFields: {
               itemsAmount: {
                 $cond: {
-                  if: { $isArray: "$game.items" }, // Проверка, что это массив
+                  if: { $isArray: "$game.items" },
                   then: { $size: "$game.items" },
                   else: 0
                 }
@@ -153,8 +152,6 @@ class UserRepository {
             }
           },
         ])
-      // .sort({ 'game.level': -1, 'game.exp': -1, 'game.coins': -1, 'game.items': -1, 'game.unlockedPlanets': -1 })
-
     } catch (err) {
       throw ApiError.databaseError(500, `Error when found sorted user`, err);
     }

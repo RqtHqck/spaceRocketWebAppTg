@@ -8,11 +8,11 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 260px; /* Явное задание высоты строк */
-    gap: 20px; /* Увеличиваем промежуток между элементами */
+    gap: 10px; /* Увеличиваем промежуток между элементами */
     max-width: 480px;
     min-width: calc(100vw - 25px);
     margin: 0 15px;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
     box-sizing: border-box;
     max-height: calc(100vh - 170px); /* Ограничиваем высоту контейнера, учитывая высоту Header и BottomNav */
