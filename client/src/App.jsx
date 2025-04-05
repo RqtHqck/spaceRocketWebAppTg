@@ -2,13 +2,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import MapPage from './pages/MapPage.jsx';
 import MainLayout from './components/MainLayout.jsx';
 import GamePage from './pages/GamePage';
 import ShopPage from './pages/ShopPage.jsx';
 import MobileOnlyPage from './pages/MobileOnlyPage';
 import ErrorPage from './pages/ErrorPage.jsx';
 import { ErrorProvider } from "./context/ErrorContext";
-import MapPage from './pages/MapPage.jsx';
+import LeaderBoard from './pages/LeaderBoard.jsx';
 
 const App = () => {
   return (
@@ -19,9 +20,10 @@ const App = () => {
             <Routes>
               <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
+                  <Route path="/map" element={<MapPage />} />
                   <Route path="/game" element={<GamePage />} />
                   <Route path="/shop" element={<ShopPage />} />
-                  <Route path="/map" element={<MapPage />} />
+                  <Route path="/leaders" element={<LeaderBoard />} />
 
                 </Route>
               </Route>

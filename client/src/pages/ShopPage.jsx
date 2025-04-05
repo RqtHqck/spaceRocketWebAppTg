@@ -102,7 +102,7 @@ const Shop = () => {
                 <h3 className="item-title">{item.name}</h3>
               </div>
               <button className="buy-button" onClick={() => handleAction(item._id, isOwned)}>
-                {isOwned ? "Улучшить" : "Купить"}
+                {isOwned ? "Upgrade" : "Buy"}
                 <CoinDisplay coinsAmount={price} />
               </button>
               <div className="income-info">

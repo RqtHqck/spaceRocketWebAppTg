@@ -144,7 +144,7 @@ class GameRepository {
       { userId },
       {
         $inc: {
-          coins: 1 + amount
+          coins: 1 + Math.round(amount)
         },
       },
       { new: true } // return update
@@ -158,7 +158,7 @@ class GameRepository {
       { userId },
       {
         $inc: {
-          exp: amount
+          exp: Math.round(amount)
         },
       },
       { new: true }
