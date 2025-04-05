@@ -9,11 +9,13 @@
 }
 
 .current-planet {
-  width: 350px;
+  width: 300px;
   top: calc(100vh - 110vh);
   z-index: 2;
   position: relative;
   animation: planetGlow 3s infinite alternate ease-in-out;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 0 10px var(--planet-glow-color));
 }
 
 @keyframes planetGlow {
@@ -41,8 +43,8 @@
 }
 
 .planet-placeholder {
-  width: 300px;
-  height: 300px;
+  width: 245px; /* 350px * 0.7 = 245px */
+  height: 245px;
   border-radius: 50%; /* Делаем круг */
   background: rgb(60,50,75);
   background: linear-gradient(235deg, rgba(60,50,75,1) 0%, rgba(9,0,14,1) 100%);    /*position: absolute; !* Перекрывает картинку *!*/

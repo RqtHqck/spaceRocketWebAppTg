@@ -13,15 +13,20 @@ const Game = () => {
   const { showError } = useError();
   const userId = sessionStorage.getItem("userId");
 
-  const [scale, setScale] = useState(1); // Установка масштаба
-  const [particles, setParticles] = useState([]); // Отрисовка частиц
-
+  // Состояния
+  const [scale, setScale] = useState(1);
+  const [particles, setParticles] = useState([]);
   const [currentPlanet, setCurrentPlanet] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false); // Загружена ли картика
-
+  const [isLoaded, setIsLoaded] = useState(false);
   const [expRequired, setExpRequired] = useState(0);
   const [expUpdateRequired, setExpUpdateRequired] = useState(0);
-  const [gameExp, setGameExp] = useState(0); // текущий опыт
+  const [gameExp, setGameExp] = useState(0);
+  const [clickScale, setClickScale] = useState(1);
+
+  // Рассчитываем прогресс и масштаб планеты
+  const progress = expRequired > 0 ? Math.min(gameExp / expRequired, 1) : 0;
+  const baseScale = 0.7 + progress * 0.5; // Масштаб от 0.7 до 1.2
+  const planetScale = baseScale * clickScale; // Комбинируем с анимацией клика
 
 
 
@@ -50,31 +55,33 @@ const Game = () => {
 
 
   useEffect(() => {
-    fetchCurrentPlanet();
-  }, []);
+    const loadData = async () => {
+      try {
+        const gameData = await api.get(`/game/${userId}`);
+        const responsePlanet = await api.get(`/planets/filters?index=${gameData.data.currentPlanetIndex}`);
 
+        setCurrentPlanet(responsePlanet.data);
+        setExpRequired(gameData.data.expRequired.total);
+        setExpUpdateRequired(gameData.data.expRequired.toNext);
+        setGameExp(gameData.data.exp);
+      } catch (error) {
+        console.error("Ошибка загрузки данных:", error);
+        showError(error.status, error.code);
+      }
+    };
 
-  const fetchCurrentPlanet = async () => {
-    try {
-      const gameResponse = await api.get(`/game/${userId}`);
-      const responsePlanet = await api.get(`/planets/filters?index=${gameResponse.data.currentPlanetIndex}`);
-      setCurrentPlanet(responsePlanet.data);
-
-      const expRequired = gameResponse.data.expRequired;
-      setExpRequired(expRequired.total);
-      setExpUpdateRequired(expRequired.toNext);
-      setGameExp(gameResponse.data.exp); // Обновляем текущий опыт пользователя
-    } catch (error) {
-      console.error("Ошибка загрузки планет:", error);
-    }
-  };
-
+    loadData();
+  }, [userId, showError]);
 
 
   const handleClick = async (event) => {
     console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
     setScale(1.1);
-    setTimeout(() => setScale(1), 100);
+    setClickScale(1.05);
+    setTimeout(() => {
+      setScale(1);
+      setClickScale(1);
+    }, 100);
 
     const gameContainer = event.currentTarget.closest('.game-container');
     const containerRect = gameContainer.getBoundingClientRect();
@@ -103,18 +110,15 @@ const Game = () => {
     try {
       const gameResponse = await api.post("/game/coins", { userId });
       const gameData = gameResponse.data;
-      const expRequired = gameData.expRequired;
 
       dispatch(setCoins(gameData.coins));
       dispatch(setLevel(gameData.level));
-      setExpRequired(expRequired.total);
-      setExpUpdateRequired(expRequired.toNext);
-      setGameExp(gameData.exp); // Обновляем текущий опыт
+      setExpRequired(gameData.expRequired.total);
+      setExpUpdateRequired(gameData.expRequired.toNext);
+      setGameExp(gameData.exp);
 
-      console.log(expRequired);
-      console.log(`New coins value: ${gameData.coins}`);
     } catch (error) {
-      console.error("Ошибка при получении данных пользователя:", error);
+      console.error("Ошибка:", error);
       showError(error.status, error.code);
     }
   };
@@ -123,7 +127,6 @@ const Game = () => {
   return (
     <>
       <div className="game-container">
-
         {/* круг-плейсхолдер пока планета не прогрузилась */}
         {!isLoaded && <div className="planet-placeholder"></div>}
 
@@ -136,7 +139,9 @@ const Game = () => {
             onLoad={() => setIsLoaded(true)}
             style={{
               display: isLoaded ? "block" : "none",
-              "--planet-glow-color": currentPlanet.color || "rgba(255, 100, 50, 0.8)"
+              "--planet-glow-color": currentPlanet.color || "rgba(255, 100, 50, 0.8)",
+              transform: `scale(${planetScale})`,
+              transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
             }}
           />
         )}
