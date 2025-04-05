@@ -6,6 +6,7 @@ import CoinDisplay from '../components/CoinsDisplay.jsx';
 import {useDispatch} from 'react-redux';
 import {setLevel} from '../redux/levelSlice.jsx';
 import LevelDisplay from '../components/LevelDisplay.jsx';
+import {setCoins} from '../redux/coinsSlice.jsx';
 
 
 export default function MapPage() {
@@ -69,6 +70,7 @@ export default function MapPage() {
       const updatedGame = await api.post("/game/planet/buy", { userId, planetId });
       console.log(`Buy planet ${planetId} for user ${userId}`);
       console.log(updatedGame.data.level)
+      dispatch(setCoins(updatedGame.data.coins))
       dispatch(setLevel(updatedGame.data.level))
       fetchUserGameData();
     } catch (error) {
