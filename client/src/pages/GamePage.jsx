@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
-const tgStar = "/icons/tgStar.png";
 import ScoreBar from "../components/ScoreBar";
+import Rocket from "../components/Rocket.jsx";
 import { useDispatch } from 'react-redux';
 import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
@@ -13,9 +13,7 @@ const Game = () => {
   const { showError } = useError();
   const userId = sessionStorage.getItem("userId");
 
-  // Состояния
   const [scale, setScale] = useState(1);
-  const [particles, setParticles] = useState([]);
   const [currentPlanet, setCurrentPlanet] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -24,43 +22,11 @@ const Game = () => {
   const [game, setGame] = useState(null);
   const [gameExp, setGameExp] = useState(0);
   const [hasAutomatic, setHasAutomatic] = useState(false);
-  const [automatReward, setAutomatReward] = useState(null);
   const [clickScale, setClickScale] = useState(1);
 
-  // Рассчитываем прогресс и масштаб планеты
   const progress = expRequired > 0 ? Math.min(gameExp / expRequired, 1) : 0;
-  const baseScale = 0.7 + progress * 0.5; // Масштаб от 0.7 до 1.2
-  const planetScale = baseScale * clickScale; // Комбинируем с анимацией клика
-
-  useEffect(() => {
-    // const nowTime = new Date().toISOString();
-
-  }, []);
-
-
-  useEffect(() => {
-    let frame;
-    const updateParticles = () => {
-      setParticles((prev) =>
-        prev
-          .map((particle) => ({
-            ...particle,
-            x: particle.x + particle.dx * particle.speed, // Движение по горизонтали
-            y: particle.y + particle.dy * particle.speed, // Движение по вертикали
-            angle: particle.angle + Math.random() * 0.1 - 0.05, // Вращение частиц
-            opacity: particle.opacity - 0.02, // Уменьшение прозрачности
-          }))
-          .filter((particle) => particle.opacity > 0) // Убираем частицы, когда они исчезают
-      );
-
-      frame = requestAnimationFrame(updateParticles);
-    };
-
-    frame = requestAnimationFrame(updateParticles);
-
-    return () => cancelAnimationFrame(frame);
-  }, [particles]);
-
+  const baseScale = 0.7 + progress * 0.5;
+  const planetScale = baseScale * clickScale;
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,13 +35,12 @@ const Game = () => {
         const game = gameData.data;
         const responsePlanet = await api.get(`/planets/filters?index=${game.currentPlanetIndex}`);
         setGame(game);
-        if (game.lastRewarded) setHasAutomatic(game.lastRewarded)
+        if (game.lastRewarded) setHasAutomatic(game.lastRewarded);
 
         setCurrentPlanet(responsePlanet.data);
         setExpRequired(game.expRequired.total);
         setExpUpdateRequired(game.expRequired.toNext);
         setGameExp(game.exp);
-
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
         showError(error.status, error.code);
@@ -85,61 +50,7 @@ const Game = () => {
     loadData();
   }, [userId, showError]);
 
-
-  const handleAutomaticIconCLick = async () => {
-    try {
-      const gameResponse = await api.post("/game/coins/absentReward", { userId });
-      const gameData = gameResponse.data;
-      console.log("Prev: " + game.coins)
-      console.log("New: " + gameData.coins)
-
-      dispatch(setCoins(gameData.coins));
-      dispatch(setLevel(gameData.level));
-      setGame(gameData);
-      setExpRequired(gameData.expRequired.total);
-      setExpUpdateRequired(gameData.expRequired.toNext);
-      setGameExp(gameData.exp);
-
-    } catch (error) {
-      console.error("Ошибка при нажатии на кнопку автоматизации", error);
-      showError(error.status, error.code);
-    }
-  }
-
-
-  const handleRocketButtonClick = async (event) => {
-    console.log(`handleRocketButtonClick: user with id ${userId} had pushed the rocket button.`);
-    setScale(1.1);
-    setClickScale(1.05);
-    setTimeout(() => {
-      setScale(1);
-      setClickScale(1);
-    }, 100);
-
-    const gameContainer = event.currentTarget.closest('.game-container');
-    const containerRect = gameContainer.getBoundingClientRect();
-    const rocketRect = event.target.getBoundingClientRect();
-    const rocketX = rocketRect.left - containerRect.left + rocketRect.width * 0.5; // Смещаем вправо (70% ширины ракеты)
-    const rocketY = rocketRect.top - containerRect.top + rocketRect.height * 0.6; // Смещаем вниз (90% высоты ракеты)
-
-    const getRandom = (min, max) => Math.random() * (max - min) + min;
-
-    const newParticles = Array.from({ length: 3 }).map(() => ({
-      id: Math.random(),
-      img: tgStar,
-      x: rocketX,
-      y: rocketY,
-      dx: getRandom(-2, 2),
-      dy: getRandom(-2, 2),
-      rotate: getRandom(-30, 30),
-      size: getRandom(10, 50),
-      opacity: 1,
-      angle: getRandom(0, 180),
-      speed: getRandom(1, 2)
-    }));
-
-    setParticles((prev) => [...prev, ...newParticles]);
-
+  const handleRocketClick = async () => {
     try {
       const gameResponse = await api.post("/game/coins", { userId });
       const gameData = gameResponse.data;
@@ -150,21 +61,35 @@ const Game = () => {
       setExpRequired(gameData.expRequired.total);
       setExpUpdateRequired(gameData.expRequired.toNext);
       setGameExp(gameData.exp);
-
     } catch (error) {
-      console.error("Ошибка при нажатии на ракету:", error);
+      console.error("Ошибка при нажатии на ракету", error);
       showError(error.status, error.code);
     }
   };
 
 
+  const handleAutomaticIconClick = async () => {
+    try {
+      const gameResponse = await api.post("/game/coins/absentReward", { userId });
+      const gameData = gameResponse.data;
+
+      dispatch(setCoins(gameData.coins));
+      dispatch(setLevel(gameData.level));
+      setGame(gameData);
+      setExpRequired(gameData.expRequired.total);
+      setExpUpdateRequired(gameData.expRequired.toNext);
+      setGameExp(gameData.exp);
+    } catch (error) {
+      console.error("Ошибка при нажатии на кнопку автоматизации", error);
+      showError(error.status, error.code);
+    }
+  };
+
   return (
     <>
       <div className="game-container">
-        {/* круг-плейсхолдер пока планета не прогрузилась */}
         {!isLoaded && <div className="planet-placeholder"></div>}
 
-        {/* планета */}
         {currentPlanet && (
           <img
             src={currentPlanet.imageUrl}
@@ -180,56 +105,37 @@ const Game = () => {
           />
         )}
 
-        {/* Шкала опыта */}
         <div className="top-bar">
-          <ScoreBar expRequired={expRequired} expUpdate={gameExp}/>
+          <ScoreBar expRequired={expRequired} expUpdate={gameExp} />
         </div>
 
-        {particles.map((particle) => (
-          <img
-            key={particle.id}
-            src={particle.img}
-            alt="Частица"
-            className="particle"
-            style={{
-              position: "absolute", // Обеспечиваем абсолютное позиционирование частиц
-              left: `${particle.x}px`,
-              top: `${particle.y}px`,
-              width: `${particle.size}px`, // Устанавливаем случайный размер
-              height: `${particle.size}px`,
-              transform: `rotate(${particle.angle}deg)`,
-              opacity: particle.opacity
-            }}
-          />
-        ))}
-
-        <img
-          src="/rocket/rocket.png"
-          alt="Ракета"
-          className="rocket-img"
-          style={{
-            transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
-          }}
-          onClick={handleRocketButtonClick}
+        <Rocket
+          scale={scale}
+          setScale={setScale}
+          setClickScale={setClickScale}
+          setGame={setGame}
+          setExpRequired={setExpRequired}
+          setExpUpdateRequired={setExpUpdateRequired}
+          setGameExp={setGameExp}
+          userId={userId}
+          onRocketClick={handleRocketClick}
         />
       </div>
-      {/* Картинка справа фиксированно */}
-      {
-        hasAutomatic
-          ? <img
-            src="/icons/game/image-inverted.svg"
-            alt="Картинка справа"
-            style={{
-              position: "fixed",
-              top: "350px",
-              right: "20px",
-              width: "40px",
-              zIndex: 1000,
-            }}
-            onClick={handleAutomaticIconCLick}
-          />
-          : <></>
-      }
+
+      {hasAutomatic && (
+        <img
+          src="/icons/game/image-inverted.svg"
+          alt="Картинка справа"
+          style={{
+            position: "fixed",
+            top: "350px",
+            right: "20px",
+            width: "40px",
+            zIndex: 1000,
+          }}
+          onClick={handleAutomaticIconClick}
+        />
+      )}
     </>
   );
 };
