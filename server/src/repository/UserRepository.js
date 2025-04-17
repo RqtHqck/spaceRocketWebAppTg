@@ -98,6 +98,19 @@ class UserRepository {
   }
 
 
+  static async patchUpdate(id, updateDto) {
+    try {
+      logger.info("UserRepository::patchUpdate");
+      return await UserModel.findOneAndUpdate(
+        { _id: id },
+        updateDto
+      );
+    } catch (err) {
+      throw ApiError.databaseError(500, `Error when update user`, err);
+    }
+  }
+
+
   static async findSorted() {
     try {
       logger.info(`UserRepository::findSorted`);

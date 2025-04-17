@@ -57,8 +57,9 @@ class GameService  {
   }
 
 
-  static addCoins(game, amount) {
-    const totalIncome = game.calculateTotalIncome() + (amount || 0);
+  static addCoins(game, amount=0, multiplier=1) {
+    const totalIncome = game.calculateTotalIncome() * multiplier + amount ;
+    logger.info(`Coins to add: ${totalIncome}`);
     return game.coins += totalIncome + 1;
   }
 
@@ -270,6 +271,31 @@ class GameService  {
         throw ApiError.internalError(`Error bought planet with id: ${dbPlanet._id}`, err);
       }
     }
+  }
+
+  static async calculateAbsentReward(userId, amount) {
+    logger.info("GameService::calculateAbsentReward")
+
+    const game = await GameRepository.findByUserId(userId);
+    const lastRewardedDate = new Date(game.lastRewarded);
+
+    if (( new Date() - lastRewardedDate ) / 1000 < 5 * 60)
+      // Throw error if 5 min have not passed
+      throw ApiError.badRequest("It's not enough time past to click this button")
+
+    // Calculate date total amount of user time absent
+    const dateAbsent = Math.round((new Date() - new Date(game.lastRewarded)) / 1000);
+    logger.info(`Absent in seconds: ${dateAbsent}`);
+
+    this.addCoins(game, amount, dateAbsent);
+    game.lastRewarded = new Date();
+    // Update exp
+    this.incrementExp(game, 'click-absent');
+    // Update level
+    this.incrementLevel(game);
+    await game.save();
+
+    return game;
   }
 }
 

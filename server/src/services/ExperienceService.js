@@ -7,6 +7,12 @@ class ExperienceService {
   }
 
 
+  static getClickAbsentExp(userLevel, baseExp = 1, multiplier = 2) {
+    // Click-absent
+    return baseExp + ((userLevel !== 0 ? userLevel * multiplier : userLevel));
+  }
+
+
   static getUpdateItemExp(userLevel, baseExp = 40, multiplier = 1.3) {
     // updateItem
     return baseExp + (userLevel * multiplier);
@@ -27,10 +33,9 @@ class ExperienceService {
 
   static getRequiredExp(level) {
     const baseExp = 1000; // Базовое количество опыта для первого уровня
-    const expMultiplier = 1.5; // Множитель для увеличения опыта
+    const expMultiplier = 1.3; // Множитель для увеличения опыта
     return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
   }
-
 }
 
 

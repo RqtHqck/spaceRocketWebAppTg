@@ -137,7 +137,6 @@ class GameRepository {
   }
 
 
-
   static async addCoins(userId, amount) {
     logger.info("GameRepository::addCoins")
     return GameModel.findOneAndUpdate(
@@ -176,6 +175,9 @@ class GameRepository {
       { new: true } // Возвращает обновленный объект
     );
   }
+
+
+
 
 }
 

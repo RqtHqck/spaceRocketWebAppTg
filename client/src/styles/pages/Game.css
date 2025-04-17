@@ -83,6 +83,14 @@
   animation: particle-fly 1s forwards;
 }
 
+
+.side-image img {
+  width: 120px;
+  height: auto;
+  /*top:px;*/
+  margin-top: 40px;
+}
+
 /* Анимация разлёта частиц */
 @keyframes particle-fly {
   0% {

@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   game: { type: mongoose.Schema.Types.ObjectId, ref: "Game" },
   statistic: { type: mongoose.Schema.Types.ObjectId, ref: "Statistic" },
   // Document
+  lastOnline: { type: Date, default: Date.now },
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
 })

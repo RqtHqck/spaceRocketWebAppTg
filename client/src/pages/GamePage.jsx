@@ -18,9 +18,13 @@ const Game = () => {
   const [particles, setParticles] = useState([]);
   const [currentPlanet, setCurrentPlanet] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
   const [expRequired, setExpRequired] = useState(0);
   const [expUpdateRequired, setExpUpdateRequired] = useState(0);
+  const [game, setGame] = useState(null);
   const [gameExp, setGameExp] = useState(0);
+  const [hasAutomatic, setHasAutomatic] = useState(false);
+  const [automatReward, setAutomatReward] = useState(null);
   const [clickScale, setClickScale] = useState(1);
 
   // Рассчитываем прогресс и масштаб планеты
@@ -28,6 +32,10 @@ const Game = () => {
   const baseScale = 0.7 + progress * 0.5; // Масштаб от 0.7 до 1.2
   const planetScale = baseScale * clickScale; // Комбинируем с анимацией клика
 
+  useEffect(() => {
+    // const nowTime = new Date().toISOString();
+
+  }, []);
 
 
   useEffect(() => {
@@ -58,12 +66,16 @@ const Game = () => {
     const loadData = async () => {
       try {
         const gameData = await api.get(`/game/${userId}`);
-        const responsePlanet = await api.get(`/planets/filters?index=${gameData.data.currentPlanetIndex}`);
+        const game = gameData.data;
+        const responsePlanet = await api.get(`/planets/filters?index=${game.currentPlanetIndex}`);
+        setGame(game);
+        if (game.lastRewarded) setHasAutomatic(game.lastRewarded)
 
         setCurrentPlanet(responsePlanet.data);
-        setExpRequired(gameData.data.expRequired.total);
-        setExpUpdateRequired(gameData.data.expRequired.toNext);
-        setGameExp(gameData.data.exp);
+        setExpRequired(game.expRequired.total);
+        setExpUpdateRequired(game.expRequired.toNext);
+        setGameExp(game.exp);
+
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
         showError(error.status, error.code);
@@ -74,8 +86,29 @@ const Game = () => {
   }, [userId, showError]);
 
 
-  const handleClick = async (event) => {
-    console.log(`handleClick: user with id ${userId} had pushed the rocket button.`);
+  const handleAutomaticIconCLick = async () => {
+    try {
+      const gameResponse = await api.post("/game/coins/absentReward", { userId });
+      const gameData = gameResponse.data;
+      console.log("Prev: " + game.coins)
+      console.log("New: " + gameData.coins)
+
+      dispatch(setCoins(gameData.coins));
+      dispatch(setLevel(gameData.level));
+      setGame(gameData);
+      setExpRequired(gameData.expRequired.total);
+      setExpUpdateRequired(gameData.expRequired.toNext);
+      setGameExp(gameData.exp);
+
+    } catch (error) {
+      console.error("Ошибка при нажатии на кнопку автоматизации", error);
+      showError(error.status, error.code);
+    }
+  }
+
+
+  const handleRocketButtonClick = async (event) => {
+    console.log(`handleRocketButtonClick: user with id ${userId} had pushed the rocket button.`);
     setScale(1.1);
     setClickScale(1.05);
     setTimeout(() => {
@@ -113,12 +146,13 @@ const Game = () => {
 
       dispatch(setCoins(gameData.coins));
       dispatch(setLevel(gameData.level));
+      setGame(gameData);
       setExpRequired(gameData.expRequired.total);
       setExpUpdateRequired(gameData.expRequired.toNext);
       setGameExp(gameData.exp);
 
     } catch (error) {
-      console.error("Ошибка:", error);
+      console.error("Ошибка при нажатии на ракету:", error);
       showError(error.status, error.code);
     }
   };
@@ -176,9 +210,26 @@ const Game = () => {
           style={{
             transform: `scale(${scale}) rotate(-15deg) translate(20px, -20px)`,
           }}
-          onClick={handleClick}
+          onClick={handleRocketButtonClick}
         />
       </div>
+      {/* Картинка справа фиксированно */}
+      {
+        hasAutomatic
+          ? <img
+            src="/icons/game/image-inverted.svg"
+            alt="Картинка справа"
+            style={{
+              position: "fixed",
+              top: "350px",
+              right: "20px",
+              width: "40px",
+              zIndex: 1000,
+            }}
+            onClick={handleAutomaticIconCLick}
+          />
+          : <></>
+      }
     </>
   );
 };

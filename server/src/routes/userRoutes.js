@@ -1,11 +1,13 @@
 const express = require('express');
 const UserController = require('../controllers/UserController')
-const { validateUserCreateDto }  = require('../middlewares/validators/validateUserCreate');
+const { validateUserCreateDto, validateUserUpdateDto}  = require('../middlewares/validators/validateUser');
 const userRouter = express.Router()
 
 // ---------------------- User routes
 // POST: localhost:3000/api/user/
 userRouter.post('/', validateUserCreateDto, UserController.create)
+// POST: localhost:3000/api/user/
+userRouter.patch('/:userId/activity', validateUserUpdateDto, UserController.patchUpdate)
 // GET: localhost:3000/api/user/all
 userRouter.get('/all', UserController.findAll)
 // GET: localhost:3000/api/user/tg/:tgId

@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   const telegramId = req.headers['x-userId']; // Telegram ID из headers
 
   // Проверка на мобильное устройство
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const isMobile = /Android|iPhone|iPod/i.test(userAgent);
 
   if (!isMobile) {
     logger.warn(`Access denied from not mobile computer. Redirecting to bot page ${process.env.BOT_WEB_URL}...`);

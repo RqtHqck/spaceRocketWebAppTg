@@ -1,6 +1,6 @@
 const express = require('express');
 const PlanetController = require('../controllers/PlanetController')
-const {validateItemDto} = require('../middlewares/validators/validateItemDto');
+const {validateItemDto} = require('../middlewares/validators/validateItem');
 const planetRouter = express.Router()
 
 // POST: localhost:3000/api/planets

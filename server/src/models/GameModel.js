@@ -27,13 +27,14 @@ const gameSchema = mongoose.Schema({
       updatedAt: { type: Date, default: Date.now }
     }
   ],
+  lastRewarded: { type: Date, default: null },
 })
 
 gameSchema.index({ userId: 1 }, { unique: true });
 
 // Метод для подсчета общего дохода всех items
 gameSchema.methods.calculateTotalIncome = function() {
-  logger.info(`GameSchema::calculateExpGain`)
+  logger.info(`GameSchema::calculateItemsCoinsGain`)
 
   return this.items.reduce((totalIncome, item) => {
     return totalIncome + item.income;
@@ -57,6 +58,9 @@ gameSchema.methods.calculateExpGain = function(actionType) {
       break;
     case "click":
       amount = ExperienceService.getClickExp(userLevel);
+      break;
+    case "click-absent":
+      amount = ExperienceService.getClickAbsentExp(userLevel);
       break;
     default:
       throw new Error("Invalid action type");

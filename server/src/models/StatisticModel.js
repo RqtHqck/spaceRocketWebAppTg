@@ -6,7 +6,6 @@ const statisticSchema = mongoose.Schema({
   totalSessions: { type: Number, default: 0 },
   totalClicks: { type: Number, default: 0 },
   transactionsCount: { type: Number, default: 0 },
-  lastActive: { type: Date, default: Date.now }
 })
 
 

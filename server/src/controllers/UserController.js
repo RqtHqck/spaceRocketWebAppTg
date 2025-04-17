@@ -76,6 +76,22 @@ class UserController {
   }
 
 
+  static async patchUpdate(req, res, next) {
+    try {
+      logger.info('UserController::setLastOnline')
+      const userId = req.params.userId;
+      const requestData = req.body;
+
+     await UserRepository.patchUpdate(userId, requestData);
+      res
+        .status(204)
+        .end();
+    } catch (err) {
+      next(err)
+    }
+  }
+
+
   // static async findFiltered(req, res, next) {
   //   try {
   //     logger.info('UserController::findFiltered')

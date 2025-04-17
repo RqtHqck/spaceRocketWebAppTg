@@ -1,6 +1,6 @@
 const express = require('express');
 const ItemController = require('../controllers/ItemController')
-const {validateItemDto} = require('../middlewares/validators/validateItemDto');
+const {validateItemDto} = require('../middlewares/validators/validateItem');
 const itemRouter = express.Router()
 
 // POST: localhost:3000/api/shop/items

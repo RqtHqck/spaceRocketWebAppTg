@@ -1,7 +1,6 @@
 const express = require('express');
 const GameController = require('../controllers/GameController')
-const {validatePostCoinsDto} = require('../middlewares/validators/validatePostCoins');
-const {validateItemPurchase} = require('../middlewares/validators/validateUserAddItem');
+const {validateItemPurchase, validatePostCoinsDto} = require('../middlewares/validators/validateGame');
 
 const gameRouter = express.Router()
 
@@ -12,6 +11,8 @@ gameRouter.get('/:userId', GameController.findByUserId)
 // ---------------------- Coins routes
 // POST: localhost:3000/api/game/coins
 gameRouter.post('/coins', validatePostCoinsDto, GameController.incrementCoinsByClick)
+// POST: /api/game/absentReward/:userId
+gameRouter.post('/coins/absentReward', validatePostCoinsDto, GameController.incrementCoinsAbsentReward);
 // GET: localhost:3000/api/game/coins
 gameRouter.get('/coins/:userId', GameController.getCoins)
 

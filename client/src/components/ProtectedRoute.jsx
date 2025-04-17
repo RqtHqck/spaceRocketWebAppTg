@@ -14,8 +14,8 @@ const ProtectedRoute = () => {
       try {
         console.log("Telegram WebApp initialized");
 
-        const tgIdFromWebApp = "1378564412";
-        const userId = sessionStorage.getItem("userId");
+        const tgIdFromWebApp = "1415151551";
+        let userId = sessionStorage.getItem("userId");
 
         // Если не мобильное устройство или нет данных из WebApp
         // if (!isMobile || !tgIdFromWebApp) {
@@ -31,6 +31,7 @@ const ProtectedRoute = () => {
         if (userId) {
           console.log("User ID found in sessionStorage:", userId);
           setLoading(false);
+          await api.patch(`/users/${userId}/activity`, { lastOnline:new Date().toISOString() })
           return;
         }
 
@@ -40,12 +41,16 @@ const ProtectedRoute = () => {
         console.log("Response data:", response.data);
 
         if (!response.data?._id) {
-          throw new Error(`User with tgid ${tgIdFromWebApp} not found.`);
+          throw new Error(`User with tgId ${tgIdFromWebApp} not found.`);
         }
 
+        userId = response.data._id;
+
         // Сохраняем ID пользователя в sessionStorage
-        sessionStorage.setItem("userId", response.data._id);
-        console.log("UserId set:", response.data._id);
+        sessionStorage.setItem("userId", userId);
+        await api.patch(`/users/${userId}/activity`, { lastOnline:new Date().toISOString() })
+
+        console.log("UserId set:", userId);
         setLoading(false);
       } catch (err) {
         console.error("Auth error:", err);
