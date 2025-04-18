@@ -34,6 +34,32 @@ class GameService  {
   }
 
 
+  static async calculateAbsentReward(userId, amount) {
+    logger.info("GameService::calculateAbsentReward")
+
+    const game = await GameRepository.findByUserId(userId);
+    const lastRewardedDate = new Date(game.lastRewarded);
+
+    if (( new Date() - lastRewardedDate ) / 1000 < 5 * 60)
+      // Throw error if 5 min have not passed
+      throw ApiError.badRequest("It's not enough time past to click this button")
+
+    // Calculate date total amount of user time absent
+    const dateAbsent = Math.round((new Date() - new Date(game.lastRewarded)) / 1000);
+    logger.info(`Absent in seconds: ${dateAbsent}`);
+
+    this.addCoins(game, amount, dateAbsent);
+    game.lastRewarded = new Date();
+    // Update exp
+    this.incrementExp(game, 'click-absent');
+    // Update level
+    this.incrementLevel(game);
+    await game.save();
+
+    return game;
+  }
+
+
   static incrementExp(game, actionType) {
     logger.info(`GameService::incrementExp actionType: ${actionType}`)
     // Определяем количество опыта в зависимости от действия
@@ -81,7 +107,7 @@ class GameService  {
 
     let game = await GameRepository.findByUserId(userId);
     const dbItem = await ItemRepository.findById(itemId);
-
+    if (game.level < dbItem.levelRequired ) throw ApiError.badRequest("You have not enough level")
     // Пытаемся найти предмет в массиве item пользователя
     let existingItem = game.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
 
@@ -90,14 +116,10 @@ class GameService  {
         // Если нету такого предмета, то покупаем
         logger.info("Items isn't exists in user items")
         game = await this.buyItem(game, dbItem);
-        // Increment Exp event
-        eventEmitter.emit('exp:update', { game, actionType: 'purchaseItem' });
       } else {
         // Если объект есть, то обновляем
         logger.info("Item exists. Update")
         game = await this.upgradeItem(game, existingItem, dbItem);
-        // Increment Exp event
-        eventEmitter.emit('exp:update', { game, actionType: 'updateItem' });
       }
 
       // Update exp
@@ -271,31 +293,6 @@ class GameService  {
         throw ApiError.internalError(`Error bought planet with id: ${dbPlanet._id}`, err);
       }
     }
-  }
-
-  static async calculateAbsentReward(userId, amount) {
-    logger.info("GameService::calculateAbsentReward")
-
-    const game = await GameRepository.findByUserId(userId);
-    const lastRewardedDate = new Date(game.lastRewarded);
-
-    if (( new Date() - lastRewardedDate ) / 1000 < 5 * 60)
-      // Throw error if 5 min have not passed
-      throw ApiError.badRequest("It's not enough time past to click this button")
-
-    // Calculate date total amount of user time absent
-    const dateAbsent = Math.round((new Date() - new Date(game.lastRewarded)) / 1000);
-    logger.info(`Absent in seconds: ${dateAbsent}`);
-
-    this.addCoins(game, amount, dateAbsent);
-    game.lastRewarded = new Date();
-    // Update exp
-    this.incrementExp(game, 'click-absent');
-    // Update level
-    this.incrementLevel(game);
-    await game.save();
-
-    return game;
   }
 }
 

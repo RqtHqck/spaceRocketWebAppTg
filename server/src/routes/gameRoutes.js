@@ -6,7 +6,9 @@ const gameRouter = express.Router()
 
 // ---------------------- Game routes
 // GET: localhost:3000/api/game/userId
-gameRouter.get('/:userId', GameController.findByUserId)
+gameRouter.get('/:userId', GameController.findGameByUserId)
+// GET: localhost:3000/api/game/reduced/userId (without populate)
+gameRouter.get('/reduced/:userId', GameController.findGameReducedByUserId)
 
 // ---------------------- Coins routes
 // POST: localhost:3000/api/game/coins

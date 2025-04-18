@@ -132,7 +132,7 @@ export default function MapPage() {
                       </span>
                     ) : !hasEnoughLevel ? (
                       <span>
-                        <LevelDisplay level={planet.requiredLevel} size={'normal'}/>
+                        Level: <LevelDisplay level={planet.requiredLevel} size={'normal'}/>
                       </span>
                     ) : !hasEnoughCoins ? (
                       <span className="planet-lock">

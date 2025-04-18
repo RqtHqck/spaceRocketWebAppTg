@@ -9,6 +9,7 @@ module.exports.validateItemDto = (req, res, next) => {
   const ItemDtoSchema = Joi.object({
     name: Joi.string().required(),
     description: Joi.string().required(),
+    levelRequired: Joi.number().required(),
     basePrice: Joi.number().required(),
     baseIncome: Joi.number().required(),
     priceMultiplier: Joi.number().required(),

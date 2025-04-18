@@ -29,6 +29,21 @@ class GameRepository {
     }
   }
 
+  static async findReducedByUserId(userId) {
+    try {
+      logger.info("GameRepository::findReducedByUserId")
+      const game = await GameModel.findOne({userId})
+      if (!game) throw ApiError.databaseError(400, `Not found game with userId: ${userId}`)
+      return game
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw err;
+      } else {
+        throw ApiError.databaseError(500, `Error get game with userId: ${userId} from database`, err);
+      }
+    }
+  }
+
 
   static async create(gameDto) {
     try {

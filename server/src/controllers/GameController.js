@@ -5,7 +5,7 @@ const GameRepository = require('@repository/GameRepository');
 
 class GameController {
 
-  static async findByUserId(req, res, next) {
+  static async findGameByUserId(req, res, next) {
     try {
       logger.info('GameController::findByUserId')
       const userId = req.params.userId;
@@ -18,6 +18,22 @@ class GameController {
       next(err)
     }
   }
+
+
+  static async findGameReducedByUserId(req, res, next) {
+    try {
+      logger.info('GameController::findByUserId')
+      const userId = req.params.userId;
+      logger.info(`Query param: { userId:${userId} }`)
+      const game = await GameRepository.findReducedByUserId(userId);
+      res
+        .status(200)
+        .json(game);
+    } catch (err) {
+      next(err)
+    }
+  }
+
 
 
   static async getCoins(req, res, next) {
