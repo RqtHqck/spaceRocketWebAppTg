@@ -16,20 +16,21 @@
     width: 40px;
     cursor: pointer;
     transition: transform 0.1s ease, filter 0.1s ease;
-    touch-action: manipulation; /* Лучше для мобильных */
+    touch-action: manipulation;
 }
 
-/* Визуальный отклик при тапе */
 .automatic-icon:active {
     transform: scale(0.95);
     filter: brightness(0.8);
 }
+
 .automatic-icon-indicator {
     position: absolute;
-    bottom: -1px;
-    right: -2px;
-    width: 12px;
-    height: 12px;
+    bottom: 2px;
+    right: 0px;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
 }
 
 .automatic-icon-timer {

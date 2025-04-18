@@ -50,16 +50,15 @@ const AutomaticBotFeature = ({ hasAutomatic, onClick, showIndicator }) => {
 
   return (
     <div className="automatic-icon-wrapper">
-      <div className="automatic-icon-container">
+      <div className="automatic-icon-container" onClick={handleClick}>
         <img
           src="/icons/game/image-inverted.svg"
           alt="Automatic"
           className="automatic-icon"
-          onClick={handleClick}
         />
         {showIndicator && remainingTime === 0 && (
           <img
-            src="/icons/annoying.png"
+            src="/icons/annoying-red.png"
             alt="Indicator"
             className="automatic-icon-indicator"
           />
