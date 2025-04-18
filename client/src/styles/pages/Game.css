@@ -55,17 +55,6 @@
   transform: translate(-50%, -50%);
 }
 
-.rocket-img {
-  width: 230px;
-  cursor: pointer;
-  position: fixed;
-  top: calc(100vh - 35vh);
-  left: calc(50vw - 130px);
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  filter: drop-shadow(0 0 20px rgba(203, 135, 235, 0.8)); /* Статичное свечение */
-  transition: transform 0.1s ease-in-out;
-}
 
 .top-bar {
   position: absolute;
@@ -75,30 +64,10 @@
   padding-top: 15px;
 }
 
-/* Частицы */
-.particle {
-  position: absolute;
-  width: 20px;
-  opacity: 0;
-  animation: particle-fly 1s forwards;
-}
-
 
 .side-image img {
   width: 120px;
   height: auto;
   /*top:px;*/
   margin-top: 40px;
-}
-
-/* Анимация разлёта частиц */
-@keyframes particle-fly {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--x), var(--y)) scale(0.5);
-  }
 }

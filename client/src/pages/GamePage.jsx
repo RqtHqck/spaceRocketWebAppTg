@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/pages/Game.css";
 import ScoreBar from "../components/ScoreBar";
 import Rocket from "../components/Rocket.jsx";
+import AutomaticBotFeature from '../components/AutomaticBotFeature.jsx';
 import { useDispatch } from 'react-redux';
 import api from "../utils/api";
 import { useError } from "../context/ErrorContext";
@@ -123,18 +124,12 @@ const Game = () => {
       </div>
 
       {hasAutomatic && (
-        <img
-          src="/icons/game/image-inverted.svg"
-          alt="Картинка справа"
-          style={{
-            position: "fixed",
-            top: "350px",
-            right: "20px",
-            width: "40px",
-            zIndex: 1000,
-          }}
+        <AutomaticBotFeature
+          hasAutomatic={hasAutomatic}
           onClick={handleAutomaticIconClick}
+          showIndicator={true} // когда нужно — сделаешь false, если не нужно
         />
+
       )}
     </>
   );

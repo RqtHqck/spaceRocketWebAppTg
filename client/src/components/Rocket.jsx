@@ -1,5 +1,6 @@
 // components/RocketWithParticles.jsx
 import React, { useState, useEffect } from 'react';
+import "../styles/components/Rocket.css";
 
 const tgStar = "/icons/tgStar.png";
 
@@ -21,7 +22,7 @@ const RocketWithParticles = ({ onRocketClick }) => {
     const gameContainer = event.currentTarget.closest('.game-container');
     const containerRect = gameContainer.getBoundingClientRect();
     const rocketRect = event.target.getBoundingClientRect();
-    const rocketX = rocketRect.left - containerRect.left + rocketRect.width * 0.5;
+    const rocketX = rocketRect.left - containerRect.left + rocketRect.width * 0.6;
     const rocketY = rocketRect.top - containerRect.top + rocketRect.height * 0.6;
 
     const newParticles = Array.from({ length: 3 }).map(() => ({

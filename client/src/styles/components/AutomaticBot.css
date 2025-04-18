@@ -1,0 +1,42 @@
+.automatic-icon-wrapper {
+    position: fixed;
+    top: 350px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.automatic-icon-container {
+    position: relative;
+}
+
+.automatic-icon {
+    width: 40px;
+    cursor: pointer;
+    transition: transform 0.1s ease, filter 0.1s ease;
+    touch-action: manipulation; /* Лучше для мобильных */
+}
+
+/* Визуальный отклик при тапе */
+.automatic-icon:active {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+}
+.automatic-icon-indicator {
+    position: absolute;
+    bottom: -1px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+}
+
+.automatic-icon-timer {
+    margin-top: 4px;
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}

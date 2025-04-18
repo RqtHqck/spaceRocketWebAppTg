@@ -102,7 +102,7 @@ const Shop = () => {
                 <h3 className="item-title">{item.name}</h3>
               </div>
               <button className="buy-button" onClick={() => handleAction(item._id, isOwned)}>
-                {isOwned ? "Upgrade" : "Buy"}
+                {isOwned ? "Upgrade " : "Buy "}
                 <span className="normal-coin">
                   <CoinDisplay coinsAmount={price} size="normal"/>
                 </span>
