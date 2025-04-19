@@ -31,12 +31,16 @@ const AutomaticBotFeature = ({ hasAutomatic, onClick, showIndicator }) => {
   }, [remainingTime]);
 
   const handleClick = () => {
-    const timer = localStorage.getItem(TIMER_KEY);
-    if (timer) return;
+    const expiresAt = parseInt(localStorage.getItem(TIMER_KEY), 10);
+    const now = Date.now();
+
+    // Только если таймер истёк — разрешаем клик
+    if (expiresAt && expiresAt > now) return;
+
     if (onClick) onClick();
 
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-    localStorage.setItem(TIMER_KEY, expiresAt.toString());
+    const newExpiresAt = Date.now() + 5 * 60 * 1000;
+    localStorage.setItem(TIMER_KEY, newExpiresAt.toString());
     setRemainingTime(5 * 60);
   };
 

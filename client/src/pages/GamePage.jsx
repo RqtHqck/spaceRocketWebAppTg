@@ -19,7 +19,6 @@ const Game = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [expRequired, setExpRequired] = useState(0);
-  const [expUpdateRequired, setExpUpdateRequired] = useState(0);
   const [game, setGame] = useState(null);
   const [gameExp, setGameExp] = useState(0);
   const [hasAutomatic, setHasAutomatic] = useState(false);
@@ -40,7 +39,6 @@ const Game = () => {
 
         setCurrentPlanet(responsePlanet.data);
         setExpRequired(game.expRequired.total);
-        setExpUpdateRequired(game.expRequired.toNext);
         setGameExp(game.exp);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
@@ -60,7 +58,6 @@ const Game = () => {
       dispatch(setLevel(gameData.level));
       setGame(gameData);
       setExpRequired(gameData.expRequired.total);
-      setExpUpdateRequired(gameData.expRequired.toNext);
       setGameExp(gameData.exp);
     } catch (error) {
       console.error("Ошибка при нажатии на ракету", error);
@@ -73,12 +70,11 @@ const Game = () => {
     try {
       const gameResponse = await api.post("/game/coins/absentReward", { userId });
       const gameData = gameResponse.data;
-
+      console.log('automate')
       dispatch(setCoins(gameData.coins));
       dispatch(setLevel(gameData.level));
       setGame(gameData);
       setExpRequired(gameData.expRequired.total);
-      setExpUpdateRequired(gameData.expRequired.toNext);
       setGameExp(gameData.exp);
     } catch (error) {
       console.error("Ошибка при нажатии на кнопку автоматизации", error);
@@ -116,7 +112,6 @@ const Game = () => {
           setClickScale={setClickScale}
           setGame={setGame}
           setExpRequired={setExpRequired}
-          setExpUpdateRequired={setExpUpdateRequired}
           setGameExp={setGameExp}
           userId={userId}
           onRocketClick={handleRocketClick}
