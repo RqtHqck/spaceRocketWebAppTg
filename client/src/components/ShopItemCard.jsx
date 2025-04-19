@@ -4,13 +4,13 @@ import CoinDisplay from './CoinsDisplay.jsx';
 import LevelDisplay from './LevelDisplay.jsx';
 
 const ShopItemCard = ({
-                        item,
-                        userItem,
-                        game,
-                        isActive,
-                        onCardClick,
-                        onAction
-                      }) => {
+    item,
+    userItem,
+    game,
+    isActive,
+    onCardClick,
+    onAction
+  }) => {
 
   const isOwned = !!userItem;
   const price = isOwned ? userItem.upgradePrice : item.basePrice;
@@ -63,7 +63,7 @@ const ShopItemCard = ({
           )
         ) : (
           <>
-            {isOwned ? 'Upgrade' : 'Buy'}{' '}
+            {isOwned ? (<img src="/icons/arrow-up.png" className="upgrade-img"/>) : 'Buy'}{' '}
             <span className="normal-coin">
         <CoinDisplay coinsAmount={price} size="small"/>
       </span>

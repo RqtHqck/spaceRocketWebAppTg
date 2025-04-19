@@ -1,1 +1,9 @@
 
+.upgrade-img {
+    /*background: red;*/
+    filter: brightness(0) invert(1); /* Делаем белыми */
+    max-width: 20px;
+    max-height: 20px;
+    position: relative;
+    top: -2px
+}
