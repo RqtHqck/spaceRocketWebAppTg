@@ -39,17 +39,18 @@ class GameService  {
 
     const game = await GameRepository.findByUserId(userId);
     const lastRewardedDate = new Date(game.lastRewarded);
+    const dateNow = new Date();
 
-    if (( new Date() - lastRewardedDate ) / 1000 < 5 * 60)
+    if (( dateNow - lastRewardedDate ) / 1000 < 5 * 60)
       // Throw error if 5 min have not passed
       throw ApiError.badRequest("It's not enough time past to click this button")
 
     // Calculate date total amount of user time absent
-    const dateAbsent = Math.round((new Date() - new Date(game.lastRewarded)) / 1000);
+    const dateAbsent = Math.round((dateNow - lastRewardedDate) / 1000);
     logger.info(`Absent in seconds: ${dateAbsent}`);
 
     this.addCoins(game, amount, dateAbsent);
-    game.lastRewarded = new Date();
+    game.lastRewarded = dateNow;
     // Update exp
     this.incrementExp(game, 'click-absent');
     // Update level
@@ -115,7 +116,7 @@ class GameService  {
       case 'income':
         break;
       case 'autoClicker':
-        game.lastRewarded = new Date();
+        game.lastRewarded = new Date(Date.now() - 5 * 60 * 1000); // Ставим таймер на 5 минут назад чтобы не кидало ошибку что 5 минут не прошло для клика
         break;
       case 'booster':
         break;
@@ -150,10 +151,12 @@ class GameService  {
         // Если нету такого предмета, то покупаем
         logger.info("Items isn't exists in user items")
         game = await this.buyItem(game, dbItem);
+        logger.info("Item bought successfully");
       } else {
         // Если объект есть, то обновляем
         logger.info("Item exists. Update")
         game = await this.upgradeItem(game, existingItem, dbItem);
+        logger.info("Item upgrade successfully");
       }
 
       // Update exp
@@ -192,7 +195,6 @@ class GameService  {
       await TransactionRepository.create(transactionDto);
       await game.save();
 
-      logger.info("Item upgrade successfully");
       return game;
     } catch (err) {
       if (err instanceof ApiError) {
@@ -227,7 +229,6 @@ class GameService  {
       await TransactionRepository.create(transactionDto);
       await game.save();
 
-      logger.info("Item bought successfully");
       return game;
     } catch (err) {
       if (err instanceof ApiError) {

@@ -1,40 +1,33 @@
 
 class ExperienceService {
 
-  static getClickExp(userLevel, baseExp = 5, multiplier = 1.1) {
-    // Click
-    return baseExp + ((userLevel !== 0 ? userLevel * multiplier : userLevel));
+  static getClickExp(userLevel) {
+    return Math.round(15 * Math.pow(1.2, userLevel));
   }
 
 
-  static getClickAbsentExp(userLevel, baseExp = 1, multiplier = 2) {
-    // Click-absent
-    return baseExp + ((userLevel !== 0 ? userLevel * multiplier : userLevel));
+  static getClickAbsentExp(userLevel) {
+    return Math.round(5 * Math.pow(1.2, userLevel));
   }
 
 
-  static getUpdateItemExp(userLevel, baseExp = 40, multiplier = 1.3) {
-    // updateItem
-    return baseExp + (userLevel * multiplier);
+  static getPurchaseItemExp(userLevel) {
+    return Math.round(120 * Math.pow(1.25, userLevel));
   }
 
-
-  static getPurchaseItemExp(userLevel, baseExp = 100, multiplier = 1.5) {
-    // buyItem
-    return baseExp + (userLevel * multiplier);
+  static getUpdateItemExp(userLevel) {
+    return Math.round(50 * Math.pow(1.2, userLevel));
   }
 
-
-  static getPlanetUnlockingExp(userLevel, baseExp = 150, multiplier = 1.8) {
-    // buyPlanet
-    return baseExp + (userLevel * multiplier);
+  static getPlanetUnlockingExp(userLevel) {
+    return Math.round(200 * Math.pow(1.3, userLevel));
   }
 
 
   static getRequiredExp(level) {
-    const baseExp = 1000; // Базовое количество опыта для первого уровня
-    const expMultiplier = 1.3; // Множитель для увеличения опыта
-    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1)); // Експоненциальный рост
+    const baseExp = 1000;
+    const expMultiplier = 1.3;
+    return Math.floor(baseExp * Math.pow(expMultiplier, level - 1));
   }
 }
 

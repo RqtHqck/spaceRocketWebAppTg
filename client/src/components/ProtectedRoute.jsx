@@ -14,7 +14,7 @@ const ProtectedRoute = () => {
       try {
         console.log("Telegram WebApp initialized");
 
-        const tgIdFromWebApp = "1415151551";
+        const tgIdFromWebApp = "1378564412";
         let userId = sessionStorage.getItem("userId");
 
         // Если не мобильное устройство или нет данных из WebApp
