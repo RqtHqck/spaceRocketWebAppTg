@@ -4,9 +4,6 @@ import "../styles/components/BottomNav.css";
 
 const BottomNav = () => (
   <nav className="bottom-nav">
-    <NavLink to="/events" className="nav-link no-interaction">
-      <img src="/icons/events.png" alt="Game" />
-    </NavLink>
     <NavLink to="/map" className="nav-link no-interaction">
       <img src="/icons/map.png" alt="Map" />
     </NavLink>
