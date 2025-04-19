@@ -102,14 +102,48 @@ class GameService  {
   }
 
 
+  static checkLevel(gameLevel, level) {
+    logger.info(`GameLevel: ${gameLevel}; level: ${level}`)
+    if (gameLevel < level)
+      throw ApiError.badRequest("You have not enough level")
+  }
+
+
+  static checkItemType(game, value) {
+    logger.info(`type: ${value}`)
+    switch (value) {
+      case 'income':
+        break;
+      case 'autoClicker':
+        game.lastRewarded = new Date();
+        break;
+      case 'booster':
+        break;
+    }
+  }
+
+  static checkCoins(GameCoins, coins) {
+    logger.info(`GameCoins: ${GameCoins}; coins: ${coins}`)
+    if (GameCoins < coins)
+      throw ApiError.badRequest("You have not enough coins")
+  }
+
+
   static async processPurchaseItem(userId, itemId) {
     logger.info("GameService::processPurchaseItem")
 
     let game = await GameRepository.findByUserId(userId);
     const dbItem = await ItemRepository.findById(itemId);
-    if (game.level < dbItem.levelRequired ) throw ApiError.badRequest("You have not enough level")
+    if (game.level < dbItem.levelRequired )
+      throw ApiError.badRequest("You have not enough level")
+
+
     // Пытаемся найти предмет в массиве item пользователя
     let existingItem = game.items.find(item => new Types.ObjectId(item.itemId).toString() === new Types.ObjectId(itemId).toString());
+
+    this.checkItemType(game, dbItem.type);
+    this.checkLevel(game.level, itemId.level);
+    this.checkCoins(game.coins, existingItem ? existingItem.upgradePrice : dbItem.basePrice);
 
     try {
       if (!existingItem) {
@@ -138,12 +172,8 @@ class GameService  {
 
   static async upgradeItem(game, existingItem, dbItem) {
     try {
-      logger.info("GameService::upgradeItem")
+      logger.info("GameService::upgradeItem");
 
-      // Списываем коины
-      if (game.coins < existingItem.upgradePrice) {
-        throw ApiError.userError(400, 'You have not enough coins!');
-      }
       game.coins -= existingItem.upgradePrice;
 
       // Логика upgrade
@@ -178,10 +208,6 @@ class GameService  {
     try{
       logger.info("GameService::buyItem")
 
-      // Списываем коины
-      if (game.coins < dbItem.basePrice) {
-        throw ApiError.userError(400, 'You have not enough coins!');
-      }
       game.coins -= dbItem.basePrice;
       const itemDto = {
         itemId: dbItem._id,
@@ -232,13 +258,8 @@ class GameService  {
         throw ApiError.databaseError(409, "Conflict: Planet already unlocked.");
       }
 
-      // Проверяем, хватает ли уровня и денег
-      if (game.level < planetToBuy.requiredLevel) {
-        throw ApiError.databaseError(400, "Not enough level to unlock this planet");
-      }
-      if (game.coins < planetToBuy.unlockCost) {
-        throw ApiError.databaseError(400, "Not enough coins to unlock this planet");
-      }
+      this.checkLevel(game.level, planetToBuy.requiredLevel);
+      this.checkCoins(game.coins, planetToBuy.unlockCost);
 
       // Предыдущая планета должна быть куплена
       const prevPlanet = planets.find(p => p.index === planetToBuy.index - 1);
